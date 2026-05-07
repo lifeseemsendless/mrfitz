@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Fitz Pizza</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #D8341C;
+    --orange: #F27C22;
+    --cream: #FDF6EC;
+    --dark: #1A1008;
+    --brown: #6B3A1F;
+    --gray: #8a8075;
+    --gold: #C9A227;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 52px;
+    background: rgba(253,246,236,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(107,58,31,0.1);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--red); letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--dark); }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    text-decoration: none; color: var(--dark);
+    font-size: 0.9rem; font-weight: 500;
+    opacity: 0.65; transition: opacity .2s;
+    letter-spacing: 0.2px;
+  }
+  nav ul a:hover { opacity: 1; }
+  .nav-cart {
+    background: var(--red); color: #fff;
+    border: none; border-radius: 50px;
+    padding: 10px 22px; font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer; transition: background .2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-cart:hover { background: var(--brown); }
+  .cart-badge {
+    background: #fff; color: var(--red);
+    border-radius: 50%; width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+  }
+
+  /* HERO */
+  #hero {
+    height: 100vh;
+    position: relative; overflow: hidden;
+    background: #0d0805;
+    display: flex; align-items: center;
+  }
+
+  /* YouTube Video Background */
+  .yt-bg {
+    position: absolute;
+    inset: 0; z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .yt-bg video {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 177.78vh;
+    height: 100vh;
+    min-width: 100%;
+    min-height: 56.25vw;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+  }
+
+  /* Fallback video bg if iframe blocked */
+  .video-fallback {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, #3d1200 0%, #1a0800 40%, #0d0805 100%);
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(105deg, rgba(13,8,5,0.92) 0%, rgba(13,8,5,0.78) 40%, rgba(13,8,5,0.25) 65%, rgba(13,8,5,0.4) 100%);
+    pointer-events: none;
+  }
+
+  .hero-text {
+    position: relative; z-index: 2;
+    padding: 0 52px; max-width: 560px;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(242,124,34,0.15);
+    border: 1px solid rgba(242,124,34,0.35);
+    color: var(--orange);
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 2.5px;
+    text-transform: uppercase; border-radius: 50px;
+    padding: 7px 18px; margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+  .flame-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--orange);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  .hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.2rem, 5.5vw, 5.2rem);
+    line-height: 1.04; font-weight: 900;
+    color: #fff; margin-bottom: 20px;
+  }
+  .hero-text h1 em { color: var(--orange); font-style: italic; }
+  .hero-text p {
+    color: rgba(255,255,255,0.55); font-size: 1rem;
+    line-height: 1.75; margin-bottom: 36px; max-width: 400px;
+  }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--red); color: #fff;
+    padding: 14px 34px; border-radius: 50px;
+    font-size: 0.95rem; font-weight: 500;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: transform .15s, background .2s, box-shadow .2s;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 0 0 0 rgba(216,52,28,0);
+  }
+  .btn-primary:hover {
+    background: #bf2a14;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(216,52,28,0.45);
+  }
+  .btn-outline {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.85);
+    padding: 14px 34px; border-radius: 50px;
+    font-size: 0.95rem; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.18);
+    cursor: pointer; transition: all .2s;
+    font-family: 'DM Sans', sans-serif;
+    backdrop-filter: blur(8px);
+  }
+  .btn-outline:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  .hero-stats {
+    position: absolute; bottom: 40px; left: 52px; z-index: 2;
+    display: flex; gap: 36px;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem; font-weight: 700;
+    color: #fff; line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.75rem; color: rgba(255,255,255,0.4);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .stat-divider {
+    width: 1px; background: rgba(255,255,255,0.1); align-self: stretch;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 40px; right: 52px; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .scroll-hint span {
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+  @keyframes scrollAnim {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    background: var(--red);
+    overflow: hidden; padding: 14px 0;
+    display: flex;
+  }
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 18s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-track span {
+    color: #fff; font-size: 0.82rem; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 500;
+    padding: 0 32px;
+  }
+  .marquee-sep {
+    color: rgba(255,255,255,0.4) !important;
+    padding: 0 8px !important;
+    letter-spacing: 0 !important;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* FEATURE STRIP */
+  .features {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    background: var(--dark);
+  }
+  .feature-item {
+    padding: 44px 40px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .feature-item:last-child { border-right: none; }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(242,124,34,0.12);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1.4rem;
+  }
+  .feature-text h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+  }
+  .feature-text p {
+    font-size: 0.82rem; color: rgba(255,255,255,0.38);
+    line-height: 1.65;
+  }
+
+  /* SECTION SHARED */
+  section { padding: 96px 52px; }
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange); font-weight: 500; margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.9rem);
+    font-weight: 900; color: var(--dark);
+    margin-bottom: 48px; max-width: 420px; line-height: 1.1;
+  }
+
+  /* MENU */
+  #menu { background: #fff; }
+  .menu-tabs {
+    display: flex; gap: 8px; margin-bottom: 44px; flex-wrap: wrap;
+  }
+  .tab {
+    padding: 9px 22px; border-radius: 50px;
+    border: 1.5px solid rgba(26,16,8,0.12);
+    background: transparent; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; font-weight: 500; color: var(--gray);
+    transition: all .2s;
+  }
+  .tab.active, .tab:hover {
+    background: var(--red); border-color: var(--red); color: #fff;
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .menu-card {
+    border-radius: 20px; overflow: hidden;
+    border: 1px solid rgba(26,16,8,0.07);
+    transition: box-shadow .25s, transform .25s;
+    background: var(--cream);
+  }
+  .menu-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.1); transform: translateY(-5px); }
+
+  .card-img {
+    width: 100%; height: 200px;
+    background: linear-gradient(135deg, #f0e0cc 0%, #e8d0b8 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  /* When src is empty, img collapses — background shows as placeholder */
+  .card-img img[src=""] {
+    display: none;
+  }
+
+  .card-body { padding: 20px 22px; }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;
+  }
+  .card-desc { font-size: 0.82rem; color: var(--gray); line-height: 1.55; margin-bottom: 16px; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .card-price { font-size: 1.1rem; font-weight: 700; color: var(--red); }
+  .add-btn {
+    background: var(--dark); color: #fff;
+    border: none; border-radius: 50px;
+    padding: 9px 20px; font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: background .2s;
+  }
+  .add-btn:hover { background: var(--red); }
+
+  /* SPECIALS */
+  #specials {
+    background: var(--dark);
+    padding: 96px 52px;
+    position: relative; overflow: hidden;
+  }
+  #specials .section-title { color: #fff; }
+  #specials .section-label { color: var(--orange); }
+  .specials-bg {
+    position: absolute; top: -100px; right: -100px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(216,52,28,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .specials-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+  }
+  .special-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px; padding: 28px;
+    transition: background .25s, border-color .25s;
+    position: relative; overflow: hidden;
+  }
+  .special-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(242,124,34,0.3);
+  }
+  .special-badge {
+    display: inline-block;
+    background: var(--red); color: #fff;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 50px;
+    margin-bottom: 16px;
+  }
+  .special-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700; color: #fff;
+    margin-bottom: 8px;
+  }
+  .special-desc { font-size: 0.82rem; color: rgba(255,255,255,0.38); line-height: 1.6; margin-bottom: 20px; }
+  .special-price {
+    font-size: 1.4rem; font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--orange);
+  }
+  .special-price s {
+    font-size: 0.85rem; color: rgba(255,255,255,0.25);
+    font-family: 'DM Sans', sans-serif; font-weight: 400;
+    margin-left: 8px;
+  }
+
+  /* CART SIDEBAR */
+  .cart-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar {
+    position: fixed; top: 0; right: 0; width: 380px; height: 100%;
+    background: #fff; z-index: 201;
+    transform: translateX(100%); transition: transform .3s ease;
+    display: flex; flex-direction: column;
+    box-shadow: -8px 0 50px rgba(0,0,0,0.15);
+  }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-header {
+    padding: 24px 28px; border-bottom: 1px solid rgba(0,0,0,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700;
+  }
+  .close-cart {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.4rem; color: var(--gray);
+  }
+  .cart-items { flex: 1; overflow-y: auto; padding: 20px 28px; }
+  .cart-empty {
+    text-align: center; padding: 60px 0;
+    color: var(--gray); font-size: 0.9rem; line-height: 1.8;
+  }
+  .cart-item {
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .ci-info { flex: 1; }
+  .ci-name { font-weight: 500; font-size: 0.95rem; }
+  .ci-price { color: var(--red); font-size: 0.83rem; font-weight: 600; margin-top: 3px; }
+  .ci-qty { display: flex; align-items: center; gap: 10px; margin-top: 7px; }
+  .qty-btn {
+    background: var(--cream); border: none; border-radius: 50%;
+    width: 26px; height: 26px; font-size: 1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: var(--dark);
+  }
+  .qty-btn:hover { background: var(--red); color: #fff; }
+  .qty-num { font-size: 0.9rem; font-weight: 600; }
+  .cart-footer { padding: 20px 28px; border-top: 1px solid rgba(0,0,0,0.07); }
+  .cart-total {
+    display: flex; justify-content: space-between;
+    font-size: 1rem; font-weight: 600; margin-bottom: 16px;
+  }
+  .checkout-btn {
+    width: 100%; padding: 15px;
+    background: var(--red); color: #fff; border: none;
+    border-radius: 50px; font-size: 1rem; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background .2s;
+  }
+  .checkout-btn:hover { background: var(--brown); }
+
+  /* CHECKOUT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 300; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff; border-radius: 24px;
+    padding: 40px; width: 90%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+    transform: scale(0.95); transition: transform .3s;
+  }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 800; margin-bottom: 26px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 6px; color: var(--gray); }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--dark); background: var(--cream);
+    outline: none; transition: border-color .2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--red);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .order-summary {
+    background: var(--cream); border-radius: 14px;
+    padding: 18px; margin: 22px 0;
+  }
+  .order-summary h4 { font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; color: var(--gray); }
+  .summary-item { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
+  .summary-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08); margin-top: 8px; }
+  .modal-btns { display: flex; gap: 10px; margin-top: 10px; }
+  .modal-back {
+    flex: 1; padding: 13px; background: transparent;
+    border: 1.5px solid rgba(0,0,0,0.12); border-radius: 50px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  }
+  .modal-pay {
+    flex: 2; padding: 13px; background: var(--red);
+    color: #fff; border: none; border-radius: 50px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500; transition: background .2s;
+  }
+  .modal-pay:hover { background: var(--brown); }
+
+  /* CONTACT */
+  #contact {
+    background: var(--cream);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .contact-item {
+    display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px;
+  }
+  .ci-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(216,52,28,0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1.1rem;
+  }
+  .ci-detail h5 { font-weight: 600; font-size: 0.85rem; margin-bottom: 2px; }
+  .ci-detail p { color: var(--gray); font-size: 0.85rem; }
+  .map-placeholder {
+    background: #e8ddd0; border-radius: 20px;
+    height: 320px; display: flex; align-items: center; justify-content: center;
+    color: var(--gray); font-size: 0.85rem; flex-direction: column; gap: 10px;
+  }
+  .map-placeholder span { font-size: 2rem; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.4);
+    padding: 48px 52px;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 36px; gap: 40px; flex-wrap: wrap;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; color: #fff; font-weight: 900;
+    display: block; margin-bottom: 10px;
+  }
+  .footer-tagline { font-size: 0.82rem; max-width: 200px; line-height: 1.6; }
+  .footer-links h5 {
+    color: rgba(255,255,255,0.6); font-size: 0.75rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .footer-links ul { list-style: none; }
+  .footer-links li { margin-bottom: 8px; }
+  .footer-links a {
+    color: rgba(255,255,255,0.35); font-size: 0.85rem;
+    text-decoration: none; transition: color .2s;
+  }
+  .footer-links a:hover { color: rgba(255,255,255,0.8); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 20px; font-size: 0.78rem;
+  }
+
+  /* SUCCESS */
+  .success-screen { text-align: center; padding: 20px 0; }
+  .success-screen .check { font-size: 3.5rem; margin-bottom: 16px; }
+  .success-screen h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 10px; }
+  .success-screen p { color: var(--gray); font-size: 0.9rem; }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    nav ul { display: none; }
+    #hero { height: auto; min-height: 100vh; }
+    .hero-text { padding: 120px 20px 80px; max-width: 100%; }
+    .hero-stats { left: 20px; bottom: 24px; }
+    section { padding: 60px 20px; }
+    .features { grid-template-columns: 1fr; }
+    .feature-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .specials-grid { grid-template-columns: 1fr; }
+    #contact { grid-template-columns: 1fr; }
+    .cart-sidebar { width: 100%; }
+    footer { padding: 36px 20px; }
+    .scroll-hint { display: none; }
+    .yt-bg video { width: 100vw; height: 56.25vw; min-height: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Mr.Fitz <span>Pizza</span></div>
+  <ul>
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#specials">Specials</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cart" onclick="toggleCart()">
+    🛒 Cart <span class="cart-badge" id="cart-count">0</span>
+  </button>
+</nav>
+
+<!-- HERO — replace hero-bg.mp4 with your own video file -->
+<section id="hero">
+  <div class="yt-bg">
+    <video autoplay muted loop playsinline>
+      <source src="hero-bg.mp4" type="video/mp4">
+      <!-- Put your video file (e.g. pizza.mp4) in the same folder as this HTML file,
+           then change "hero-bg.mp4" above to match your filename -->
+    </video>
+  </div>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-text">
+    <span class="hero-tag"><span class="flame-dot"></span> Wood-Fired Since 1994</span>
+    <h1>Real Pizza.<br><em>Real Flame.</em></h1>
+    <p>Handcrafted with imported Italian flour, slow-fermented dough, and fired at 900°F in our stone oven. Every bite tastes like Naples.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Order Now →</a>
+      <a href="#menu" class="btn-outline">Explore Menu</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">Menu Items</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num">900°</div>
+      <div class="stat-label">Stone Oven</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Rating</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Wood Fired</span><span class="marquee-sep">✦</span>
+    <span>Neapolitan Style</span><span class="marquee-sep">✦</span>
+    <span>Fresh Daily</span><span class="marquee-sep">✦</span>
+    <span>48-Hour Fermented Dough</span><span class="marquee-sep">✦</span>
+    <span>Imported Italian Tomatoes</span><span class="marquee-sep">✦</span>
+    <span>Handcrafted With Love</span><span class="marquee-sep">✦</span>
+    <span>Malta's Finest</span><span class="marquee-sep">✦</span>
+    <span>Wood Fired</span><span class="marquee-sep">✦</span>
+    <span>Neapolitan Style</span><span class="marquee-sep">✦</span>
+    <span>Fresh Daily</span><span class="marquee-sep">✦</span>
+    <span>48-Hour Fermented Dough</span><span class="marquee-sep">✦</span>
+    <span>Imported Italian Tomatoes</span><span class="marquee-sep">✦</span>
+    <span>Handcrafted With Love</span><span class="marquee-sep">✦</span>
+    <span>Malta's Finest</span><span class="marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- FEATURE STRIP -->
+<div class="features">
+  <div class="feature-item">
+    <div class="feature-icon">🔥</div>
+    <div class="feature-text">
+      <h4>Stone-Fire Oven</h4>
+      <p>Our 900°F wood-burning oven creates the perfect char and crisp you can't replicate anywhere.</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">🌿</div>
+    <div class="feature-text">
+      <h4>Farm Fresh</h4>
+      <p>Every ingredient sourced daily — local vegetables, fresh herbs, and imported Italian cheese.</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">🚴</div>
+    <div class="feature-text">
+      <h4>30-Min Delivery</h4>
+      <p>Hot pizza delivered to your door. We guarantee freshness or your next order is on us.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MENU -->
+<section id="menu">
+  <p class="section-label">Our Menu</p>
+  <h2 class="section-title">Choose Your Perfect Slice</h2>
+  <div class="menu-tabs">
+    <button class="tab active" onclick="filterMenu('seafood', this)">🐟 Seafood</button>
+    <button class="tab" onclick="filterMenu('sides', this)">🥗 Sides</button>
+    <button class="tab" onclick="filterMenu('drinks', this)">🥤 Drinks</button>
+    <button class="tab" onclick="filterMenu('desserts', this)">🍰 Desserts</button>
+  </div>
+  <div class="menu-grid" id="menu-grid">
+
+    <!-- ═══════════════════════════════════════
+         SEAFOOD SECTION (shown by default)
+         Replace each src="" with your image path
+         e.g. src="images/seafood-platter.jpg"
+         ═══════════════════════════════════════ -->
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food1" alt="Seafood Platter">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Seafood Platter</div>
+        <div class="card-desc">San Marzano tomato, fresh mozzarella, basil, extra virgin olive oil</div>
+        <div class="card-footer">
+          <span class="card-price">₹299</span>
+          <button class="add-btn" onclick="addToCart(1,'Seafood Platter',299)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food2" alt="Fisch & Chips">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Fisch &amp; Chips</div>
+        <div class="card-desc">Tomato sauce, mozzarella, premium pepperoni, oregano</div>
+        <div class="card-footer">
+          <span class="card-price">₹379</span>
+          <button class="add-btn" onclick="addToCart(2,'Fisch & Chips',379)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food3" alt="Fish Soup">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Fish Soup</div>
+        <div class="card-desc">Smoky BBQ sauce, grilled chicken, red onion, coriander</div>
+        <div class="card-footer">
+          <span class="card-price">₹399</span>
+          <button class="add-btn" onclick="addToCart(3,'Fish Soup',399)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food4" alt="Makaron Z Owocami Morza">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Makaron Z Owocami Morza</div>
+        <div class="card-desc">Bell peppers, mushrooms, olives, cherry tomatoes, mozzarella</div>
+        <div class="card-footer">
+          <span class="card-price">₹329</span>
+          <button class="add-btn" onclick="addToCart(4,'Makaron Z Owocami Morza',329)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food5" alt="Octopus in Garlic">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Octopus in Garlic</div>
+        <div class="card-desc">Mozzarella, parmesan, cheddar, ricotta, fresh herbs</div>
+        <div class="card-footer">
+          <span class="card-price">₹419</span>
+          <button class="add-btn" onclick="addToCart(5,'Octopus in Garlic',419)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="seafood">
+      <div class="card-img">
+        <img src="food6" alt="Fresh Fillet of Seabass">
+        <!-- ↑ Replace src="" with your image path -->
+      </div>
+      <div class="card-body">
+        <div class="card-name">Fresh Fillet of Seabass</div>
+        <div class="card-desc">Peri peri sauce, chicken, jalapeños, onion, cheese blend</div>
+        <div class="card-footer">
+          <span class="card-price">₹409</span>
+          <button class="add-btn" onclick="addToCart(6,'Fresh Fillet of Seabass',409)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SIDES (hidden by default)
+         ═══════════════════════════════════════ -->
+    <div class="menu-card" data-cat="sides" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Garlic Bread">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Garlic Bread</div>
+        <div class="card-desc">Toasted sourdough, herb butter, sea salt</div>
+        <div class="card-footer">
+          <span class="card-price">₹129</span>
+          <button class="add-btn" onclick="addToCart(7,'Garlic Bread',129)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="sides" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Caesar Salad">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Caesar Salad</div>
+        <div class="card-desc">Romaine, parmesan shavings, house dressing, croutons</div>
+        <div class="card-footer">
+          <span class="card-price">₹169</span>
+          <button class="add-btn" onclick="addToCart(8,'Caesar Salad',169)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="sides" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Loaded Fries">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Loaded Fries</div>
+        <div class="card-desc">Crispy fries, cheese sauce, jalapeños, sour cream</div>
+        <div class="card-footer">
+          <span class="card-price">₹199</span>
+          <button class="add-btn" onclick="addToCart(9,'Loaded Fries',199)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         DRINKS (hidden by default)
+         ═══════════════════════════════════════ -->
+    <div class="menu-card" data-cat="drinks" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Classic Cola">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Classic Cola</div>
+        <div class="card-desc">Chilled Coca-Cola 330ml</div>
+        <div class="card-footer">
+          <span class="card-price">₹79</span>
+          <button class="add-btn" onclick="addToCart(10,'Classic Cola',79)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="drinks" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Lemonade">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Lemonade</div>
+        <div class="card-desc">Fresh-squeezed lemonade with mint</div>
+        <div class="card-footer">
+          <span class="card-price">₹99</span>
+          <button class="add-btn" onclick="addToCart(11,'Lemonade',99)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="drinks" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Mango Lassi">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Mango Lassi</div>
+        <div class="card-desc">Chilled mango yogurt drink</div>
+        <div class="card-footer">
+          <span class="card-price">₹119</span>
+          <button class="add-btn" onclick="addToCart(12,'Mango Lassi',119)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         DESSERTS (hidden by default)
+         ═══════════════════════════════════════ -->
+    <div class="menu-card" data-cat="desserts" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Nutella Calzone">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nutella Calzone</div>
+        <div class="card-desc">Warm folded pizza dough with Nutella and crushed hazelnuts</div>
+        <div class="card-footer">
+          <span class="card-price">₹199</span>
+          <button class="add-btn" onclick="addToCart(13,'Nutella Calzone',199)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-cat="desserts" style="display:none;">
+      <div class="card-img">
+        <img src="" alt="Tiramisu">
+      </div>
+      <div class="card-body">
+        <div class="card-name">Tiramisu</div>
+        <div class="card-desc">Classic Italian dessert, mascarpone, espresso, cocoa</div>
+        <div class="card-footer">
+          <span class="card-price">₹179</span>
+          <button class="add-btn" onclick="addToCart(14,'Tiramisu',179)">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPECIALS -->
+<section id="specials">
+  <div class="specials-bg"></div>
+  <p class="section-label">This Week</p>
+  <h2 class="section-title" style="color:#fff;">Chef's Specials</h2>
+  <div class="specials-grid">
+    <div class="special-card">
+      <span class="special-badge">🔥 Trending</span>
+      <div class="special-name">Truffle Mushroom</div>
+      <div class="special-desc">Black truffle oil, wild mushrooms, fontina cheese, fresh thyme. Limited batches per day.</div>
+      <div class="special-price">₹549 <s>₹649</s></div>
+    </div>
+    <div class="special-card">
+      <span class="special-badge">🌶 Spicy Pick</span>
+      <div class="special-name">Malta Masala</div>
+      <div class="special-desc">Spiced tomato base, paneer tikka, caramelised onions, mint chutney drizzle.</div>
+      <div class="special-price">₹429 <s>₹499</s></div>
+    </div>
+    <div class="special-card">
+      <span class="special-badge">🍋 New</span>
+      <div class="special-name">Lemon Chicken</div>
+      <div class="special-desc">Lemon cream base, herb-roasted chicken, capers, rocket leaves, shaved parmesan.</div>
+      <div class="special-price">₹469 <s>₹529</s></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-info">
+    <p class="section-label">Find Us</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;margin-bottom:8px;line-height:1.1;">Come Say Hello</h2>
+    <p style="color:var(--gray);font-size:0.95rem;line-height:1.75;margin-bottom:32px;max-width:340px;">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
+    <div class="contact-item">
+      <div class="ci-icon">📍</div>
+      <div class="ci-detail">
+        <h5>Address</h5>
+        <p>12 121 Xatt is-Sajjieda, Marsaxlokk, Malta</p>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="ci-icon">📞</div>
+      <div class="ci-detail">
+        <h5>Phone</h5>
+        <p>+91 98765 43210</p>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="ci-icon">🕐</div>
+      <div class="ci-detail">
+        <h5>Hours</h5>
+        <p>Mon–Sun: 11:00 AM – 11:00 PM</p>
+      </div>
+    </div>
+  </div>
+  <div class="map-placeholder">
+    <span>🗺️</span>
+    <div>12 121 Xatt is-Sajjieda, Marsaxlokk, Malta</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">Mr. Fitz Pizza</span>
+      <p class="footer-tagline">Crafting wood-fired perfection in Malta since 1994.</p>
+    </div>
+    <div class="footer-links">
+      <h5>Menu</h5>
+      <ul>
+        <li><a href="#menu">Pizzas</a></li>
+        <li><a href="#menu">Sides</a></li>
+        <li><a href="#menu">Drinks</a></li>
+        <li><a href="#menu">Desserts</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h5>Info</h5>
+      <ul>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#specials">Specials</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2024 Mr. Fitz Pizza. All rights reserved. 121 Xatt is-Sajjieda, Marsaxlokk, Malta.
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h3>Your Order</h3>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">Your cart is empty 🍕<br><small>Add items from the menu</small></div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cart-total">₹0</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <h3>Complete Your Order</h3>
+    <div id="checkout-form-area">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Rahul"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Nair"></div>
+      </div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 98765 43210"></div>
+      <div class="form-group"><label>Delivery Address</label><textarea rows="2" placeholder="121 Xatt is-Sajjieda, Marsaxlokk, Malta"></textarea></div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select>
+          <option>Cash on Delivery</option>
+          <option>UPI / Google Pay</option>
+          <option>Credit / Debit Card</option>
+        </select>
+      </div>
+      <div class="order-summary">
+        <h4>Order Summary</h4>
+        <div id="modal-summary-items"></div>
+        <div class="summary-total"><span>Total</span><span id="modal-total">₹0</span></div>
+      </div>
+      <div class="modal-btns">
+        <button class="modal-back" onclick="closeCheckout()">← Back</button>
+        <button class="modal-pay" onclick="placeOrder()">Place Order 🎉</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Tab filter — shows/hides static cards by data-cat attribute */
+function filterMenu(cat, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.menu-card').forEach(card => {
+    card.style.display = card.dataset.cat === cat ? '' : 'none';
+  });
+}
+
+/* ══════════════════════════════════════════
+   CART LOGIC
+══════════════════════════════════════════ */
+let cart = [];
+
+function addToCart(id, name, price) {
+  const ex = cart.find(i => i.id === id);
+  if (ex) ex.qty++;
+  else cart.push({ id, name, price, qty: 1 });
+  updateCart();
+  const btn = document.querySelector('.nav-cart');
+  btn.style.transform = 'scale(1.12)';
+  setTimeout(() => btn.style.transform = '', 160);
+}
+
+function updateCart() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total').textContent = '₹' + total;
+  const container = document.getElementById('cart-items');
+  if (cart.length === 0) {
+    container.innerHTML = '<div class="cart-empty">Your cart is empty 🍕<br><small>Add items from the menu</small></div>';
+    return;
+  }
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">₹${item.price} each</div>
+        <div class="ci-qty">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+        </div>
+      </div>
+      <div style="font-weight:700;color:var(--red)">₹${item.price * item.qty}</div>
+    </div>
+  `).join('');
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  updateCart();
+}
+
+function toggleCart() {
+  document.getElementById('cart-sidebar').classList.toggle('open');
+  document.getElementById('cart-overlay').classList.toggle('open');
+}
+
+function openCheckout() {
+  if (cart.length === 0) return;
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('modal-summary-items').innerHTML =
+    cart.map(i => `<div class="summary-item"><span>${i.name} x${i.qty}</span><span>₹${i.price * i.qty}</span></div>`).join('');
+  document.getElementById('modal-total').textContent = '₹' + total;
+  document.getElementById('checkout-modal').classList.add('open');
+  toggleCart();
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+}
+
+function placeOrder() {
+  document.getElementById('checkout-form-area').innerHTML = `
+    <div class="success-screen">
+      <div class="check">🎉</div>
+      <h3>Order Placed!</h3>
+      <p>Your pizza is on its way.<br>Estimated delivery: <strong>30–40 mins</strong></p>
+    </div>`;
+  cart = []; updateCart();
+  setTimeout(closeCheckout, 3200);
+}
+</script>
+</body>
+</html>
