@@ -491,7 +491,6 @@
       <a href="#menu" class="btn-outline">View Menu</a>
     </div>
   </div>
-  <!-- ✦ Hero logo frame REMOVED as requested -->
   <div class="hero-stats">
     <div class="stat">
       <div class="stat-num">30+</div>
@@ -869,28 +868,16 @@
   </div>
 </div>
 
-<!-- ═══ THREE.JS CORE ═══ -->
+<!-- THREE.JS CORE -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-<!-- ═══ GLTFLoader — inline UMD-compatible version for r128 ═══
-     The CDN-hosted examples/js/GLTFLoader.js uses ES module syntax and
-     breaks when loaded as a plain <script>. We embed the stripped-down
-     classic-script version directly so no external fetch is needed.     -->
 <script>
 /**
  * Minimal GLTFLoader for Three.js r128 — classic-script (non-module) edition.
- * Supports binary GLB and JSON GLTF, standard PBR materials, meshes, and
- * basic animations. Draco-compressed meshes will silently skip decompression
- * (model will still load if no Draco is used, which is the common case for
- * Blender exports with default settings).
- *
- * This is intentionally a lightweight subset — enough to load a typical
- * food/product GLB from Blender or Sketchfab.
  */
 (function () {
   'use strict';
 
-  /* ── helpers ── */
   function resolveURL(url, path) {
     if (typeof url !== 'string' || url === '') return '';
     if (/^https?:\/\//i.test(url)) return url;
@@ -901,11 +888,10 @@
     return (path || '') + url;
   }
 
-  const BINARY_EXTENSION_HEADER_MAGIC   = 0x46546C67; // 'glTF'
+  const BINARY_EXTENSION_HEADER_MAGIC   = 0x46546C67;
   const BINARY_EXTENSION_HEADER_LENGTH  = 12;
   const BINARY_EXTENSION_CHUNK_TYPES    = { JSON: 0x4E4F534A, BIN: 0x004E4942 };
 
-  /* ── GLTFLoader ── */
   function GLTFLoader(manager) {
     THREE.Loader.call(this, manager);
     this.dracoLoader = null;
@@ -994,7 +980,6 @@
     }
   });
 
-  /* ── Binary (GLB) extension ── */
   function GLTFBinaryExtension(data) {
     this.name    = 'KHR_binary_glTF';
     this.content = null;
@@ -1024,9 +1009,6 @@
     if (this.content === null) throw new Error('GLB: JSON chunk not found.');
   }
 
-  /* ══════════════════════════════════════════════
-     GLTFParser — the actual loading engine
-  ══════════════════════════════════════════════ */
   function GLTFParser(json, extensions, options) {
     this.json       = json || {};
     this.extensions = extensions || {};
@@ -1073,11 +1055,8 @@
     },
 
     markDefs: function () {
-      var nodeDefs     = this.json.nodes    || [];
-      var skinDefs     = this.json.skins    || [];
-      var meshDefs     = this.json.meshes   || [];
+      var nodeDefs = this.json.nodes || [];
       this.json.__nodeDefs = nodeDefs;
-      // mark mesh usage
       for (var i = 0; i < nodeDefs.length; i++) {
         var nodeDef = nodeDefs[i];
         if (nodeDef.mesh !== undefined) {
@@ -1118,7 +1097,6 @@
       return dep;
     },
 
-    /* ── Buffers ── */
     loadBuffer: function (bufferIndex) {
       var bufferDef = this.json.buffers[bufferIndex];
       var self = this;
@@ -1177,10 +1155,9 @@
 
         var array;
         if (bufferView !== null) {
-          var bvDef    = self.json.bufferViews[accessorDef.bufferView];
+          var bvDef      = self.json.bufferViews[accessorDef.bufferView];
           var byteStride = bvDef.byteStride;
           if (byteStride && byteStride !== elementSize * TypedArray.BYTES_PER_ELEMENT) {
-            // Interleaved — copy to packed
             array = new TypedArray(count * elementSize);
             var view = new DataView(bufferView, byteOffset);
             var getMethod = 'get' + TypedArray.name.replace('Array', '');
@@ -1213,18 +1190,12 @@
           array = sparseArr;
         }
 
-        var bufferAttribute;
-        if (elementSize === 1) {
-          bufferAttribute = new THREE.BufferAttribute(array, 1);
-        } else {
-          bufferAttribute = new THREE.BufferAttribute(array, elementSize);
-        }
+        var bufferAttribute = new THREE.BufferAttribute(array, elementSize === 1 ? 1 : elementSize);
         bufferAttribute.normalized = accessorDef.normalized === true;
         return bufferAttribute;
       });
     },
 
-    /* ── Textures ── */
     loadTexture: function (textureIndex) {
       var self       = this;
       var textureDef  = this.json.textures[textureIndex];
@@ -1239,13 +1210,13 @@
         promise = this.getDependency('bufferView', imageDef.bufferView).then(function (bufferView) {
           var mimeType = imageDef.mimeType || 'image/png';
           var blob = new Blob([bufferView], { type: mimeType });
-          var blobURL = URL.createObjectURL(blob);
+          var blobURL = window.URL.createObjectURL(blob);
           return new Promise(function (resolve, reject) {
             loader.load(blobURL, function (texture) {
-              URL.revokeObjectURL(blobURL);
+              window.URL.revokeObjectURL(blobURL);
               resolve(texture);
             }, undefined, function (e) {
-              URL.revokeObjectURL(blobURL);
+              window.URL.revokeObjectURL(blobURL);
               reject(e);
             });
           });
@@ -1271,13 +1242,12 @@
         texture.wrapS = WRAP_MAP[samplerDef.wrapS] || THREE.RepeatWrapping;
         texture.wrapT = WRAP_MAP[samplerDef.wrapT] || THREE.RepeatWrapping;
         texture.flipY = false;
-        texture.encoding = 3001; // sRGB
+        texture.encoding = 3001;
         texture.needsUpdate = true;
         return texture;
       });
     },
 
-    /* ── Materials ── */
     loadMaterial: function (materialIndex) {
       var self        = this;
       var materialDef = this.json.materials[materialIndex];
@@ -1295,9 +1265,7 @@
       if (pbr.roughnessFactor !== undefined) params.roughness  = pbr.roughnessFactor;
 
       if (pbr.baseColorTexture) {
-        pending.push(self.getDependency('texture', pbr.baseColorTexture.index).then(function (t) {
-          params.map = t;
-        }));
+        pending.push(self.getDependency('texture', pbr.baseColorTexture.index).then(function (t) { params.map = t; }));
       }
       if (pbr.metallicRoughnessTexture) {
         pending.push(self.getDependency('texture', pbr.metallicRoughnessTexture.index).then(function (t) {
@@ -1307,32 +1275,22 @@
       if (materialDef.normalTexture) {
         pending.push(self.getDependency('texture', materialDef.normalTexture.index).then(function (t) {
           params.normalMap = t;
-          if (materialDef.normalTexture.scale !== undefined) {
+          if (materialDef.normalTexture.scale !== undefined)
             params.normalScale = new THREE.Vector2(materialDef.normalTexture.scale, materialDef.normalTexture.scale);
-          }
         }));
       }
       if (materialDef.occlusionTexture) {
-        pending.push(self.getDependency('texture', materialDef.occlusionTexture.index).then(function (t) {
-          params.aoMap = t;
-        }));
+        pending.push(self.getDependency('texture', materialDef.occlusionTexture.index).then(function (t) { params.aoMap = t; }));
       }
       if (materialDef.emissiveTexture) {
-        pending.push(self.getDependency('texture', materialDef.emissiveTexture.index).then(function (t) {
-          params.emissiveMap = t;
-        }));
+        pending.push(self.getDependency('texture', materialDef.emissiveTexture.index).then(function (t) { params.emissiveMap = t; }));
       }
       if (materialDef.emissiveFactor) {
         var ef = materialDef.emissiveFactor;
         params.emissive = new THREE.Color(ef[0], ef[1], ef[2]);
       }
-
-      if (materialDef.alphaMode === 'BLEND') {
-        params.transparent = true;
-        params.depthWrite  = false;
-      } else if (materialDef.alphaMode === 'MASK') {
-        params.alphaTest = materialDef.alphaCutoff !== undefined ? materialDef.alphaCutoff : 0.5;
-      }
+      if (materialDef.alphaMode === 'BLEND') { params.transparent = true; params.depthWrite = false; }
+      else if (materialDef.alphaMode === 'MASK') { params.alphaTest = materialDef.alphaCutoff !== undefined ? materialDef.alphaCutoff : 0.5; }
       if (materialDef.doubleSided === true) params.side = THREE.DoubleSide;
 
       return Promise.all(pending).then(function () {
@@ -1342,7 +1300,6 @@
       });
     },
 
-    /* ── Meshes ── */
     loadMesh: function (meshIndex) {
       var self    = this;
       var meshDef = this.json.meshes[meshIndex];
@@ -1356,16 +1313,11 @@
         for (var j = 0; j < attrKeys.length; j++) {
           geoPending.push(self.getDependency('accessor', prim.attributes[attrKeys[j]]));
         }
-        if (prim.indices !== undefined) {
-          geoPending.push(self.getDependency('accessor', prim.indices));
-        } else {
-          geoPending.push(null);
-        }
-        if (prim.material !== undefined) {
-          geoPending.push(self.getDependency('material', prim.material));
-        } else {
-          geoPending.push(new THREE.MeshStandardMaterial());
-        }
+        if (prim.indices !== undefined) geoPending.push(self.getDependency('accessor', prim.indices));
+        else geoPending.push(null);
+        if (prim.material !== undefined) geoPending.push(self.getDependency('material', prim.material));
+        else geoPending.push(new THREE.MeshStandardMaterial());
+
         pending.push(Promise.all(geoPending).then((function (primDef, keys) {
           return function (results) {
             var geo      = new THREE.BufferGeometry();
@@ -1388,15 +1340,14 @@
               geo.setAttribute(threeAttr, attr);
             }
             if (indices) geo.setIndex(new THREE.BufferAttribute(
-              indices.array instanceof Uint32Array ? indices.array
-                : new Uint32Array(indices.array), 1));
+              indices.array instanceof Uint32Array ? indices.array : new Uint32Array(indices.array), 1));
             var mesh;
             if (primDef.mode === 1)      mesh = new THREE.LineSegments(geo, material);
             else if (primDef.mode === 2) mesh = new THREE.Line(geo, material);
             else if (primDef.mode === 3) mesh = new THREE.LineLoop(geo, material);
             else if (primDef.mode === 0) mesh = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.01 }));
             else                         mesh = new THREE.Mesh(geo, material);
-            mesh.castShadow    = true;
+            mesh.castShadow = true;
             mesh.receiveShadow = true;
             if (!geo.attributes.normal) geo.computeVertexNormals();
             return mesh;
@@ -1416,16 +1367,12 @@
       });
     },
 
-    /* ── Cameras ── */
     loadCamera: function (cameraIndex) {
       var camDef = this.json.cameras[cameraIndex];
       var cam;
       if (camDef.type === 'perspective') {
         var p = camDef.perspective;
-        cam = new THREE.PerspectiveCamera(
-          THREE.MathUtils.radToDeg(p.yfov),
-          p.aspectRatio || 1, p.znear || 0.1, p.zfar || 2000
-        );
+        cam = new THREE.PerspectiveCamera(THREE.MathUtils.radToDeg(p.yfov), p.aspectRatio || 1, p.znear || 0.1, p.zfar || 2000);
       } else {
         var o = camDef.orthographic;
         cam = new THREE.OrthographicCamera(-o.xmag, o.xmag, o.ymag, -o.ymag, o.znear, o.zfar);
@@ -1434,63 +1381,44 @@
       return Promise.resolve(cam);
     },
 
-    /* ── Nodes ── */
     loadNode: function (nodeIndex) {
       var self    = this;
       var nodeDef = this.json.nodes[nodeIndex];
-
       var pending = [];
-      if (nodeDef.mesh !== undefined) pending.push(this.getDependency('mesh', nodeDef.mesh));
+      if (nodeDef.mesh   !== undefined) pending.push(this.getDependency('mesh',   nodeDef.mesh));
       if (nodeDef.camera !== undefined) pending.push(this.getDependency('camera', nodeDef.camera));
-
       var childPending = (nodeDef.children || []).map(function (i) { return self.getDependency('node', i); });
 
       return Promise.all([Promise.all(pending), Promise.all(childPending)]).then(function (results) {
-        var objects   = results[0];
-        var children  = results[1];
-
+        var objects  = results[0];
+        var children = results[1];
         var node;
-        if (objects.length === 0) {
-          node = new THREE.Object3D();
-        } else if (objects.length === 1) {
-          node = objects[0];
-        } else {
-          node = new THREE.Group();
-          for (var o = 0; o < objects.length; o++) node.add(objects[o]);
-        }
+        if (objects.length === 0)      node = new THREE.Object3D();
+        else if (objects.length === 1) node = objects[0];
+        else { node = new THREE.Group(); for (var o = 0; o < objects.length; o++) node.add(objects[o]); }
 
         if (nodeDef.name) {
           node.userData.name = nodeDef.name;
           var name = nodeDef.name;
-          if (self.nodeNamesUsed[name]) {
-            name += '_' + (++self.nodeNamesUsed[name]);
-          } else {
-            self.nodeNamesUsed[name] = 0;
-          }
+          if (self.nodeNamesUsed[name]) name += '_' + (++self.nodeNamesUsed[name]);
+          else self.nodeNamesUsed[name] = 0;
           node.name = name;
         }
-
-        if (nodeDef.matrix) {
-          var m = new THREE.Matrix4();
-          m.fromArray(nodeDef.matrix);
-          node.applyMatrix4(m);
-        } else {
+        if (nodeDef.matrix) { var m = new THREE.Matrix4(); m.fromArray(nodeDef.matrix); node.applyMatrix4(m); }
+        else {
           if (nodeDef.translation) node.position.fromArray(nodeDef.translation);
           if (nodeDef.rotation)    node.quaternion.fromArray(nodeDef.rotation);
           if (nodeDef.scale)       node.scale.fromArray(nodeDef.scale);
         }
-
         for (var c = 0; c < children.length; c++) node.add(children[c]);
         return node;
       });
     },
 
-    /* ── Scenes ── */
     loadScene: function (sceneIndex) {
       var self     = this;
       var sceneDef = this.json.scenes[sceneIndex];
       var rootNodes = (sceneDef.nodes || []).map(function (i) { return self.getDependency('node', i); });
-
       return Promise.all(rootNodes).then(function (nodes) {
         var scene = new THREE.Group();
         if (sceneDef.name) scene.name = sceneDef.name;
@@ -1499,58 +1427,39 @@
       });
     },
 
-    /* ── Animations ── */
     loadAnimation: function (animIndex) {
-      var self   = this;
+      var self    = this;
       var animDef = this.json.animations[animIndex];
       var pending = [];
-
       (animDef.samplers || []).forEach(function (sampler) {
         pending.push(self.getDependency('accessor', sampler.input));
         pending.push(self.getDependency('accessor', sampler.output));
       });
-
       return Promise.all(pending).then(function (accessors) {
         var tracks = [];
         (animDef.channels || []).forEach(function (channel) {
           var samplerDef = animDef.samplers[channel.sampler];
-          var inputIdx   = channel.sampler * 2;
-          var outputIdx  = channel.sampler * 2 + 1;
-          var inputAcc   = accessors[inputIdx];
-          var outputAcc  = accessors[outputIdx];
+          var inputAcc   = accessors[channel.sampler * 2];
+          var outputAcc  = accessors[channel.sampler * 2 + 1];
           if (!inputAcc || !outputAcc) return;
-
-          var times  = inputAcc.array;
-          var values = outputAcc.array;
           var nodeDef = self.json.nodes[channel.target.node];
           if (!nodeDef) return;
-          var nodeName  = nodeDef.name || ('node_' + channel.target.node);
-          var path      = channel.target.path;
-          var interp    = samplerDef.interpolation || 'LINEAR';
-
-          var TrackClass;
-          var trackPath;
-          if (path === 'translation') { TrackClass = THREE.VectorKeyframeTrack;     trackPath = '.position'; }
+          var nodeName = nodeDef.name || ('node_' + channel.target.node);
+          var path = channel.target.path;
+          var TrackClass, trackPath;
+          if (path === 'translation')      { TrackClass = THREE.VectorKeyframeTrack;     trackPath = '.position'; }
           else if (path === 'rotation')    { TrackClass = THREE.QuaternionKeyframeTrack; trackPath = '.quaternion'; }
           else if (path === 'scale')       { TrackClass = THREE.VectorKeyframeTrack;     trackPath = '.scale'; }
           else if (path === 'weights')     { TrackClass = THREE.NumberKeyframeTrack;     trackPath = '.morphTargetInfluences'; }
           else return;
-
-          var timesArr  = Array.from(times);
-          var valuesArr = Array.from(values);
-
-          try {
-            tracks.push(new TrackClass(nodeName + trackPath, timesArr, valuesArr));
-          } catch (e) { /* skip bad tracks */ }
+          try { tracks.push(new TrackClass(nodeName + trackPath, Array.from(inputAcc.array), Array.from(outputAcc.array))); }
+          catch (e) { /* skip bad tracks */ }
         });
-
-        var clip = new THREE.AnimationClip(animDef.name || 'anim_' + animIndex, -1, tracks);
-        return clip;
+        return new THREE.AnimationClip(animDef.name || 'anim_' + animIndex, -1, tracks);
       });
     }
   };
 
-  /* ── Export ── */
   THREE.GLTFLoader = GLTFLoader;
 })();
 </script>
@@ -1558,6 +1467,11 @@
 <script>
 /* ═══════════════════════════════════════════
    3D MODEL SCENE
+   ──────────────────────────────────────────
+   Place  modelpizza.glb  in the SAME FOLDER
+   as this index.html file and it will load
+   automatically. No fallback object — just
+   clean dark background if file is missing.
 ═══════════════════════════════════════════ */
 (function () {
   var canvas    = document.getElementById('model-canvas');
@@ -1567,7 +1481,7 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding    = 3000; // sRGBEncoding
+  renderer.outputEncoding    = 3000;
 
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x141210, 0.018);
@@ -1634,25 +1548,10 @@
   }));
   scene.add(particles);
 
-  /* ── PLACEHOLDER FALLBACK ── */
-  function buildPlaceholder() {
-    loadingEl.style.display = 'none';
-    var orb = new THREE.Mesh(
-      new THREE.SphereGeometry(1.6, 64, 64),
-      new THREE.MeshStandardMaterial({ color: 0xb07020, roughness: 0.4, metalness: 0.7, emissive: 0x3a1800, emissiveIntensity: 0.3 })
-    );
-    orb.castShadow = true;
-    modelGroup.add(orb);
-    var ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.2, 0.05, 16, 128),
-      new THREE.MeshStandardMaterial({ color: 0xc9a84c, roughness: 0.3, metalness: 0.9 })
-    );
-    ring.rotation.x = Math.PI / 2;
-    modelGroup.add(ring);
-  }
-
-  /* ── LOAD GLB ── */
-  /* GLTFLoader is now defined inline above — no external script fetch needed */
+  /* ── LOAD modelpizza.glb ──
+     Put modelpizza.glb in the same folder as this HTML file.
+     If it fails to load, the scene stays clean (dark bg + particles only).
+  ── */
   try {
     var loader = new THREE.GLTFLoader();
     loader.load(
@@ -1678,13 +1577,14 @@
         }
       },
       function (err) {
-        console.warn('GLB load error:', err);
-        buildPlaceholder();
+        /* GLB not found — hide spinner, show nothing (clean dark hero bg) */
+        console.warn('modelpizza.glb not found. Place it in the same folder as index.html.');
+        loadingEl.style.display = 'none';
       }
     );
   } catch (e) {
     console.warn('GLTFLoader init error:', e);
-    buildPlaceholder();
+    loadingEl.style.display = 'none';
   }
 
   /* ── MOUSE / TOUCH ── */
