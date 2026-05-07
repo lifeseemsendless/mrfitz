@@ -9,83 +9,163 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --grey-dark:   #2a2a2a;
-    --grey-mid:    #5a5a5a;
-    --grey-light:  #9a9a9a;
-    --grey-pale:   #e8e4de;
-    --cream:       #f5f0e8;
-    --warm-white:  #faf7f2;
-    --gold:        #c9a84c;
-    --gold-light:  #e8c97a;
-    --gold-dim:    #8a6e2f;
-    --red:         #8b2020;
-    --red-mid:     #a83232;
-    --border:      rgba(201,168,76,0.25);
+    --tint-darkest:  #2e2e2e;
+    --tint-dark:     #464646;
+    --tint-mid:      #696969;
+    --tint-light:    #8f8f8f;
+    --tint-pale:     #c4c1bc;
+    --tint-cream:    #d8d4ce;
+    --tint-warm:     #e4e0da;
+    --tint-fog:      #eeebe6;
+    --gold:          #c9a84c;
+    --gold-light:    #e8c97a;
+    --gold-dim:      #8a6e2f;
+    --red:           #8b2020;
+    --red-mid:       #a83232;
+    --border:        rgba(201,168,76,0.25);
   }
 
   html { scroll-behavior: smooth; }
   body {
     font-family: 'Raleway', sans-serif;
-    background: var(--cream);
-    color: var(--grey-dark);
+    background: var(--tint-cream);
+    color: var(--tint-darkest);
     overflow-x: hidden;
   }
 
-  /* ── NAV ─────────────────────────────── */
   nav {
     position: fixed; top: 0; width: 100%; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 56px;
-    background: rgba(42,42,42,0.92);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--border);
+    padding: 20px 56px;
+    background: rgba(46,46,46,0.55);
+    backdrop-filter: blur(24px) saturate(1.4);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    transition: padding .4s ease, background .4s ease, box-shadow .4s ease;
+  }
+  nav.scrolled {
+    padding: 12px 56px;
+    background: rgba(46,46,46,0.92);
+    box-shadow: 0 4px 40px rgba(0,0,0,0.35);
+    border-bottom-color: var(--border);
+  }
+  nav::after {
+    content: '';
+    position: absolute; inset: 0; top: auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+    background-size: 200% 100%;
+    background-position: 200% 0;
+    transition: background-position 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  nav.scrolled::after {
+    opacity: 1;
+    background-position: -200% 0;
+    animation: nav-shimmer 3s ease-in-out infinite;
+  }
+  @keyframes nav-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
   .nav-logo {
     display: flex; align-items: center; gap: 14px;
+    position: relative;
   }
-  /* Logo image slot — replace src with your file */
   .nav-logo-img {
-    width: 48px; height: 48px;
-    object-fit: contain;
-    filter: none;
+    width: 48px; height: 48px; object-fit: contain;
+    transition: transform .4s ease, filter .4s ease;
+    filter: drop-shadow(0 0 0px var(--gold));
   }
+  nav.scrolled .nav-logo-img {
+    transform: scale(0.88);
+    filter: drop-shadow(0 0 6px rgba(201,168,76,0.5));
+  }
+  .nav-logo::before {
+    content: '';
+    position: absolute; left: -2px; top: -2px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0);
+    transition: border-color .3s;
+    pointer-events: none;
+    animation: logo-breathe 3s ease-in-out infinite;
+  }
+  @keyframes logo-breathe {
+    0%, 100% { transform: scale(1);   opacity: 0.3; }
+    50%       { transform: scale(1.12); opacity: 0.7; }
+  }
+  nav.scrolled .nav-logo::before { border-color: rgba(201,168,76,0.4); }
   .nav-logo-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.45rem; font-weight: 600;
     color: var(--gold); letter-spacing: 1px;
+    transition: letter-spacing .3s;
   }
-  .nav-logo-text span { color: rgba(255,255,255,0.7); font-weight: 400; font-size: 1rem; }
+  nav.scrolled .nav-logo-text { letter-spacing: 1.5px; }
+  .nav-logo-text span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 1rem; }
   nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul li { position: relative; }
   nav ul a {
-    text-decoration: none; color: rgba(255,255,255,0.55);
+    text-decoration: none; color: rgba(255,255,255,0.5);
     font-size: 0.78rem; font-weight: 500; letter-spacing: 2.5px;
     text-transform: uppercase; transition: color .2s;
+    padding-bottom: 4px;
+    display: inline-block;
+  }
+  nav ul a::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width .3s ease;
   }
   nav ul a:hover { color: var(--gold); }
+  nav ul a:hover::after { width: 100%; }
+  nav ul li.active a { color: var(--gold); }
+  nav ul li.active a::after { width: 100%; }
   .nav-cart {
     background: transparent; color: var(--gold);
     border: 1px solid var(--gold); border-radius: 2px;
     padding: 9px 20px; font-size: 0.78rem;
     font-family: 'Raleway', sans-serif; font-weight: 600;
     letter-spacing: 2px; text-transform: uppercase;
-    cursor: pointer; transition: all .2s;
+    cursor: pointer; transition: all .25s;
     display: flex; align-items: center; gap: 10px;
+    position: relative; overflow: hidden;
   }
-  .nav-cart:hover { background: var(--gold); color: var(--grey-dark); }
+  .nav-cart::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform .25s ease;
+    z-index: 0;
+  }
+  .nav-cart:hover::before { transform: translateX(0); }
+  .nav-cart span, .nav-cart .cart-badge { position: relative; z-index: 1; }
+  .nav-cart:hover { color: var(--tint-darkest); }
   .cart-badge {
     background: var(--red); color: #fff;
     border-radius: 50%; width: 20px; height: 20px;
     display: flex; align-items: center; justify-content: center;
     font-size: 0.72rem; font-weight: 700;
+    transition: transform .2s;
+  }
+  .nav-cart:hover .cart-badge { background: var(--tint-darkest); }
+  .cart-bounce { animation: cartBounce .3s ease; }
+  @keyframes cartBounce {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.25); }
+    100% { transform: scale(1); }
   }
 
-  /* ── HERO ─────────────────────────────── */
   #hero {
     height: 100vh; position: relative; overflow: hidden;
-    background: #111008;
+    background: #1c1c1c;
     display: flex; align-items: center;
   }
-  #pizza-canvas {
+  #model-canvas {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     z-index: 0;
@@ -94,143 +174,98 @@
     position: absolute; inset: 0; z-index: 1;
     background: linear-gradient(
       105deg,
-      rgba(10,8,4,0.93) 0%,
-      rgba(10,8,4,0.82) 38%,
-      rgba(10,8,4,0.18) 65%,
-      rgba(10,8,4,0.35) 100%
+      rgba(20,18,14,0.94) 0%,
+      rgba(20,18,14,0.82) 38%,
+      rgba(20,18,14,0.22) 65%,
+      rgba(20,18,14,0.42) 100%
     );
   }
-  /* Ornate corner decorations */
-  .hero-ornament {
-    position: absolute; z-index: 2; pointer-events: none;
-    font-size: 0; line-height: 0;
-  }
-  .hero-ornament svg { display: block; }
-
   .hero-text {
     position: relative; z-index: 3;
     padding: 0 56px; max-width: 580px;
   }
   .hero-eyebrow {
-    display: flex; align-items: center; gap: 14px;
-    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
   }
-  .eyebrow-line {
-    height: 1px; width: 40px; background: var(--gold);
-    opacity: 0.7;
-  }
-  .eyebrow-text {
-    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gold); font-weight: 500;
-  }
+  .eyebrow-line { height: 1px; width: 40px; background: var(--gold); opacity: 0.7; }
+  .eyebrow-text { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
   .hero-text h1 {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(3.6rem, 6vw, 6rem);
     line-height: 1.0; font-weight: 700;
-    color: var(--warm-white); margin-bottom: 8px;
+    color: var(--tint-fog); margin-bottom: 8px;
   }
-  .hero-text h1 em {
-    color: var(--gold); font-style: italic; font-weight: 400;
-  }
+  .hero-text h1 em { color: var(--gold); font-style: italic; font-weight: 400; }
   .hero-subtitle {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.25rem; font-style: italic;
-    color: rgba(255,255,255,0.45); margin-bottom: 28px;
+    color: rgba(230,225,215,0.45); margin-bottom: 28px;
     letter-spacing: 0.5px; line-height: 1.5;
   }
   .hero-text p {
-    color: rgba(255,255,255,0.45); font-size: 0.9rem;
-    line-height: 1.8; margin-bottom: 40px; max-width: 400px;
-    font-weight: 300;
+    color: rgba(220,215,205,0.45); font-size: 0.9rem;
+    line-height: 1.8; margin-bottom: 40px; max-width: 400px; font-weight: 300;
   }
   .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
   .btn-primary {
-    background: var(--gold); color: var(--grey-dark);
+    background: var(--gold); color: var(--tint-darkest);
     padding: 14px 38px; border-radius: 2px;
     font-size: 0.78rem; font-weight: 700; letter-spacing: 2.5px;
-    text-decoration: none; border: none; cursor: pointer;
-    text-transform: uppercase;
+    text-decoration: none; border: none; cursor: pointer; text-transform: uppercase;
     transition: transform .15s, background .2s, box-shadow .2s;
     font-family: 'Raleway', sans-serif;
   }
-  .btn-primary:hover {
-    background: var(--gold-light);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(201,168,76,0.35);
-  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.35); }
   .btn-outline {
-    background: transparent;
-    color: rgba(255,255,255,0.75);
+    background: transparent; color: rgba(230,225,215,0.75);
     padding: 14px 38px; border-radius: 2px;
     font-size: 0.78rem; font-weight: 600; letter-spacing: 2.5px;
     text-decoration: none; text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer; transition: all .2s;
+    border: 1px solid rgba(220,215,205,0.2); cursor: pointer; transition: all .2s;
     font-family: 'Raleway', sans-serif;
   }
-  .btn-outline:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
   .hero-stats {
     position: absolute; bottom: 44px; left: 56px; z-index: 3;
     display: flex; gap: 44px; align-items: flex-end;
   }
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem; font-weight: 700;
-    color: var(--gold); line-height: 1;
-  }
-  .stat-label {
-    font-size: 0.68rem; color: rgba(255,255,255,0.35);
-    letter-spacing: 2px; text-transform: uppercase;
-    margin-top: 4px;
-  }
-  .stat-divider {
-    width: 1px; height: 48px; background: rgba(201,168,76,0.2);
-    align-self: flex-end; margin-bottom: 8px;
-  }
-
-  /* Logo display in hero — full ornate frame */
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.68rem; color: rgba(220,215,205,0.35); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .stat-divider { width: 1px; height: 48px; background: rgba(201,168,76,0.2); align-self: flex-end; margin-bottom: 8px; }
   .hero-logo-frame {
-    position: absolute; right: 56px; top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-    display: flex; flex-direction: column; align-items: center; gap: 0;
+    position: absolute; right: 56px; top: 50%; transform: translateY(-50%); z-index: 3;
+    display: flex; flex-direction: column; align-items: center;
   }
   .logo-ornate-border {
-    border: 1px solid rgba(201,168,76,0.35);
-    padding: 28px 32px;
-    position: relative;
-    background: rgba(10,8,4,0.55);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201,168,76,0.35); padding: 28px 32px; position: relative;
+    background: rgba(20,18,14,0.55); backdrop-filter: blur(10px);
   }
-  .logo-ornate-border::before,
-  .logo-ornate-border::after {
-    content: '';
-    position: absolute;
-    border: 1px solid rgba(201,168,76,0.18);
-    inset: 6px;
-    pointer-events: none;
+  .logo-ornate-border::before, .logo-ornate-border::after {
+    content: ''; position: absolute; border: 1px solid rgba(201,168,76,0.18); inset: 6px; pointer-events: none;
   }
-  .logo-ornate-border img {
-    width: 200px; height: auto;
-    display: block;
-    filter: none;
-    opacity: 0.92;
-  }
-  .logo-caption {
-    margin-top: 16px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.72rem; letter-spacing: 5px; text-transform: uppercase;
-    color: rgba(201,168,76,0.6);
+  .logo-ornate-border img { width: 200px; height: auto; display: block; opacity: 0.92; }
+  .logo-caption { margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-size: 0.72rem; letter-spacing: 5px; text-transform: uppercase; color: rgba(201,168,76,0.6); text-align: center; }
+  .model-loading {
+    position: absolute; right: 30%; top: 50%; transform: translateY(-50%);
+    z-index: 2; color: rgba(201,168,76,0.35);
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
     text-align: center;
   }
+  .model-spinner {
+    width: 40px; height: 40px; border: 1px solid rgba(201,168,76,0.2);
+    border-top-color: var(--gold); border-radius: 50%;
+    margin: 0 auto 12px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .canvas-label {
+    position: absolute; right: 40%; bottom: 44px; z-index: 3;
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(201,168,76,0.4);
+  }
 
-  /* ── MARQUEE ─────────────────────────── */
   .marquee-wrap {
-    background: var(--grey-dark);
+    background: var(--tint-dark);
     overflow: hidden; padding: 13px 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -240,74 +275,46 @@
     animation: marquee 22s linear infinite;
     white-space: nowrap;
   }
-  .marquee-track span {
-    color: var(--grey-light); font-size: 0.7rem; letter-spacing: 3px;
-    text-transform: uppercase; font-weight: 500;
-    padding: 0 32px;
-  }
-  .marquee-sep {
-    color: var(--gold) !important;
-    padding: 0 8px !important; letter-spacing: 0 !important;
-    opacity: 0.6;
-  }
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+  .marquee-track span { color: var(--tint-light); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; padding: 0 32px; }
+  .marquee-sep { color: var(--gold) !important; padding: 0 8px !important; letter-spacing: 0 !important; opacity: 0.6; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  /* ── FEATURES ────────────────────────── */
   .features {
     display: grid; grid-template-columns: repeat(3,1fr);
-    background: var(--grey-dark);
+    background: var(--tint-dark);
   }
   .feature-item {
-    padding: 48px 40px;
-    border-right: 1px solid rgba(201,168,76,0.1);
-    display: flex; gap: 20px; align-items: flex-start;
-    transition: background .3s;
+    padding: 48px 40px; border-right: 1px solid rgba(201,168,76,0.1);
+    display: flex; gap: 20px; align-items: flex-start; transition: background .3s;
   }
-  .feature-item:hover { background: rgba(201,168,76,0.04); }
+  .feature-item:hover { background: rgba(201,168,76,0.05); }
   .feature-item:last-child { border-right: none; }
   .feature-icon {
-    width: 46px; height: 46px;
-    border: 1px solid rgba(201,168,76,0.3);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 1.25rem;
-    color: var(--gold);
+    width: 46px; height: 46px; border: 1px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 1.25rem; color: var(--gold);
   }
-  .feature-text h4 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem; font-weight: 700;
-    color: var(--gold-light); margin-bottom: 7px; letter-spacing: 0.5px;
-  }
-  .feature-text p {
-    font-size: 0.8rem; color: rgba(255,255,255,0.32);
-    line-height: 1.7; font-weight: 300;
-  }
+  .feature-text h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--gold-light); margin-bottom: 7px; letter-spacing: 0.5px; }
+  .feature-text p { font-size: 0.8rem; color: rgba(228,224,218,0.35); line-height: 1.7; font-weight: 300; }
 
-  /* ── SECTION SHARED ──────────────────── */
   section { padding: 96px 56px; }
   .section-label {
     font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase;
     color: var(--gold); font-weight: 500; margin-bottom: 10px;
     display: flex; align-items: center; gap: 12px;
   }
-  .section-label::after {
-    content: ''; display: block;
-    height: 1px; width: 36px; background: var(--gold); opacity: 0.5;
-  }
+  .section-label::after { content: ''; display: block; height: 1px; width: 36px; background: var(--gold); opacity: 0.5; }
   .section-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 3.5vw, 3.2rem);
-    font-weight: 700; color: var(--grey-dark);
-    margin-bottom: 52px; max-width: 440px; line-height: 1.1;
+    font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 700;
+    color: var(--tint-darkest); margin-bottom: 52px; max-width: 440px; line-height: 1.1;
   }
 
-  /* ── MENU ────────────────────────────── */
-  #menu { background: var(--warm-white); }
+  #menu { background: var(--tint-warm); }
+  #menu .section-title { color: var(--tint-darkest); }
   .menu-tabs {
     display: flex; gap: 0; margin-bottom: 48px;
-    border-bottom: 1px solid rgba(90,90,90,0.15);
+    border-bottom: 1px solid rgba(105,105,105,0.2);
   }
   .tab {
     padding: 10px 28px 14px; border-radius: 0;
@@ -315,315 +322,130 @@
     background: transparent; cursor: pointer;
     font-family: 'Raleway', sans-serif;
     font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--grey-light);
+    text-transform: uppercase; color: var(--tint-light);
     transition: all .2s; margin-bottom: -1px;
   }
-  .tab.active, .tab:hover {
-    color: var(--grey-dark);
-    border-bottom-color: var(--gold);
-  }
-  .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 28px;
-  }
+  .tab.active, .tab:hover { color: var(--tint-darkest); border-bottom-color: var(--gold); }
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
   .menu-card {
     border-radius: 0; overflow: hidden;
-    border: 1px solid rgba(90,90,90,0.1);
+    border: 1px solid rgba(105,105,105,0.15);
     transition: box-shadow .3s, transform .3s;
-    background: var(--cream);
+    background: var(--tint-cream);
   }
-  .menu-card:hover {
-    box-shadow: 0 16px 50px rgba(0,0,0,0.1);
-    transform: translateY(-6px);
-  }
+  .menu-card:hover { box-shadow: 0 16px 50px rgba(0,0,0,0.12); transform: translateY(-6px); }
   .card-img {
     width: 100%; height: 210px;
-    background: linear-gradient(135deg, #d8d0c4 0%, #c8bfb0 100%);
+    background: linear-gradient(135deg, var(--tint-pale) 0%, var(--tint-cream) 100%);
     display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
   }
   .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .card-img img[src=""] { display: none; }
   .card-body { padding: 22px 24px; }
-  .card-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem; font-weight: 700; margin-bottom: 7px;
-    color: var(--grey-dark);
-  }
-  .card-desc { font-size: 0.8rem; color: var(--grey-mid); line-height: 1.6; margin-bottom: 18px; font-weight: 300; }
-  .card-footer { display: flex; align-items: center; justify-content: space-between;
-    padding-top: 14px; border-top: 1px solid rgba(90,90,90,0.1);
-  }
-  .card-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.25rem; font-weight: 700; color: var(--red);
-  }
+  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 7px; color: var(--tint-darkest); }
+  .card-desc { font-size: 0.8rem; color: var(--tint-mid); line-height: 1.6; margin-bottom: 18px; font-weight: 300; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgba(105,105,105,0.12); }
+  .card-price { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; color: var(--red); }
   .add-btn {
-    background: var(--grey-dark); color: var(--gold);
-    border: 1px solid var(--grey-dark); border-radius: 0;
-    padding: 9px 20px; font-size: 0.7rem; letter-spacing: 2px;
-    text-transform: uppercase;
-    font-family: 'Raleway', sans-serif; font-weight: 600;
-    cursor: pointer; transition: all .2s;
+    background: var(--tint-darkest); color: var(--gold);
+    border: 1px solid var(--tint-darkest); border-radius: 0;
+    padding: 9px 20px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Raleway', sans-serif; font-weight: 600; cursor: pointer; transition: all .2s;
   }
-  .add-btn:hover { background: var(--gold); color: var(--grey-dark); border-color: var(--gold); }
+  .add-btn:hover { background: var(--gold); color: var(--tint-darkest); border-color: var(--gold); }
 
-  /* ── SPECIALS ────────────────────────── */
-  #specials {
-    background: var(--grey-dark);
-    padding: 96px 56px;
-    position: relative; overflow: hidden;
-  }
-  #specials .section-title { color: var(--warm-white); }
-  #specials .section-label { color: var(--gold); }
-  .specials-bg {
-    position: absolute; top: -120px; right: -80px;
-    width: 500px; height: 500px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .specials-grid {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
-  }
+  #specials { background: var(--tint-dark); padding: 96px 56px; position: relative; overflow: hidden; }
+  #specials .section-title { color: var(--tint-fog); }
+  .specials-bg { position: absolute; top: -120px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%); pointer-events: none; }
+  .specials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
   .special-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(201,168,76,0.14);
-    padding: 32px;
-    transition: background .25s, border-color .25s;
-    position: relative;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.14);
+    padding: 32px; transition: background .25s, border-color .25s; position: relative;
   }
-  .special-card:hover {
-    background: rgba(201,168,76,0.05);
-    border-color: rgba(201,168,76,0.4);
-  }
-  .special-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    opacity: 0; transition: opacity .3s;
-  }
+  .special-card:hover { background: rgba(201,168,76,0.05); border-color: rgba(201,168,76,0.4); }
+  .special-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); opacity: 0; transition: opacity .3s; }
   .special-card:hover::before { opacity: 1; }
-  .special-badge {
-    display: inline-block;
-    border: 1px solid rgba(201,168,76,0.4); color: var(--gold);
-    font-size: 0.67rem; font-weight: 600; letter-spacing: 2px;
-    text-transform: uppercase; padding: 4px 12px;
-    margin-bottom: 18px;
-  }
-  .special-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem; font-weight: 700; color: var(--warm-white);
-    margin-bottom: 10px;
-  }
-  .special-desc { font-size: 0.8rem; color: rgba(255,255,255,0.32); line-height: 1.7; margin-bottom: 22px; font-weight: 300; }
-  .special-price {
-    font-size: 1.5rem; font-weight: 700;
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--gold);
-  }
-  .special-price s {
-    font-size: 0.85rem; color: rgba(255,255,255,0.2);
-    font-family: 'Raleway', sans-serif; font-weight: 400;
-    margin-left: 10px;
-  }
+  .special-badge { display: inline-block; border: 1px solid rgba(201,168,76,0.4); color: var(--gold); font-size: 0.67rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; margin-bottom: 18px; }
+  .special-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--tint-fog); margin-bottom: 10px; }
+  .special-desc { font-size: 0.8rem; color: rgba(228,224,218,0.32); line-height: 1.7; margin-bottom: 22px; font-weight: 300; }
+  .special-price { font-size: 1.5rem; font-weight: 700; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
+  .special-price s { font-size: 0.85rem; color: rgba(220,215,205,0.2); font-family: 'Raleway', sans-serif; font-weight: 400; margin-left: 10px; }
 
-  /* ── CART SIDEBAR ────────────────────── */
-  .cart-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-    z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s;
-  }
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; }
   .cart-overlay.open { opacity: 1; pointer-events: all; }
   .cart-sidebar {
     position: fixed; top: 0; right: 0; width: 380px; height: 100%;
-    background: var(--warm-white); z-index: 201;
+    background: var(--tint-fog); z-index: 201;
     transform: translateX(100%); transition: transform .3s ease;
     display: flex; flex-direction: column;
-    box-shadow: -8px 0 60px rgba(0,0,0,0.2);
-    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 60px rgba(0,0,0,0.18); border-left: 1px solid var(--border);
   }
   .cart-sidebar.open { transform: translateX(0); }
-  .cart-header {
-    padding: 26px 30px; border-bottom: 1px solid rgba(90,90,90,0.1);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .cart-header h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px;
-  }
-  .close-cart {
-    background: none; border: none; cursor: pointer;
-    font-size: 1.1rem; color: var(--grey-light);
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(90,90,90,0.2); transition: all .2s;
-  }
-  .close-cart:hover { border-color: var(--grey-dark); color: var(--grey-dark); }
+  .cart-header { padding: 26px 30px; border-bottom: 1px solid rgba(105,105,105,0.12); display: flex; align-items: center; justify-content: space-between; }
+  .cart-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; color: var(--tint-darkest); }
+  .close-cart { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--tint-light); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(105,105,105,0.2); transition: all .2s; }
+  .close-cart:hover { border-color: var(--tint-darkest); color: var(--tint-darkest); }
   .cart-items { flex: 1; overflow-y: auto; padding: 22px 30px; }
-  .cart-empty {
-    text-align: center; padding: 60px 0;
-    color: var(--grey-light); font-size: 0.88rem; line-height: 2;
-  }
-  .cart-item {
-    display: flex; gap: 14px; align-items: center;
-    padding: 16px 0; border-bottom: 1px solid rgba(90,90,90,0.07);
-  }
+  .cart-empty { text-align: center; padding: 60px 0; color: var(--tint-light); font-size: 0.88rem; line-height: 2; }
+  .cart-item { display: flex; gap: 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(105,105,105,0.07); }
   .ci-info { flex: 1; }
-  .ci-name { font-weight: 600; font-size: 0.9rem; }
+  .ci-name { font-weight: 600; font-size: 0.9rem; color: var(--tint-darkest); }
   .ci-price { color: var(--red); font-size: 0.8rem; font-weight: 600; margin-top: 3px; }
   .ci-qty { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-  .qty-btn {
-    background: var(--grey-pale); border: none;
-    width: 26px; height: 26px; font-size: 1rem;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; color: var(--grey-dark); transition: all .2s;
-  }
-  .qty-btn:hover { background: var(--grey-dark); color: var(--gold); }
+  .qty-btn { background: var(--tint-pale); border: none; width: 26px; height: 26px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--tint-darkest); transition: all .2s; }
+  .qty-btn:hover { background: var(--tint-darkest); color: var(--gold); }
   .qty-num { font-size: 0.9rem; font-weight: 600; }
-  .cart-footer { padding: 22px 30px; border-top: 1px solid rgba(90,90,90,0.1); }
-  .cart-total {
-    display: flex; justify-content: space-between;
-    font-size: 0.95rem; font-weight: 600; margin-bottom: 16px;
-  }
-  .checkout-btn {
-    width: 100%; padding: 15px;
-    background: var(--grey-dark); color: var(--gold); border: none;
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase;
-    font-family: 'Raleway', sans-serif; cursor: pointer; transition: background .2s;
-  }
-  .checkout-btn:hover { background: var(--gold); color: var(--grey-dark); }
+  .cart-footer { padding: 22px 30px; border-top: 1px solid rgba(105,105,105,0.1); }
+  .cart-total { display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--tint-darkest); }
+  .checkout-btn { width: 100%; padding: 15px; background: var(--tint-darkest); color: var(--gold); border: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'Raleway', sans-serif; cursor: pointer; transition: background .2s; }
+  .checkout-btn:hover { background: var(--gold); color: var(--tint-darkest); }
 
-  /* ── CHECKOUT MODAL ──────────────────── */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-    z-index: 300; display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity .3s;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .3s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--warm-white);
-    padding: 44px; width: 90%; max-width: 500px;
-    max-height: 90vh; overflow-y: auto;
-    transform: scale(0.96); transition: transform .3s;
-    border: 1px solid var(--border);
-  }
+  .modal { background: var(--tint-fog); padding: 44px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; transform: scale(0.96); transition: transform .3s; border: 1px solid var(--border); }
   .modal-overlay.open .modal { transform: scale(1); }
-  .modal h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem; font-weight: 700; margin-bottom: 28px; color: var(--grey-dark);
-  }
+  .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 28px; color: var(--tint-darkest); }
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: var(--grey-mid); }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 12px 16px;
-    border: 1px solid rgba(90,90,90,0.18); border-radius: 0;
-    font-family: 'Raleway', sans-serif; font-size: 0.88rem;
-    color: var(--grey-dark); background: var(--cream);
-    outline: none; transition: border-color .2s;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--gold);
-  }
+  .form-group label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: var(--tint-mid); }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid rgba(105,105,105,0.2); border-radius: 0; font-family: 'Raleway', sans-serif; font-size: 0.88rem; color: var(--tint-darkest); background: var(--tint-cream); outline: none; transition: border-color .2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .order-summary {
-    background: var(--cream); border: 1px solid rgba(90,90,90,0.1);
-    padding: 20px; margin: 24px 0;
-  }
-  .order-summary h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; color: var(--grey-mid); }
-  .summary-item { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 7px; }
-  .summary-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 12px; border-top: 1px solid rgba(90,90,90,0.1); margin-top: 8px; }
+  .order-summary { background: var(--tint-cream); border: 1px solid rgba(105,105,105,0.12); padding: 20px; margin: 24px 0; }
+  .order-summary h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; color: var(--tint-mid); }
+  .summary-item { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 7px; color: var(--tint-darkest); }
+  .summary-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 12px; border-top: 1px solid rgba(105,105,105,0.1); margin-top: 8px; color: var(--tint-darkest); }
   .modal-btns { display: flex; gap: 10px; margin-top: 10px; }
-  .modal-back {
-    flex: 1; padding: 13px; background: transparent;
-    border: 1px solid rgba(90,90,90,0.2);
-    cursor: pointer; font-family: 'Raleway', sans-serif;
-    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
-  }
-  .modal-pay {
-    flex: 2; padding: 13px; background: var(--grey-dark);
-    color: var(--gold); border: none;
-    cursor: pointer; font-family: 'Raleway', sans-serif;
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; transition: background .2s;
-  }
-  .modal-pay:hover { background: var(--gold); color: var(--grey-dark); }
+  .modal-back { flex: 1; padding: 13px; background: transparent; border: 1px solid rgba(105,105,105,0.2); cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--tint-darkest); }
+  .modal-pay { flex: 2; padding: 13px; background: var(--tint-darkest); color: var(--gold); border: none; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: background .2s; }
+  .modal-pay:hover { background: var(--gold); color: var(--tint-darkest); }
 
-  /* ── CONTACT ─────────────────────────── */
-  #contact {
-    background: var(--cream);
-    display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
-  }
-  .contact-item {
-    display: flex; gap: 18px; align-items: flex-start; margin-bottom: 22px;
-  }
-  .ci-icon {
-    width: 40px; height: 40px;
-    border: 1px solid rgba(201,168,76,0.3);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 1rem; color: var(--gold);
-  }
-  .ci-detail h5 { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .ci-detail p { color: var(--grey-mid); font-size: 0.85rem; }
-  .map-placeholder {
-    background: var(--grey-pale);
-    height: 340px; display: flex; align-items: center; justify-content: center;
-    color: var(--grey-mid); font-size: 0.82rem; flex-direction: column; gap: 12px;
-    border: 1px solid rgba(90,90,90,0.1);
-  }
+  #contact { background: var(--tint-cream); display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+  #contact .section-title { color: var(--tint-darkest); }
+  .contact-item { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 22px; }
+  .ci-icon { width: 40px; height: 40px; border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; color: var(--gold); }
+  .ci-detail h5 { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; color: var(--tint-darkest); }
+  .ci-detail p { color: var(--tint-mid); font-size: 0.85rem; }
+  .map-placeholder { background: var(--tint-pale); height: 340px; display: flex; align-items: center; justify-content: center; color: var(--tint-mid); font-size: 0.82rem; flex-direction: column; gap: 12px; border: 1px solid rgba(105,105,105,0.12); }
   .map-placeholder span { font-size: 2.2rem; }
 
-  /* ── FOOTER ──────────────────────────── */
-  footer {
-    background: #1a1a1a; color: rgba(255,255,255,0.35);
-    padding: 56px;
-    border-top: 1px solid var(--border);
-  }
-  .footer-inner {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 40px; gap: 40px; flex-wrap: wrap;
-  }
+  footer { background: var(--tint-darkest); color: rgba(228,224,218,0.35); padding: 56px; border-top: 1px solid var(--border); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; gap: 40px; flex-wrap: wrap; }
   .footer-logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-  .footer-logo-img {
-    width: 36px; height: 36px; object-fit: contain;
-    filter: none;
-    opacity: 0.85;
-  }
-  .footer-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem; color: var(--gold); font-weight: 600;
-  }
+  .footer-logo-img { width: 36px; height: 36px; object-fit: contain; opacity: 0.85; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--gold); font-weight: 600; }
   .footer-tagline { font-size: 0.8rem; max-width: 200px; line-height: 1.7; font-weight: 300; }
-  .footer-links h5 {
-    color: rgba(255,255,255,0.55); font-size: 0.67rem;
-    letter-spacing: 3px; text-transform: uppercase;
-    margin-bottom: 16px; font-weight: 600;
-  }
+  .footer-links h5 { color: rgba(228,224,218,0.55); font-size: 0.67rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
   .footer-links ul { list-style: none; }
   .footer-links li { margin-bottom: 9px; }
-  .footer-links a {
-    color: rgba(255,255,255,0.3); font-size: 0.83rem;
-    text-decoration: none; transition: color .2s; font-weight: 300;
-  }
+  .footer-links a { color: rgba(228,224,218,0.3); font-size: 0.83rem; text-decoration: none; transition: color .2s; font-weight: 300; }
   .footer-links a:hover { color: var(--gold); }
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 22px; font-size: 0.75rem;
-  }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 22px; font-size: 0.75rem; }
 
-  /* SUCCESS */
   .success-screen { text-align: center; padding: 20px 0; }
   .success-screen .check { font-size: 3.5rem; margin-bottom: 16px; }
-  .success-screen h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 10px; }
-  .success-screen p { color: var(--grey-mid); font-size: 0.9rem; }
-
-  /* ── 3D CANVAS LABEL ─────────────────── */
-  .canvas-label {
-    position: absolute; right: 40%; bottom: 44px; z-index: 3;
-    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
-    color: rgba(201,168,76,0.45);
-  }
+  .success-screen h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 10px; color: var(--tint-darkest); }
+  .success-screen p { color: var(--tint-mid); font-size: 0.9rem; }
 
   @media (max-width: 900px) {
     nav { padding: 14px 20px; }
@@ -644,31 +466,32 @@
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="main-nav">
   <div class="nav-logo">
-    <!-- ▼▼▼ REPLACE src WITH YOUR LOGO FILE PATH ▼▼▼ -->
     <img class="nav-logo-img" src="logo.jpeg" alt="Mr. Fitz Logo">
-    <!-- ▲▲▲ ----------------------------------------- ▲▲▲ -->
     <div>
       <div class="nav-logo-text">Mr. Fitz <span>/ Restaurant</span></div>
     </div>
   </div>
-  <ul>
+  <ul id="nav-links">
     <li><a href="#hero">Home</a></li>
     <li><a href="#menu">Menu</a></li>
     <li><a href="#specials">Specials</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cart" onclick="toggleCart()">
-    ✦ Cart <span class="cart-badge" id="cart-count">0</span>
+  <button class="nav-cart" id="cart-btn" onclick="toggleCart()">
+    <span>✦ Cart</span> <span class="cart-badge" id="cart-count">0</span>
   </button>
 </nav>
 
-<!-- HERO with 3D Pizza Canvas -->
+<!-- HERO -->
 <section id="hero">
-  <canvas id="pizza-canvas"></canvas>
+  <canvas id="model-canvas"></canvas>
   <div class="hero-overlay"></div>
-
+  <div class="model-loading" id="model-loading">
+    <div class="model-spinner"></div>
+    <div>Loading 3D Model…</div>
+  </div>
   <div class="hero-text">
     <div class="hero-eyebrow">
       <div class="eyebrow-line"></div>
@@ -682,17 +505,12 @@
       <a href="#menu" class="btn-outline">View Menu</a>
     </div>
   </div>
-
-  <!-- ▼▼▼ LOGO DISPLAY FRAME IN HERO ▼▼▼ -->
   <div class="hero-logo-frame">
     <div class="logo-ornate-border">
-      <!-- REPLACE src WITH YOUR LOGO FILE PATH -->
       <img src="logo.jpeg" alt="Mr. Fitz Restaurant">
     </div>
     <div class="logo-caption">Est. 1994</div>
   </div>
-  <!-- ▲▲▲ --------------------------------- ▲▲▲ -->
-
   <div class="hero-stats">
     <div class="stat">
       <div class="stat-num">30+</div>
@@ -709,8 +527,7 @@
       <div class="stat-label">Rating</div>
     </div>
   </div>
-
-  <div class="canvas-label">Interactive · Drag to explore</div>
+  <div class="canvas-label">Interactive · Drag to rotate</div>
 </section>
 
 <!-- MARQUEE -->
@@ -769,7 +586,6 @@
     <button class="tab" onclick="filterMenu('desserts', this)">Desserts</button>
   </div>
   <div class="menu-grid" id="menu-grid">
-
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food1.jpeg" alt="Seafood Platter"></div>
       <div class="card-body">
@@ -781,9 +597,8 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="seafood">
-      <div class="card-img"><img src="food2.jpeg" alt="Fisch & Chips"></div>
+      <div class="card-img"><img src="food2.jpeg" alt="Fisch &amp; Chips"></div>
       <div class="card-body">
         <div class="card-name">Fisch &amp; Chips</div>
         <div class="card-desc">Tomato sauce, mozzarella, premium pepperoni, oregano</div>
@@ -793,7 +608,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food3.jpeg" alt="Fish Soup"></div>
       <div class="card-body">
@@ -805,7 +619,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food4.jpeg" alt="Makaron Z Owocami Morza"></div>
       <div class="card-body">
@@ -817,7 +630,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food5.jpeg" alt="Octopus in Garlic"></div>
       <div class="card-body">
@@ -829,7 +641,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food6.jpeg" alt="Fresh Fillet of Seabass"></div>
       <div class="card-body">
@@ -841,7 +652,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side3.jpeg" alt="Garlic Bread"></div>
       <div class="card-body">
@@ -853,7 +663,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side1.jpeg" alt="Caesar Salad"></div>
       <div class="card-body">
@@ -865,7 +674,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side2.jpeg" alt="Loaded Fries"></div>
       <div class="card-body">
@@ -877,7 +685,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="drinks" style="display:none;">
       <div class="card-img"><img src="drink1.jpeg" alt="Classic Cola"></div>
       <div class="card-body">
@@ -889,7 +696,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="drinks" style="display:none;">
       <div class="card-img"><img src="" alt="Lemonade"></div>
       <div class="card-body">
@@ -901,7 +707,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="drinks" style="display:none;">
       <div class="card-img"><img src="" alt="Mango Lassi"></div>
       <div class="card-body">
@@ -913,7 +718,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="desserts" style="display:none;">
       <div class="card-img"><img src="" alt="Nutella Calzone"></div>
       <div class="card-body">
@@ -925,7 +729,6 @@
         </div>
       </div>
     </div>
-
     <div class="menu-card" data-cat="desserts" style="display:none;">
       <div class="card-img"><img src="" alt="Tiramisu"></div>
       <div class="card-body">
@@ -937,7 +740,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -972,8 +774,8 @@
 <section id="contact">
   <div class="contact-info">
     <p class="section-label">Find Us</p>
-    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;margin-bottom:10px;line-height:1.1;">Come Say Hello</h2>
-    <p style="color:var(--grey-mid);font-size:0.9rem;line-height:1.85;margin-bottom:36px;max-width:340px;font-weight:300;">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;margin-bottom:10px;line-height:1.1;color:var(--tint-darkest)">Come Say Hello</h2>
+    <p style="color:var(--tint-mid);font-size:0.9rem;line-height:1.85;margin-bottom:36px;max-width:340px;font-weight:300;">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
     <div class="contact-item">
       <div class="ci-icon">📍</div>
       <div class="ci-detail">
@@ -1007,7 +809,6 @@
   <div class="footer-inner">
     <div>
       <div class="footer-logo-area">
-        <!-- REPLACE src WITH YOUR LOGO FILE PATH -->
         <img class="footer-logo-img" src="logo.jpeg" alt="Mr. Fitz">
         <span class="footer-logo">Mr. Fitz</span>
       </div>
@@ -1087,24 +888,31 @@
   </div>
 </div>
 
-<!-- THREE.JS 3D PIZZA -->
+<!-- ═══ THREE.JS CORE ═══ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
 /* ═══════════════════════════════════════════
-   3D PIZZA SCENE
+   3D MODEL SCENE
+   Loads modelpizza.glb from the same folder.
+   Falls back to a golden orb if the file is
+   missing or the loader fails.
 ═══════════════════════════════════════════ */
-(function() {
-  const canvas = document.getElementById('pizza-canvas');
+(function () {
+  const canvas    = document.getElementById('model-canvas');
+  const loadingEl = document.getElementById('model-loading');
+
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding    = 3000; // THREE.sRGBEncoding
 
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0a0804, 0.025);
+  const scene  = new THREE.Scene();
+  scene.fog    = new THREE.FogExp2(0x141210, 0.018);
 
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-  camera.position.set(0, 3.5, 7);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+  camera.position.set(0, 1.2, 6);
   camera.lookAt(0, 0, 0);
 
   function resize() {
@@ -1118,304 +926,193 @@
   window.addEventListener('resize', resize);
 
   /* ── LIGHTING ── */
-  // Warm key light from upper-left
-  const keyLight = new THREE.DirectionalLight(0xfff0d0, 2.2);
-  keyLight.position.set(-4, 8, 5);
+  const keyLight = new THREE.DirectionalLight(0xfff0d0, 2.8);
+  keyLight.position.set(-5, 9, 5);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
-  keyLight.shadow.camera.near = 0.1;
-  keyLight.shadow.camera.far = 30;
-  keyLight.shadow.camera.left = -10;
-  keyLight.shadow.camera.right = 10;
-  keyLight.shadow.camera.top = 10;
-  keyLight.shadow.camera.bottom = -10;
   scene.add(keyLight);
 
-  // Cool rim light from behind
-  const rimLight = new THREE.DirectionalLight(0xb0c8ff, 0.7);
-  rimLight.position.set(5, 3, -6);
-  scene.add(rimLight);
+  scene.add(Object.assign(new THREE.DirectionalLight(0xb0c8ff, 0.9), { position: new THREE.Vector3(6, 2, -7) }));
 
-  // Warm fill from below
-  const fillLight = new THREE.PointLight(0xff8830, 1.2, 18);
-  fillLight.position.set(2, -2, 3);
+  const fillLight = new THREE.PointLight(0xff8830, 1.5, 20);
+  fillLight.position.set(3, -1, 4);
   scene.add(fillLight);
 
-  // Ambient
-  const ambient = new THREE.AmbientLight(0x301808, 1.0);
-  scene.add(ambient);
+  scene.add(new THREE.AmbientLight(0x3a2810, 1.2));
 
-  // Emissive glow under pizza (oven-like)
-  const ovenGlow = new THREE.PointLight(0xff5500, 1.8, 12);
-  ovenGlow.position.set(0, -1.8, 0);
-  scene.add(ovenGlow);
+  const topLight = new THREE.PointLight(0xffd080, 1.2, 15);
+  topLight.position.set(0, 6, 0);
+  scene.add(topLight);
 
-  /* ── PIZZA GROUP ── */
-  const pizzaGroup = new THREE.Group();
-  scene.add(pizzaGroup);
+  /* ── MODEL GROUP ── */
+  const modelGroup = new THREE.Group();
+  scene.add(modelGroup);
 
-  /* Dough base — slightly raised disc with thick edge */
-  const doughGeo = new THREE.CylinderGeometry(2.5, 2.55, 0.22, 64, 1);
-  const doughMat = new THREE.MeshStandardMaterial({
-    color: 0xc8762a,
-    roughness: 0.95,
-    metalness: 0.0,
-    bumpScale: 0.04,
-  });
-  const dough = new THREE.Mesh(doughGeo, doughMat);
-  dough.receiveShadow = true;
-  dough.castShadow = true;
-  pizzaGroup.add(dough);
-
-  // Charred crust ring
-  const crustGeo = new THREE.TorusGeometry(2.5, 0.25, 16, 64);
-  const crustMat = new THREE.MeshStandardMaterial({
-    color: 0x6b3010,
-    roughness: 1.0,
-    metalness: 0.0,
-  });
-  const crust = new THREE.Mesh(crustGeo, crustMat);
-  crust.position.y = 0.08;
-  crust.rotation.x = Math.PI / 2;
-  crust.castShadow = true;
-  pizzaGroup.add(crust);
-
-  // Sauce layer
-  const sauceGeo = new THREE.CylinderGeometry(2.2, 2.2, 0.06, 64, 1);
-  const sauceMat = new THREE.MeshStandardMaterial({
-    color: 0xc0280a,
-    roughness: 0.8,
-    metalness: 0.0,
-  });
-  const sauce = new THREE.Mesh(sauceGeo, sauceMat);
-  sauce.position.y = 0.13;
-  pizzaGroup.add(sauce);
-
-  // Cheese layer (slightly uneven)
-  const cheeseGeo = new THREE.CylinderGeometry(2.1, 2.1, 0.07, 64, 1);
-  const cheeseMat = new THREE.MeshStandardMaterial({
-    color: 0xf0c060,
-    roughness: 0.6,
-    metalness: 0.05,
-    emissive: 0x6b4010,
-    emissiveIntensity: 0.15,
-  });
-  const cheese = new THREE.Mesh(cheeseGeo, cheeseMat);
-  cheese.position.y = 0.18;
-  pizzaGroup.add(cheese);
-
-  // Cheese bubble details
-  function makeBubble(x, z, r) {
-    const geo = new THREE.SphereGeometry(r, 12, 8);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0xf5d070,
-      roughness: 0.5,
-      metalness: 0.05,
-      emissive: 0x7a5020,
-      emissiveIntensity: 0.2,
-    });
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x, 0.22, z);
-    m.castShadow = true;
-    pizzaGroup.add(m);
+  /* ── PARTICLES ── */
+  const pCount = 100;
+  const pGeo   = new THREE.BufferGeometry();
+  const pPos   = new Float32Array(pCount * 3);
+  const pCol   = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 2.5 + Math.random() * 4;
+    pPos[i*3]   = Math.cos(a) * r;
+    pPos[i*3+1] = (Math.random() - 0.3) * 6;
+    pPos[i*3+2] = Math.sin(a) * r;
+    const warm  = Math.random() > 0.4;
+    pCol[i*3]   = warm ? 0.85 + Math.random()*0.15 : 0.65;
+    pCol[i*3+1] = warm ? 0.5  + Math.random()*0.2  : 0.65;
+    pCol[i*3+2] = warm ? 0.1 : 0.7;
   }
-  for (let i = 0; i < 22; i++) {
-    const ang = Math.random() * Math.PI * 2;
-    const rad = Math.random() * 1.8;
-    makeBubble(Math.cos(ang) * rad, Math.sin(ang) * rad, 0.07 + Math.random() * 0.12);
-  }
-
-  // Pepperoni slices
-  function makePepperoni(x, z, rot) {
-    const geo = new THREE.CylinderGeometry(0.27, 0.27, 0.06, 32);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x8a1010,
-      roughness: 0.7,
-      metalness: 0.1,
-      emissive: 0x3a0505,
-      emissiveIntensity: 0.2,
-    });
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x, 0.26, z);
-    m.rotation.y = rot;
-    m.castShadow = true;
-    pizzaGroup.add(m);
-
-    // Curl edges of pepperoni slightly
-    const edgeGeo = new THREE.TorusGeometry(0.22, 0.03, 8, 32);
-    const edgeMat = new THREE.MeshStandardMaterial({ color: 0x6a0808, roughness: 0.9 });
-    const edge = new THREE.Mesh(edgeGeo, edgeMat);
-    edge.position.set(x, 0.28, z);
-    edge.rotation.x = Math.PI / 2 + 0.2;
-    pizzaGroup.add(edge);
-  }
-
-  const pepPositions = [
-    [0, 0], [1.1, 0.5], [-0.8, 0.9], [0.3, -1.3],
-    [-1.3, -0.4], [1.4, -0.9], [-0.2, 1.6], [1.7, 0.2],
-    [-1.6, 1.1], [0.8, -0.6],
-  ];
-  pepPositions.forEach(([x, z]) => makePepperoni(x, z, Math.random() * Math.PI));
-
-  // Basil leaves
-  function makeBasil(x, z, rot) {
-    const geo = new THREE.PlaneGeometry(0.38, 0.26);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x1a7a20,
-      roughness: 0.7,
-      metalness: 0.0,
-      side: THREE.DoubleSide,
-      emissive: 0x083008,
-      emissiveIntensity: 0.3,
-    });
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x, 0.29, z);
-    m.rotation.x = -Math.PI / 2 + (Math.random() - 0.5) * 0.3;
-    m.rotation.z = rot;
-    pizzaGroup.add(m);
-  }
-  [[0.5, 1.0], [-1.0, 0.2], [1.5, -0.4], [-0.4, -1.1]].forEach(([x,z]) =>
-    makeBasil(x, z, Math.random() * Math.PI)
-  );
-
-  // Char marks on crust
-  function makeChar(ang) {
-    const geo = new THREE.PlaneGeometry(0.28, 0.16);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x1a0a04,
-      roughness: 1.0,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.7,
-    });
-    const m = new THREE.Mesh(geo, mat);
-    const r = 2.5;
-    m.position.set(Math.cos(ang) * r, 0.22, Math.sin(ang) * r);
-    m.rotation.x = -Math.PI / 2;
-    m.rotation.z = ang;
-    pizzaGroup.add(m);
-  }
-  for (let i = 0; i < 16; i++) makeChar((i / 16) * Math.PI * 2 + Math.random() * 0.2);
-
-  /* Slice cut lines (subtle) */
-  for (let i = 0; i < 8; i++) {
-    const ang = (i / 8) * Math.PI * 2;
-    const geo = new THREE.PlaneGeometry(2.4, 0.015);
-    const mat = new THREE.MeshBasicMaterial({ color: 0x1a0a04, transparent: true, opacity: 0.4 });
-    const m = new THREE.Mesh(geo, mat);
-    m.position.y = 0.31;
-    m.rotation.x = -Math.PI / 2;
-    m.rotation.z = ang;
-    pizzaGroup.add(m);
-  }
-
-  // Bottom of pizza
-  const bottomGeo = new THREE.CylinderGeometry(2.5, 2.5, 0.05, 64);
-  const bottomMat = new THREE.MeshStandardMaterial({ color: 0x5a3010, roughness: 1.0 });
-  const bottom = new THREE.Mesh(bottomGeo, bottomMat);
-  bottom.position.y = -0.13;
-  pizzaGroup.add(bottom);
-
-  /* ── FLOATING PARTICLES (flour dust / embers) ── */
-  const particleCount = 120;
-  const particleGeo = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
-  const sizes = new Float32Array(particleCount);
-  const pColors = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = 2 + Math.random() * 4;
-    positions[i * 3]     = Math.cos(angle) * radius;
-    positions[i * 3 + 1] = (Math.random() - 0.3) * 5;
-    positions[i * 3 + 2] = Math.sin(angle) * radius;
-    sizes[i] = Math.random() * 4 + 1;
-    const warm = Math.random() > 0.5;
-    pColors[i*3]   = warm ? 0.9 + Math.random()*0.1 : 0.7;
-    pColors[i*3+1] = warm ? 0.5 + Math.random()*0.2 : 0.7;
-    pColors[i*3+2] = warm ? 0.1 : 0.8;
-  }
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
-  const particleMat = new THREE.PointsMaterial({
-    size: 0.05,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.55,
-    sizeAttenuation: true,
-  });
-  const particles = new THREE.Points(particleGeo, particleMat);
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
+  const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.5, sizeAttenuation: true }));
   scene.add(particles);
 
-  /* ── MOUSE INTERACTION ── */
-  let targetRotX = 0, targetRotY = 0;
-  let currentRotX = 0, currentRotY = 0;
-  let mouseX = 0, mouseY = 0;
-  let isDragging = false, lastX = 0, lastY = 0;
+  /* ── PLACEHOLDER ── */
+  function buildPlaceholder() {
+    loadingEl.style.display = 'none';
+    const orb = new THREE.Mesh(
+      new THREE.SphereGeometry(1.6, 64, 64),
+      new THREE.MeshStandardMaterial({ color: 0xb07020, roughness: 0.4, metalness: 0.7, emissive: 0x3a1800, emissiveIntensity: 0.3 })
+    );
+    orb.castShadow = true;
+    modelGroup.add(orb);
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(2.2, 0.05, 16, 128),
+      new THREE.MeshStandardMaterial({ color: 0xc9a84c, roughness: 0.3, metalness: 0.9 })
+    );
+    ring.rotation.x = Math.PI / 2;
+    modelGroup.add(ring);
+  }
 
-  document.getElementById('hero').addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      targetRotY += (e.clientX - lastX) * 0.008;
-      targetRotX += (e.clientY - lastY) * 0.004;
-      lastX = e.clientX; lastY = e.clientY;
-    } else {
-      const rect = canvas.getBoundingClientRect();
-      mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      mouseY = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
+  /* ── LOAD GLTFLoader FROM CORRECT CDN, THEN LOAD GLB ── */
+  //
+  // FIX 1: The Cloudflare CDN path used in the original code
+  //         (.../examples/js/loaders/GLTFLoader.min.js) does NOT exist for r128.
+  //         We use jsdelivr which hosts the full examples folder.
+  //
+  // FIX 2: The GLB filename is now "modelpizza.glb" — make sure this file
+  //         sits in the SAME directory as this HTML file.
+  //
+  const loaderScript    = document.createElement('script');
+  loaderScript.src      = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+
+  loaderScript.onload = function () {
+    const loader = new THREE.GLTFLoader();
+
+    loader.load(
+      'modelpizza.glb',          // ← your GLB filename
+      function (gltf) {
+        const model = gltf.scene;
+
+        // Auto-centre & scale
+        const box    = new THREE.Box3().setFromObject(model);
+        const centre = box.getCenter(new THREE.Vector3());
+        const size   = box.getSize(new THREE.Vector3());
+        const scale  = 3.2 / Math.max(size.x, size.y, size.z);
+        model.scale.setScalar(scale);
+        model.position.sub(centre.multiplyScalar(scale));
+
+        model.traverse(child => {
+          if (child.isMesh) {
+            child.castShadow    = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        modelGroup.add(model);
+        loadingEl.style.display = 'none';
+      },
+      function (xhr) {
+        if (xhr.total > 0) {
+          const pct = Math.round((xhr.loaded / xhr.total) * 100);
+          loadingEl.querySelector('div:last-child').textContent = `Loading… ${pct}%`;
+        }
+      },
+      function (err) {
+        console.warn('GLB load error:', err);
+        loadingEl.querySelector('div:last-child').textContent = 'Could not load modelpizza.glb';
+        buildPlaceholder();
+      }
+    );
+  };
+
+  loaderScript.onerror = function () {
+    console.warn('GLTFLoader script failed to load');
+    loadingEl.style.display = 'none';
+    buildPlaceholder();
+  };
+
+  document.head.appendChild(loaderScript);
+
+  /* ── MOUSE / TOUCH ── */
+  let targetY = 0, currentY = 0, mouseX = 0, mouseY = 0;
+  let isDrag = false, lastX = 0;
+
+  const heroEl = document.getElementById('hero');
+  heroEl.addEventListener('mousemove', e => {
+    if (isDrag) { targetY += (e.clientX - lastX) * 0.009; lastX = e.clientX; }
+    else {
+      const r = canvas.getBoundingClientRect();
+      mouseX = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+      mouseY = -((e.clientY - r.top)  / r.height - 0.5) * 2;
     }
   });
-  document.getElementById('hero').addEventListener('mousedown', (e) => {
-    isDragging = true; lastX = e.clientX; lastY = e.clientY;
-  });
-  document.addEventListener('mouseup', () => isDragging = false);
+  heroEl.addEventListener('mousedown',  e => { isDrag = true; lastX = e.clientX; });
+  document.addEventListener('mouseup',  () => isDrag = false);
+  heroEl.addEventListener('touchstart', e => { isDrag = true; lastX = e.touches[0].clientX; });
+  heroEl.addEventListener('touchmove',  e => { targetY += (e.touches[0].clientX - lastX) * 0.012; lastX = e.touches[0].clientX; });
+  heroEl.addEventListener('touchend',   () => isDrag = false);
 
-  /* touch */
-  document.getElementById('hero').addEventListener('touchstart', (e) => {
-    isDragging = true;
-    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-  });
-  document.getElementById('hero').addEventListener('touchmove', (e) => {
-    targetRotY += (e.touches[0].clientX - lastX) * 0.01;
-    targetRotX += (e.touches[0].clientY - lastY) * 0.005;
-    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-  });
-  document.getElementById('hero').addEventListener('touchend', () => isDragging = false);
-
-  /* ── ANIMATE ── */
+  /* ── ANIMATION LOOP ── */
   const clock = new THREE.Clock();
-  function animate() {
+  (function animate() {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
 
-    // Auto-rotate + mouse tilt
-    if (!isDragging) {
-      targetRotY = t * 0.22 + mouseX * 0.35;
-      targetRotX = Math.sin(t * 0.4) * 0.12 + mouseY * 0.08;
-    }
-    currentRotY += (targetRotY - currentRotY) * 0.04;
-    currentRotX += (targetRotX - currentRotX) * 0.04;
+    if (!isDrag) targetY = t * 0.28 + mouseX * 0.3;
+    currentY += (targetY - currentY) * 0.04;
 
-    pizzaGroup.rotation.y = currentRotY;
-    pizzaGroup.rotation.x = currentRotX;
+    modelGroup.rotation.y = currentY;
+    modelGroup.rotation.x = Math.sin(t * 0.35) * 0.1 + mouseY * 0.07;
+    modelGroup.position.y = Math.sin(t * 0.55) * 0.14;
 
-    // Gentle float
-    pizzaGroup.position.y = Math.sin(t * 0.6) * 0.12;
+    fillLight.intensity = 1.2 + Math.sin(t * 1.8) * 0.5;
+    topLight.intensity  = 1.0 + Math.sin(t * 2.3 + 1) * 0.35;
 
-    // Oven glow pulse
-    ovenGlow.intensity = 1.5 + Math.sin(t * 2.1) * 0.6;
-    fillLight.intensity = 1.0 + Math.sin(t * 1.7 + 1) * 0.4;
-
-    // Particle drift
     const pos = particles.geometry.attributes.position;
-    for (let i = 0; i < particleCount; i++) {
-      pos.array[i * 3 + 1] += 0.003 + Math.sin(t + i) * 0.001;
-      if (pos.array[i * 3 + 1] > 4) pos.array[i * 3 + 1] = -2;
+    for (let i = 0; i < pCount; i++) {
+      pos.array[i*3+1] += 0.003 + Math.sin(t + i) * 0.001;
+      if (pos.array[i*3+1] > 5) pos.array[i*3+1] = -3;
     }
     pos.needsUpdate = true;
-    particles.rotation.y = t * 0.05;
+    particles.rotation.y = t * 0.04;
 
     renderer.render(scene, camera);
-  }
-  animate();
+  })();
+})();
+
+/* ═══════════════════════════════════════════
+   DYNAMIC NAVBAR
+═══════════════════════════════════════════ */
+(function () {
+  const nav      = document.getElementById('main-nav');
+  const links    = document.querySelectorAll('#nav-links li');
+  const sections = ['hero', 'menu', 'specials', 'contact'];
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+    let current = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 120) current = id;
+    });
+    links.forEach(li => {
+      const a = li.querySelector('a');
+      li.classList.toggle('active', a && a.getAttribute('href') === '#' + current);
+    });
+  });
 })();
 
 /* ═══════════════════════════════════════════
@@ -1430,7 +1127,7 @@ function filterMenu(cat, btn) {
 }
 
 /* ═══════════════════════════════════════════
-   CART LOGIC
+   CART
 ═══════════════════════════════════════════ */
 let cart = [];
 
@@ -1439,9 +1136,10 @@ function addToCart(id, name, price) {
   if (ex) ex.qty++;
   else cart.push({ id, name, price, qty: 1 });
   updateCart();
-  const btn = document.querySelector('.nav-cart');
-  btn.style.transform = 'scale(1.12)';
-  setTimeout(() => btn.style.transform = '', 160);
+  const btn = document.getElementById('cart-btn');
+  btn.classList.remove('cart-bounce');
+  void btn.offsetWidth;
+  btn.classList.add('cart-bounce');
 }
 
 function updateCart() {
