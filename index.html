@@ -9,431 +9,274 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --tint-darkest:  #2e2e2e;
-    --tint-dark:     #464646;
-    --tint-mid:      #696969;
-    --tint-light:    #8f8f8f;
-    --tint-pale:     #c4c1bc;
-    --tint-cream:    #d8d4ce;
-    --tint-warm:     #e4e0da;
-    --tint-fog:      #eeebe6;
-    --gold:          #c9a84c;
-    --gold-light:    #e8c97a;
-    --gold-dim:      #8a6e2f;
-    --red:           #8b2020;
-    --red-mid:       #a83232;
-    --border:        rgba(201,168,76,0.25);
+    /* Deeper aluminium palette — denser, cooler, less bright */
+    --silver-darkest: #252830;
+    --silver-dark:    #363b44;
+    --silver-mid:     #5e6470;
+    --silver-light:   #8e949f;
+    --silver-pale:    #adb3bc;
+    --silver-mist:    #c5cad1;
+    --silver-fog:     #d8dce2;
+    --silver-white:   #e8ebef;
+
+    --gold:           #b8953a;
+    --gold-light:     #d4af5a;
+    --gold-dim:       #8a6e2f;
+    --red:            #7a2020;
+    --border:         rgba(168,140,80,0.22);
+    --border-silver:  rgba(100,108,120,0.22);
   }
 
   html { scroll-behavior: smooth; }
   body {
     font-family: 'Raleway', sans-serif;
-    background: var(--tint-cream);
-    color: var(--tint-darkest);
+    background: var(--silver-fog);
+    color: var(--silver-darkest);
     overflow-x: hidden;
   }
 
+  /* ── NAV ── */
   nav {
     position: fixed; top: 0; width: 100%; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 56px;
-    background: rgba(46,46,46,0.55);
-    backdrop-filter: blur(24px) saturate(1.4);
-    border-bottom: 1px solid rgba(201,168,76,0.12);
+    background: rgba(180,185,193,0.5);
+    backdrop-filter: blur(28px) saturate(1.6);
+    border-bottom: 1px solid rgba(130,138,148,0.22);
     transition: padding .4s ease, background .4s ease, box-shadow .4s ease;
   }
   nav.scrolled {
     padding: 12px 56px;
-    background: rgba(46,46,46,0.92);
-    box-shadow: 0 4px 40px rgba(0,0,0,0.35);
-    border-bottom-color: var(--border);
+    background: rgba(200,205,212,0.94);
+    box-shadow: 0 2px 32px rgba(30,33,38,0.14);
+    border-bottom-color: var(--border-silver);
   }
-  nav::after {
-    content: '';
-    position: absolute; inset: 0; top: auto;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
-    background-size: 200% 100%;
-    background-position: 200% 0;
-    transition: background-position 0.6s ease;
-    opacity: 0;
-    pointer-events: none;
-  }
-  nav.scrolled::after {
-    opacity: 1;
-    background-position: -200% 0;
-    animation: nav-shimmer 3s ease-in-out infinite;
-  }
-  @keyframes nav-shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  .nav-logo {
-    display: flex; align-items: center; gap: 14px;
-    position: relative;
-  }
-  .nav-logo-img {
-    width: 48px; height: 48px; object-fit: contain;
-    transition: transform .4s ease, filter .4s ease;
-    filter: drop-shadow(0 0 0px var(--gold));
-  }
-  nav.scrolled .nav-logo-img {
-    transform: scale(0.88);
-    filter: drop-shadow(0 0 6px rgba(201,168,76,0.5));
-  }
-  .nav-logo::before {
-    content: '';
-    position: absolute; left: -2px; top: -2px;
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,168,76,0);
-    transition: border-color .3s;
-    pointer-events: none;
-    animation: logo-breathe 3s ease-in-out infinite;
-  }
-  @keyframes logo-breathe {
-    0%, 100% { transform: scale(1);   opacity: 0.3; }
-    50%       { transform: scale(1.12); opacity: 0.7; }
-  }
-  nav.scrolled .nav-logo::before { border-color: rgba(201,168,76,0.4); }
-  .nav-logo-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.45rem; font-weight: 600;
-    color: var(--gold); letter-spacing: 1px;
-    transition: letter-spacing .3s;
-  }
+  .nav-logo { display: flex; align-items: center; gap: 14px; }
+  .nav-logo-img { width: 46px; height: 46px; object-fit: contain; transition: transform .4s; }
+  nav.scrolled .nav-logo-img { transform: scale(0.88); }
+  .nav-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.45rem; font-weight: 600; color: var(--silver-darkest); letter-spacing: 1px; transition: letter-spacing .3s; }
   nav.scrolled .nav-logo-text { letter-spacing: 1.5px; }
-  .nav-logo-text span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 1rem; }
+  .nav-logo-text span { color: var(--silver-mid); font-weight: 400; font-size: 1rem; }
   nav ul { list-style: none; display: flex; gap: 36px; }
   nav ul li { position: relative; }
-  nav ul a {
-    text-decoration: none; color: rgba(255,255,255,0.5);
-    font-size: 0.78rem; font-weight: 500; letter-spacing: 2.5px;
-    text-transform: uppercase; transition: color .2s;
-    padding-bottom: 4px;
-    display: inline-block;
-  }
-  nav ul a::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0;
-    width: 0; height: 1px;
-    background: var(--gold);
-    transition: width .3s ease;
-  }
-  nav ul a:hover { color: var(--gold); }
+  nav ul a { text-decoration: none; color: var(--silver-mid); font-size: 0.78rem; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; transition: color .2s; padding-bottom: 4px; display: inline-block; }
+  nav ul a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--gold); transition: width .3s ease; }
+  nav ul a:hover { color: var(--silver-darkest); }
   nav ul a:hover::after { width: 100%; }
   nav ul li.active a { color: var(--gold); }
   nav ul li.active a::after { width: 100%; }
-  .nav-cart {
-    background: transparent; color: var(--gold);
-    border: 1px solid var(--gold); border-radius: 2px;
-    padding: 9px 20px; font-size: 0.78rem;
-    font-family: 'Raleway', sans-serif; font-weight: 600;
-    letter-spacing: 2px; text-transform: uppercase;
-    cursor: pointer; transition: all .25s;
-    display: flex; align-items: center; gap: 10px;
-    position: relative; overflow: hidden;
-  }
-  .nav-cart::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: var(--gold);
-    transform: translateX(-101%);
-    transition: transform .25s ease;
-    z-index: 0;
-  }
+  .nav-cart { background: transparent; color: var(--silver-darkest); border: 1px solid var(--silver-pale); border-radius: 2px; padding: 9px 20px; font-size: 0.78rem; font-family: 'Raleway', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 10px; position: relative; overflow: hidden; }
+  .nav-cart::before { content: ''; position: absolute; inset: 0; background: var(--silver-darkest); transform: translateX(-101%); transition: transform .25s ease; z-index: 0; }
   .nav-cart:hover::before { transform: translateX(0); }
   .nav-cart span, .nav-cart .cart-badge { position: relative; z-index: 1; }
-  .nav-cart:hover { color: var(--tint-darkest); }
-  .cart-badge {
-    background: var(--red); color: #fff;
-    border-radius: 50%; width: 20px; height: 20px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.72rem; font-weight: 700;
-    transition: transform .2s;
-  }
-  .nav-cart:hover .cart-badge { background: var(--tint-darkest); }
+  .nav-cart:hover { color: var(--silver-white); border-color: var(--silver-darkest); }
+  .cart-badge { background: var(--red); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; }
   .cart-bounce { animation: cartBounce .3s ease; }
-  @keyframes cartBounce {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.25); }
-    100% { transform: scale(1); }
+  @keyframes cartBounce { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex; align-items: center;
+    overflow: hidden;
   }
 
-  #hero {
-    height: 100vh; position: relative; overflow: hidden;
-    background: #1c1c1c;
-    display: flex; align-items: center;
-  }
-  #model-canvas {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
+  /* ── 3D MODEL BACKGROUND ── */
+  .hero-3d-bg {
+    position: absolute;
+    inset: 0;
     z-index: 0;
   }
-  .hero-overlay {
-    position: absolute; inset: 0; z-index: 1;
+  .hero-3d-bg iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none; /* lets clicks pass through to buttons */
+  }
+  /* Dark overlay so text stays readable over the 3D scene */
+  .hero-3d-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
     background: linear-gradient(
-      105deg,
-      rgba(20,18,14,0.94) 0%,
-      rgba(20,18,14,0.82) 38%,
-      rgba(20,18,14,0.22) 65%,
-      rgba(20,18,14,0.42) 100%
+      100deg,
+      rgba(30,33,38,0.72) 0%,
+      rgba(30,33,38,0.45) 55%,
+      rgba(30,33,38,0.15) 100%
     );
-  }
-  .hero-text {
-    position: relative; z-index: 3;
-    padding: 0 56px; max-width: 580px;
-  }
-  .hero-eyebrow {
-    display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
-  }
-  .eyebrow-line { height: 1px; width: 40px; background: var(--gold); opacity: 0.7; }
-  .eyebrow-text { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
-  .hero-text h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3.6rem, 6vw, 6rem);
-    line-height: 1.0; font-weight: 700;
-    color: var(--tint-fog); margin-bottom: 8px;
-  }
-  .hero-text h1 em { color: var(--gold); font-style: italic; font-weight: 400; }
-  .hero-subtitle {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.25rem; font-style: italic;
-    color: rgba(230,225,215,0.45); margin-bottom: 28px;
-    letter-spacing: 0.5px; line-height: 1.5;
-  }
-  .hero-text p {
-    color: rgba(220,215,205,0.45); font-size: 0.9rem;
-    line-height: 1.8; margin-bottom: 40px; max-width: 400px; font-weight: 300;
-  }
-  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--gold); color: var(--tint-darkest);
-    padding: 14px 38px; border-radius: 2px;
-    font-size: 0.78rem; font-weight: 700; letter-spacing: 2.5px;
-    text-decoration: none; border: none; cursor: pointer; text-transform: uppercase;
-    transition: transform .15s, background .2s, box-shadow .2s;
-    font-family: 'Raleway', sans-serif;
-  }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.35); }
-  .btn-outline {
-    background: transparent; color: rgba(230,225,215,0.75);
-    padding: 14px 38px; border-radius: 2px;
-    font-size: 0.78rem; font-weight: 600; letter-spacing: 2.5px;
-    text-decoration: none; text-transform: uppercase;
-    border: 1px solid rgba(220,215,205,0.2); cursor: pointer; transition: all .2s;
-    font-family: 'Raleway', sans-serif;
-  }
-  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
-  .hero-stats {
-    position: absolute; bottom: 44px; left: 56px; z-index: 3;
-    display: flex; gap: 44px; align-items: flex-end;
-  }
-  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: var(--gold); line-height: 1; }
-  .stat-label { font-size: 0.68rem; color: rgba(220,215,205,0.35); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-  .stat-divider { width: 1px; height: 48px; background: rgba(201,168,76,0.2); align-self: flex-end; margin-bottom: 8px; }
-  .model-loading {
-    position: absolute; right: 30%; top: 50%; transform: translateY(-50%);
-    z-index: 2; color: rgba(201,168,76,0.35);
-    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
-    text-align: center;
-  }
-  .model-spinner {
-    width: 40px; height: 40px; border: 1px solid rgba(201,168,76,0.2);
-    border-top-color: var(--gold); border-radius: 50%;
-    margin: 0 auto 12px;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .canvas-label {
-    position: absolute; right: 40%; bottom: 44px; z-index: 3;
-    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
-    color: rgba(201,168,76,0.4);
+    pointer-events: none;
   }
 
-  .marquee-wrap {
-    background: var(--tint-dark);
-    overflow: hidden; padding: 13px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+  /* Ring accent */
+  #hero::after {
+    content: '';
+    position: absolute;
+    right: 8%; top: 50%;
+    transform: translateY(-50%);
+    width: 380px; height: 380px;
+    border: 1px solid rgba(168,149,80,0.14);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: heroRing 6s ease-in-out infinite;
   }
-  .marquee-track {
-    display: flex; gap: 0;
-    animation: marquee 22s linear infinite;
-    white-space: nowrap;
+  @keyframes heroRing {
+    0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.4; }
+    50%       { transform: translateY(-50%) scale(1.06); opacity: 0.9; }
   }
-  .marquee-track span { color: var(--tint-light); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; padding: 0 32px; }
-  .marquee-sep { color: var(--gold) !important; padding: 0 8px !important; letter-spacing: 0 !important; opacity: 0.6; }
+
+  .hero-text {
+    position: relative; z-index: 2;
+    padding: 120px 56px 80px; max-width: 600px;
+  }
+  .hero-eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .eyebrow-line { height: 1px; width: 40px; background: var(--gold); opacity: 0.7; }
+  .eyebrow-text { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-light); font-weight: 500; }
+  .hero-text h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.6rem, 6vw, 6rem); line-height: 1.0; font-weight: 700; color: #f0f2f5; margin-bottom: 8px; }
+  .hero-text h1 em { color: var(--gold-light); font-style: italic; font-weight: 400; }
+  .hero-subtitle { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-style: italic; color: rgba(220,224,230,0.75); margin-bottom: 28px; letter-spacing: 0.5px; }
+  .hero-text p { color: rgba(200,205,212,0.7); font-size: 0.9rem; line-height: 1.8; margin-bottom: 40px; max-width: 420px; font-weight: 300; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { background: var(--gold); color: #fff; padding: 14px 38px; border-radius: 2px; font-size: 0.78rem; font-weight: 700; letter-spacing: 2.5px; text-decoration: none; border: none; cursor: pointer; text-transform: uppercase; transition: transform .15s, background .2s, box-shadow .2s; font-family: 'Raleway', sans-serif; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(184,149,58,0.3); }
+  .btn-outline { background: transparent; color: #e8ebef; padding: 14px 38px; border-radius: 2px; font-size: 0.78rem; font-weight: 600; letter-spacing: 2.5px; text-decoration: none; text-transform: uppercase; border: 1px solid rgba(200,205,212,0.4); cursor: pointer; transition: all .2s; font-family: 'Raleway', sans-serif; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+  .hero-stats { position: absolute; bottom: 44px; left: 56px; z-index: 2; display: flex; gap: 44px; align-items: flex-end; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: var(--gold-light); line-height: 1; }
+  .stat-label { font-size: 0.68rem; color: rgba(180,186,195,0.7); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .stat-divider { width: 1px; height: 48px; background: rgba(150,158,168,0.3); align-self: flex-end; margin-bottom: 8px; }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap { background: var(--silver-darkest); overflow: hidden; padding: 13px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .marquee-track { display: flex; animation: marquee 22s linear infinite; white-space: nowrap; }
+  .marquee-track span { color: var(--silver-light); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; padding: 0 32px; }
+  .marquee-sep { color: var(--gold) !important; padding: 0 8px !important; letter-spacing: 0 !important; opacity: 0.7; }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  .features {
-    display: grid; grid-template-columns: repeat(3,1fr);
-    background: var(--tint-dark);
-  }
-  .feature-item {
-    padding: 48px 40px; border-right: 1px solid rgba(201,168,76,0.1);
-    display: flex; gap: 20px; align-items: flex-start; transition: background .3s;
-  }
-  .feature-item:hover { background: rgba(201,168,76,0.05); }
+  /* ── FEATURES ── */
+  .features { display: grid; grid-template-columns: repeat(3,1fr); background: var(--silver-mist); }
+  .feature-item { padding: 48px 40px; border-right: 1px solid var(--border-silver); display: flex; gap: 20px; align-items: flex-start; transition: background .3s; }
+  .feature-item:hover { background: rgba(184,149,58,0.05); }
   .feature-item:last-child { border-right: none; }
-  .feature-icon {
-    width: 46px; height: 46px; border: 1px solid rgba(201,168,76,0.3);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    font-size: 1.25rem; color: var(--gold);
-  }
-  .feature-text h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--gold-light); margin-bottom: 7px; letter-spacing: 0.5px; }
-  .feature-text p { font-size: 0.8rem; color: rgba(228,224,218,0.35); line-height: 1.7; font-weight: 300; }
+  .feature-icon { width: 46px; height: 46px; border: 1px solid var(--silver-pale); background: var(--silver-fog); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.25rem; }
+  .feature-text h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--silver-darkest); margin-bottom: 7px; }
+  .feature-text p { font-size: 0.8rem; color: var(--silver-mid); line-height: 1.7; font-weight: 300; }
 
+  /* ── SECTIONS ── */
   section { padding: 96px 56px; }
-  .section-label {
-    font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gold); font-weight: 500; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 12px;
-  }
+  .section-label { font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
   .section-label::after { content: ''; display: block; height: 1px; width: 36px; background: var(--gold); opacity: 0.5; }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 700;
-    color: var(--tint-darkest); margin-bottom: 52px; max-width: 440px; line-height: 1.1;
-  }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 700; color: var(--silver-darkest); margin-bottom: 52px; max-width: 440px; line-height: 1.1; }
 
-  #menu { background: var(--tint-warm); }
-  #menu .section-title { color: var(--tint-darkest); }
-  .menu-tabs {
-    display: flex; gap: 0; margin-bottom: 48px;
-    border-bottom: 1px solid rgba(105,105,105,0.2);
-  }
-  .tab {
-    padding: 10px 28px 14px; border-radius: 0;
-    border: none; border-bottom: 2px solid transparent;
-    background: transparent; cursor: pointer;
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--tint-light);
-    transition: all .2s; margin-bottom: -1px;
-  }
-  .tab.active, .tab:hover { color: var(--tint-darkest); border-bottom-color: var(--gold); }
+  /* ── MENU ── */
+  #menu { background: var(--silver-white); }
+  .menu-tabs { display: flex; gap: 0; margin-bottom: 48px; border-bottom: 1px solid var(--border-silver); }
+  .tab { padding: 10px 28px 14px; border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--silver-light); transition: all .2s; margin-bottom: -1px; }
+  .tab.active, .tab:hover { color: var(--silver-darkest); border-bottom-color: var(--gold); }
   .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
-  .menu-card {
-    border-radius: 0; overflow: hidden;
-    border: 1px solid rgba(105,105,105,0.15);
-    transition: box-shadow .3s, transform .3s;
-    background: var(--tint-cream);
-  }
-  .menu-card:hover { box-shadow: 0 16px 50px rgba(0,0,0,0.12); transform: translateY(-6px); }
-  .card-img {
-    width: 100%; height: 210px;
-    background: linear-gradient(135deg, var(--tint-pale) 0%, var(--tint-cream) 100%);
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .card-img img[src=""] { display: none; }
+  .menu-card { border-radius: 0; overflow: hidden; border: 1px solid var(--border-silver); transition: box-shadow .3s, transform .3s; background: var(--silver-fog); }
+  .menu-card:hover { box-shadow: 0 16px 50px rgba(30,33,38,0.14); transform: translateY(-6px); }
+  .card-img { width: 100%; height: 210px; background: linear-gradient(135deg, var(--silver-mist) 0%, var(--silver-fog) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
   .card-body { padding: 22px 24px; }
-  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 7px; color: var(--tint-darkest); }
-  .card-desc { font-size: 0.8rem; color: var(--tint-mid); line-height: 1.6; margin-bottom: 18px; font-weight: 300; }
-  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgba(105,105,105,0.12); }
+  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 7px; color: var(--silver-darkest); }
+  .card-desc { font-size: 0.8rem; color: var(--silver-mid); line-height: 1.6; margin-bottom: 18px; font-weight: 300; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border-silver); }
   .card-price { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; color: var(--red); }
-  .add-btn {
-    background: var(--tint-darkest); color: var(--gold);
-    border: 1px solid var(--tint-darkest); border-radius: 0;
-    padding: 9px 20px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
-    font-family: 'Raleway', sans-serif; font-weight: 600; cursor: pointer; transition: all .2s;
-  }
-  .add-btn:hover { background: var(--gold); color: var(--tint-darkest); border-color: var(--gold); }
+  .add-btn { background: var(--silver-darkest); color: var(--silver-white); border: 1px solid var(--silver-darkest); border-radius: 0; padding: 9px 20px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Raleway', sans-serif; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .add-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
 
-  #specials { background: var(--tint-dark); padding: 96px 56px; position: relative; overflow: hidden; }
-  #specials .section-title { color: var(--tint-fog); }
-  .specials-bg { position: absolute; top: -120px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%); pointer-events: none; }
+  /* ── SPECIALS ── */
+  #specials { background: var(--silver-darkest); padding: 96px 56px; position: relative; overflow: hidden; }
+  #specials .section-label { color: var(--gold-light); }
+  #specials .section-title { color: var(--silver-white); }
+  .specials-bg { position: absolute; top: -120px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(184,149,58,0.06) 0%, transparent 70%); pointer-events: none; }
   .specials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
-  .special-card {
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.14);
-    padding: 32px; transition: background .25s, border-color .25s; position: relative;
-  }
-  .special-card:hover { background: rgba(201,168,76,0.05); border-color: rgba(201,168,76,0.4); }
+  .special-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(184,149,58,0.15); padding: 32px; transition: background .25s, border-color .25s; position: relative; }
+  .special-card:hover { background: rgba(184,149,58,0.05); border-color: rgba(184,149,58,0.4); }
   .special-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); opacity: 0; transition: opacity .3s; }
   .special-card:hover::before { opacity: 1; }
-  .special-badge { display: inline-block; border: 1px solid rgba(201,168,76,0.4); color: var(--gold); font-size: 0.67rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; margin-bottom: 18px; }
-  .special-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--tint-fog); margin-bottom: 10px; }
-  .special-desc { font-size: 0.8rem; color: rgba(228,224,218,0.32); line-height: 1.7; margin-bottom: 22px; font-weight: 300; }
-  .special-price { font-size: 1.5rem; font-weight: 700; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
-  .special-price s { font-size: 0.85rem; color: rgba(220,215,205,0.2); font-family: 'Raleway', sans-serif; font-weight: 400; margin-left: 10px; }
+  .special-badge { display: inline-block; border: 1px solid rgba(184,149,58,0.4); color: var(--gold-light); font-size: 0.67rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; margin-bottom: 18px; }
+  .special-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--silver-fog); margin-bottom: 10px; }
+  .special-desc { font-size: 0.8rem; color: rgba(200,205,212,0.5); line-height: 1.7; margin-bottom: 22px; font-weight: 300; }
+  .special-price { font-size: 1.5rem; font-weight: 700; font-family: 'Cormorant Garamond', serif; color: var(--gold-light); }
+  .special-price s { font-size: 0.85rem; color: rgba(180,186,195,0.28); font-family: 'Raleway', sans-serif; font-weight: 400; margin-left: 10px; }
 
-  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  /* ── CART ── */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(25,28,33,0.45); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; }
   .cart-overlay.open { opacity: 1; pointer-events: all; }
-  .cart-sidebar {
-    position: fixed; top: 0; right: 0; width: 380px; height: 100%;
-    background: var(--tint-fog); z-index: 201;
-    transform: translateX(100%); transition: transform .3s ease;
-    display: flex; flex-direction: column;
-    box-shadow: -8px 0 60px rgba(0,0,0,0.18); border-left: 1px solid var(--border);
-  }
+  .cart-sidebar { position: fixed; top: 0; right: 0; width: 380px; height: 100%; background: var(--silver-white); z-index: 201; transform: translateX(100%); transition: transform .3s ease; display: flex; flex-direction: column; box-shadow: -8px 0 60px rgba(25,28,33,0.16); border-left: 1px solid var(--border-silver); }
   .cart-sidebar.open { transform: translateX(0); }
-  .cart-header { padding: 26px 30px; border-bottom: 1px solid rgba(105,105,105,0.12); display: flex; align-items: center; justify-content: space-between; }
-  .cart-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; color: var(--tint-darkest); }
-  .close-cart { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--tint-light); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(105,105,105,0.2); transition: all .2s; }
-  .close-cart:hover { border-color: var(--tint-darkest); color: var(--tint-darkest); }
+  .cart-header { padding: 26px 30px; border-bottom: 1px solid var(--border-silver); display: flex; align-items: center; justify-content: space-between; }
+  .cart-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--silver-darkest); }
+  .close-cart { background: none; border: 1px solid var(--border-silver); cursor: pointer; font-size: 1.1rem; color: var(--silver-mid); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .close-cart:hover { border-color: var(--silver-darkest); color: var(--silver-darkest); }
   .cart-items { flex: 1; overflow-y: auto; padding: 22px 30px; }
-  .cart-empty { text-align: center; padding: 60px 0; color: var(--tint-light); font-size: 0.88rem; line-height: 2; }
-  .cart-item { display: flex; gap: 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(105,105,105,0.07); }
+  .cart-empty { text-align: center; padding: 60px 0; color: var(--silver-light); font-size: 0.88rem; line-height: 2; }
+  .cart-item { display: flex; gap: 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-silver); }
   .ci-info { flex: 1; }
-  .ci-name { font-weight: 600; font-size: 0.9rem; color: var(--tint-darkest); }
+  .ci-name { font-weight: 600; font-size: 0.9rem; color: var(--silver-darkest); }
   .ci-price { color: var(--red); font-size: 0.8rem; font-weight: 600; margin-top: 3px; }
   .ci-qty { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-  .qty-btn { background: var(--tint-pale); border: none; width: 26px; height: 26px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--tint-darkest); transition: all .2s; }
-  .qty-btn:hover { background: var(--tint-darkest); color: var(--gold); }
+  .qty-btn { background: var(--silver-mist); border: none; width: 26px; height: 26px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--silver-darkest); transition: all .2s; }
+  .qty-btn:hover { background: var(--silver-darkest); color: var(--silver-white); }
   .qty-num { font-size: 0.9rem; font-weight: 600; }
-  .cart-footer { padding: 22px 30px; border-top: 1px solid rgba(105,105,105,0.1); }
-  .cart-total { display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--tint-darkest); }
-  .checkout-btn { width: 100%; padding: 15px; background: var(--tint-darkest); color: var(--gold); border: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'Raleway', sans-serif; cursor: pointer; transition: background .2s; }
-  .checkout-btn:hover { background: var(--gold); color: var(--tint-darkest); }
+  .cart-footer { padding: 22px 30px; border-top: 1px solid var(--border-silver); }
+  .cart-total { display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--silver-darkest); }
+  .checkout-btn { width: 100%; padding: 15px; background: var(--silver-darkest); color: var(--silver-white); border: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'Raleway', sans-serif; cursor: pointer; transition: background .2s; }
+  .checkout-btn:hover { background: var(--gold); }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(25,28,33,0.55); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .3s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--tint-fog); padding: 44px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; transform: scale(0.96); transition: transform .3s; border: 1px solid var(--border); }
+  .modal { background: var(--silver-white); padding: 44px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; transform: scale(0.96); transition: transform .3s; border: 1px solid var(--border-silver); }
   .modal-overlay.open .modal { transform: scale(1); }
-  .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 28px; color: var(--tint-darkest); }
+  .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 28px; color: var(--silver-darkest); }
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: var(--tint-mid); }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid rgba(105,105,105,0.2); border-radius: 0; font-family: 'Raleway', sans-serif; font-size: 0.88rem; color: var(--tint-darkest); background: var(--tint-cream); outline: none; transition: border-color .2s; }
+  .form-group label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: var(--silver-mid); }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-silver); border-radius: 0; font-family: 'Raleway', sans-serif; font-size: 0.88rem; color: var(--silver-darkest); background: var(--silver-fog); outline: none; transition: border-color .2s; }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .order-summary { background: var(--tint-cream); border: 1px solid rgba(105,105,105,0.12); padding: 20px; margin: 24px 0; }
-  .order-summary h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; color: var(--tint-mid); }
-  .summary-item { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 7px; color: var(--tint-darkest); }
-  .summary-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 12px; border-top: 1px solid rgba(105,105,105,0.1); margin-top: 8px; color: var(--tint-darkest); }
+  .order-summary { background: var(--silver-fog); border: 1px solid var(--border-silver); padding: 20px; margin: 24px 0; }
+  .order-summary h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; color: var(--silver-mid); }
+  .summary-item { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 7px; color: var(--silver-darkest); }
+  .summary-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 12px; border-top: 1px solid var(--border-silver); margin-top: 8px; color: var(--silver-darkest); }
   .modal-btns { display: flex; gap: 10px; margin-top: 10px; }
-  .modal-back { flex: 1; padding: 13px; background: transparent; border: 1px solid rgba(105,105,105,0.2); cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--tint-darkest); }
-  .modal-pay { flex: 2; padding: 13px; background: var(--tint-darkest); color: var(--gold); border: none; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: background .2s; }
-  .modal-pay:hover { background: var(--gold); color: var(--tint-darkest); }
+  .modal-back { flex: 1; padding: 13px; background: transparent; border: 1px solid var(--border-silver); cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--silver-darkest); }
+  .modal-pay { flex: 2; padding: 13px; background: var(--silver-darkest); color: var(--silver-white); border: none; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: background .2s; }
+  .modal-pay:hover { background: var(--gold); }
 
-  #contact { background: var(--tint-cream); display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
-  #contact .section-title { color: var(--tint-darkest); }
+  /* ── CONTACT ── */
+  #contact { background: var(--silver-fog); display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
   .contact-item { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 22px; }
-  .ci-icon { width: 40px; height: 40px; border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; color: var(--gold); }
-  .ci-detail h5 { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; color: var(--tint-darkest); }
-  .ci-detail p { color: var(--tint-mid); font-size: 0.85rem; }
-  .map-placeholder { background: var(--tint-pale); height: 340px; display: flex; align-items: center; justify-content: center; color: var(--tint-mid); font-size: 0.82rem; flex-direction: column; gap: 12px; border: 1px solid rgba(105,105,105,0.12); }
+  .ci-icon { width: 40px; height: 40px; border: 1px solid var(--silver-pale); background: var(--silver-white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+  .ci-detail h5 { font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; color: var(--silver-darkest); }
+  .ci-detail p { color: var(--silver-mid); font-size: 0.85rem; }
+  .map-placeholder { background: var(--silver-mist); height: 340px; display: flex; align-items: center; justify-content: center; color: var(--silver-mid); font-size: 0.82rem; flex-direction: column; gap: 12px; border: 1px solid var(--border-silver); }
   .map-placeholder span { font-size: 2.2rem; }
 
-  footer { background: var(--tint-darkest); color: rgba(228,224,218,0.35); padding: 56px; border-top: 1px solid var(--border); }
+  /* ── FOOTER ── */
+  footer { background: var(--silver-darkest); color: rgba(160,166,175,0.5); padding: 56px; border-top: 1px solid var(--border); }
   .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; gap: 40px; flex-wrap: wrap; }
   .footer-logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-  .footer-logo-img { width: 36px; height: 36px; object-fit: contain; opacity: 0.85; }
-  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--gold); font-weight: 600; }
+  .footer-logo-img { width: 36px; height: 36px; object-fit: contain; opacity: 0.8; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--silver-pale); font-weight: 600; }
   .footer-tagline { font-size: 0.8rem; max-width: 200px; line-height: 1.7; font-weight: 300; }
-  .footer-links h5 { color: rgba(228,224,218,0.55); font-size: 0.67rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
+  .footer-links h5 { color: rgba(160,166,175,0.6); font-size: 0.67rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
   .footer-links ul { list-style: none; }
   .footer-links li { margin-bottom: 9px; }
-  .footer-links a { color: rgba(228,224,218,0.3); font-size: 0.83rem; text-decoration: none; transition: color .2s; font-weight: 300; }
-  .footer-links a:hover { color: var(--gold); }
+  .footer-links a { color: rgba(160,166,175,0.35); font-size: 0.83rem; text-decoration: none; transition: color .2s; font-weight: 300; }
+  .footer-links a:hover { color: var(--gold-light); }
   .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 22px; font-size: 0.75rem; }
 
+  /* ── SUCCESS ── */
   .success-screen { text-align: center; padding: 20px 0; }
   .success-screen .check { font-size: 3.5rem; margin-bottom: 16px; }
-  .success-screen h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 10px; color: var(--tint-darkest); }
-  .success-screen p { color: var(--tint-mid); font-size: 0.9rem; }
+  .success-screen h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 10px; color: var(--silver-darkest); }
+  .success-screen p { color: var(--silver-mid); font-size: 0.9rem; }
 
+  /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     nav { padding: 14px 20px; }
     nav ul { display: none; }
@@ -441,7 +284,7 @@
     .hero-stats { left: 20px; bottom: 22px; }
     section { padding: 60px 20px; }
     .features { grid-template-columns: 1fr; }
-    .feature-item { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.08); }
+    .feature-item { border-right: none; border-bottom: 1px solid var(--border-silver); }
     .specials-grid { grid-template-columns: 1fr; }
     #contact { grid-template-columns: 1fr; }
     .cart-sidebar { width: 100%; }
@@ -472,12 +315,25 @@
 
 <!-- HERO -->
 <section id="hero">
-  <canvas id="model-canvas"></canvas>
-  <div class="hero-overlay"></div>
-  <div class="model-loading" id="model-loading">
-    <div class="model-spinner"></div>
-    <div>Loading 3D Model…</div>
+
+  <!-- ═══════════════════════════════════════════════════
+       3D MODEL BACKGROUND
+       HOW TO GET YOUR SKETCHFAB EMBED URL:
+       1. Go to your model on sketchfab.com
+       2. Click the "Share" button (paper-plane icon) below your model
+       3. Click the "Embed" tab in the popup
+       4. Copy the URL from inside src="..." — it looks like:
+          https://sketchfab.com/models/XXXXXXXXXXXXXX/embed
+       5. Paste that URL to replace YOUR_SKETCHFAB_EMBED_URL_HERE below
+  ═══════════════════════════════════════════════════ -->
+  <div class="hero-3d-bg">
+    <iframe
+      src="https://sketchfab.com/models/0f5508601c2f445ba3eb543c82d47feb/embed?autostart=1&preload=1&ui_hint=0&ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&transparent=0&autospin=0.3"
+      allow="autoplay; fullscreen; xr-spatial-tracking"
+      title="3D Background Model">
+    </iframe>
   </div>
+
   <div class="hero-text">
     <div class="hero-eyebrow">
       <div class="eyebrow-line"></div>
@@ -507,7 +363,6 @@
       <div class="stat-label">Rating</div>
     </div>
   </div>
-  <div class="canvas-label">Interactive · Drag to rotate</div>
 </section>
 
 <!-- MARQUEE -->
@@ -568,157 +423,59 @@
   <div class="menu-grid" id="menu-grid">
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food1.jpeg" alt="Seafood Platter"></div>
-      <div class="card-body">
-        <div class="card-name">Seafood Platter</div>
-        <div class="card-desc">San Marzano tomato, fresh mozzarella, basil, extra virgin olive oil</div>
-        <div class="card-footer">
-          <span class="card-price">₹299</span>
-          <button class="add-btn" onclick="addToCart(1,'Seafood Platter',299)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Seafood Platter</div><div class="card-desc">San Marzano tomato, fresh mozzarella, basil, extra virgin olive oil</div><div class="card-footer"><span class="card-price">₹299</span><button class="add-btn" onclick="addToCart(1,'Seafood Platter',299)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food2.jpeg" alt="Fisch &amp; Chips"></div>
-      <div class="card-body">
-        <div class="card-name">Fisch &amp; Chips</div>
-        <div class="card-desc">Tomato sauce, mozzarella, premium pepperoni, oregano</div>
-        <div class="card-footer">
-          <span class="card-price">₹379</span>
-          <button class="add-btn" onclick="addToCart(2,'Fisch & Chips',379)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Fisch &amp; Chips</div><div class="card-desc">Tomato sauce, mozzarella, premium pepperoni, oregano</div><div class="card-footer"><span class="card-price">₹379</span><button class="add-btn" onclick="addToCart(2,'Fisch & Chips',379)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food3.jpeg" alt="Fish Soup"></div>
-      <div class="card-body">
-        <div class="card-name">Fish Soup</div>
-        <div class="card-desc">Smoky BBQ sauce, grilled chicken, red onion, coriander</div>
-        <div class="card-footer">
-          <span class="card-price">₹399</span>
-          <button class="add-btn" onclick="addToCart(3,'Fish Soup',399)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Fish Soup</div><div class="card-desc">Smoky BBQ sauce, grilled chicken, red onion, coriander</div><div class="card-footer"><span class="card-price">₹399</span><button class="add-btn" onclick="addToCart(3,'Fish Soup',399)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food4.jpeg" alt="Makaron Z Owocami Morza"></div>
-      <div class="card-body">
-        <div class="card-name">Makaron Z Owocami Morza</div>
-        <div class="card-desc">Bell peppers, mushrooms, olives, cherry tomatoes, mozzarella</div>
-        <div class="card-footer">
-          <span class="card-price">₹329</span>
-          <button class="add-btn" onclick="addToCart(4,'Makaron Z Owocami Morza',329)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Makaron Z Owocami Morza</div><div class="card-desc">Bell peppers, mushrooms, olives, cherry tomatoes, mozzarella</div><div class="card-footer"><span class="card-price">₹329</span><button class="add-btn" onclick="addToCart(4,'Makaron Z Owocami Morza',329)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food5.jpeg" alt="Octopus in Garlic"></div>
-      <div class="card-body">
-        <div class="card-name">Octopus in Garlic</div>
-        <div class="card-desc">Mozzarella, parmesan, cheddar, ricotta, fresh herbs</div>
-        <div class="card-footer">
-          <span class="card-price">₹419</span>
-          <button class="add-btn" onclick="addToCart(5,'Octopus in Garlic',419)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Octopus in Garlic</div><div class="card-desc">Mozzarella, parmesan, cheddar, ricotta, fresh herbs</div><div class="card-footer"><span class="card-price">₹419</span><button class="add-btn" onclick="addToCart(5,'Octopus in Garlic',419)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="seafood">
       <div class="card-img"><img src="food6.jpeg" alt="Fresh Fillet of Seabass"></div>
-      <div class="card-body">
-        <div class="card-name">Fresh Fillet of Seabass</div>
-        <div class="card-desc">Peri peri sauce, chicken, jalapeños, onion, cheese blend</div>
-        <div class="card-footer">
-          <span class="card-price">₹409</span>
-          <button class="add-btn" onclick="addToCart(6,'Fresh Fillet of Seabass',409)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Fresh Fillet of Seabass</div><div class="card-desc">Peri peri sauce, chicken, jalapeños, onion, cheese blend</div><div class="card-footer"><span class="card-price">₹409</span><button class="add-btn" onclick="addToCart(6,'Fresh Fillet of Seabass',409)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side3.jpeg" alt="Garlic Bread"></div>
-      <div class="card-body">
-        <div class="card-name">Garlic Bread</div>
-        <div class="card-desc">Toasted sourdough, herb butter, sea salt</div>
-        <div class="card-footer">
-          <span class="card-price">₹129</span>
-          <button class="add-btn" onclick="addToCart(7,'Garlic Bread',129)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Garlic Bread</div><div class="card-desc">Toasted sourdough, herb butter, sea salt</div><div class="card-footer"><span class="card-price">₹129</span><button class="add-btn" onclick="addToCart(7,'Garlic Bread',129)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side1.jpeg" alt="Caesar Salad"></div>
-      <div class="card-body">
-        <div class="card-name">Caesar Salad</div>
-        <div class="card-desc">Romaine, parmesan shavings, house dressing, croutons</div>
-        <div class="card-footer">
-          <span class="card-price">₹169</span>
-          <button class="add-btn" onclick="addToCart(8,'Caesar Salad',169)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Caesar Salad</div><div class="card-desc">Romaine, parmesan shavings, house dressing, croutons</div><div class="card-footer"><span class="card-price">₹169</span><button class="add-btn" onclick="addToCart(8,'Caesar Salad',169)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="sides" style="display:none;">
       <div class="card-img"><img src="side2.jpeg" alt="Loaded Fries"></div>
-      <div class="card-body">
-        <div class="card-name">Loaded Fries</div>
-        <div class="card-desc">Crispy fries, cheese sauce, jalapeños, sour cream</div>
-        <div class="card-footer">
-          <span class="card-price">₹199</span>
-          <button class="add-btn" onclick="addToCart(9,'Loaded Fries',199)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Loaded Fries</div><div class="card-desc">Crispy fries, cheese sauce, jalapeños, sour cream</div><div class="card-footer"><span class="card-price">₹199</span><button class="add-btn" onclick="addToCart(9,'Loaded Fries',199)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="drinks" style="display:none;">
       <div class="card-img"><img src="drink1.jpeg" alt="Classic Cola"></div>
-      <div class="card-body">
-        <div class="card-name">Classic Cola</div>
-        <div class="card-desc">Chilled Coca-Cola 330ml</div>
-        <div class="card-footer">
-          <span class="card-price">₹79</span>
-          <button class="add-btn" onclick="addToCart(10,'Classic Cola',79)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-body"><div class="card-name">Classic Cola</div><div class="card-desc">Chilled Coca-Cola 330ml</div><div class="card-footer"><span class="card-price">₹79</span><button class="add-btn" onclick="addToCart(10,'Classic Cola',79)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="drinks" style="display:none;">
-      <div class="card-img"><img src="" alt="Lemonade"></div>
-      <div class="card-body">
-        <div class="card-name">Lemonade</div>
-        <div class="card-desc">Fresh-squeezed lemonade with mint</div>
-        <div class="card-footer">
-          <span class="card-price">₹99</span>
-          <button class="add-btn" onclick="addToCart(11,'Lemonade',99)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-img"></div>
+      <div class="card-body"><div class="card-name">Lemonade</div><div class="card-desc">Fresh-squeezed lemonade with mint</div><div class="card-footer"><span class="card-price">₹99</span><button class="add-btn" onclick="addToCart(11,'Lemonade',99)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="drinks" style="display:none;">
-      <div class="card-img"><img src="" alt="Mango Lassi"></div>
-      <div class="card-body">
-        <div class="card-name">Mango Lassi</div>
-        <div class="card-desc">Chilled mango yogurt drink</div>
-        <div class="card-footer">
-          <span class="card-price">₹119</span>
-          <button class="add-btn" onclick="addToCart(12,'Mango Lassi',119)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-img"></div>
+      <div class="card-body"><div class="card-name">Mango Lassi</div><div class="card-desc">Chilled mango yogurt drink</div><div class="card-footer"><span class="card-price">₹119</span><button class="add-btn" onclick="addToCart(12,'Mango Lassi',119)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="desserts" style="display:none;">
-      <div class="card-img"><img src="" alt="Nutella Calzone"></div>
-      <div class="card-body">
-        <div class="card-name">Nutella Calzone</div>
-        <div class="card-desc">Warm folded pizza dough with Nutella and crushed hazelnuts</div>
-        <div class="card-footer">
-          <span class="card-price">₹199</span>
-          <button class="add-btn" onclick="addToCart(13,'Nutella Calzone',199)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-img"></div>
+      <div class="card-body"><div class="card-name">Nutella Calzone</div><div class="card-desc">Warm folded pizza dough with Nutella and crushed hazelnuts</div><div class="card-footer"><span class="card-price">₹199</span><button class="add-btn" onclick="addToCart(13,'Nutella Calzone',199)">+ Add</button></div></div>
     </div>
     <div class="menu-card" data-cat="desserts" style="display:none;">
-      <div class="card-img"><img src="" alt="Tiramisu"></div>
-      <div class="card-body">
-        <div class="card-name">Tiramisu</div>
-        <div class="card-desc">Classic Italian dessert, mascarpone, espresso, cocoa</div>
-        <div class="card-footer">
-          <span class="card-price">₹179</span>
-          <button class="add-btn" onclick="addToCart(14,'Tiramisu',179)">+ Add</button>
-        </div>
-      </div>
+      <div class="card-img"></div>
+      <div class="card-body"><div class="card-name">Tiramisu</div><div class="card-desc">Classic Italian dessert, mascarpone, espresso, cocoa</div><div class="card-footer"><span class="card-price">₹179</span><button class="add-btn" onclick="addToCart(14,'Tiramisu',179)">+ Add</button></div></div>
     </div>
   </div>
 </section>
@@ -754,28 +511,19 @@
 <section id="contact">
   <div class="contact-info">
     <p class="section-label">Find Us</p>
-    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;margin-bottom:10px;line-height:1.1;color:var(--tint-darkest)">Come Say Hello</h2>
-    <p style="color:var(--tint-mid);font-size:0.9rem;line-height:1.85;margin-bottom:36px;max-width:340px;font-weight:300;">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;margin-bottom:10px;line-height:1.1;color:var(--silver-darkest)">Come Say Hello</h2>
+    <p style="color:var(--silver-mid);font-size:0.9rem;line-height:1.85;margin-bottom:36px;max-width:340px;font-weight:300;">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
     <div class="contact-item">
       <div class="ci-icon">📍</div>
-      <div class="ci-detail">
-        <h5>Address</h5>
-        <p>12 121 Xatt is-Sajjieda, Marsaxlokk, Malta</p>
-      </div>
+      <div class="ci-detail"><h5>Address</h5><p>12 121 Xatt is-Sajjieda, Marsaxlokk, Malta</p></div>
     </div>
     <div class="contact-item">
       <div class="ci-icon">📞</div>
-      <div class="ci-detail">
-        <h5>Phone</h5>
-        <p>+91 98765 43210</p>
-      </div>
+      <div class="ci-detail"><h5>Phone</h5><p>+91 98765 43210</p></div>
     </div>
     <div class="contact-item">
       <div class="ci-icon">🕐</div>
-      <div class="ci-detail">
-        <h5>Hours</h5>
-        <p>Mon–Sun: 11:00 AM – 11:00 PM</p>
-      </div>
+      <div class="ci-detail"><h5>Hours</h5><p>Mon–Sun: 11:00 AM – 11:00 PM</p></div>
     </div>
   </div>
   <div class="map-placeholder">
@@ -796,25 +544,14 @@
     </div>
     <div class="footer-links">
       <h5>Menu</h5>
-      <ul>
-        <li><a href="#menu">Seafood</a></li>
-        <li><a href="#menu">Sides</a></li>
-        <li><a href="#menu">Drinks</a></li>
-        <li><a href="#menu">Desserts</a></li>
-      </ul>
+      <ul><li><a href="#menu">Seafood</a></li><li><a href="#menu">Sides</a></li><li><a href="#menu">Drinks</a></li><li><a href="#menu">Desserts</a></li></ul>
     </div>
     <div class="footer-links">
       <h5>Info</h5>
-      <ul>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#specials">Specials</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-      </ul>
+      <ul><li><a href="#contact">Contact</a></li><li><a href="#specials">Specials</a></li><li><a href="#">Privacy Policy</a></li></ul>
     </div>
   </div>
-  <div class="footer-bottom">
-    © 2024 Mr. Fitz Restaurant. All rights reserved. 121 Xatt is-Sajjieda, Marsaxlokk, Malta.
-  </div>
+  <div class="footer-bottom">© 2024 Mr. Fitz Restaurant. All rights reserved. 121 Xatt is-Sajjieda, Marsaxlokk, Malta.</div>
 </footer>
 
 <!-- CART SIDEBAR -->
@@ -828,10 +565,7 @@
     <div class="cart-empty">Your cart is empty<br><small>Add items from the menu</small></div>
   </div>
   <div class="cart-footer">
-    <div class="cart-total">
-      <span>Total</span>
-      <span id="cart-total">₹0</span>
-    </div>
+    <div class="cart-total"><span>Total</span><span id="cart-total">₹0</span></div>
     <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
   </div>
 </div>
@@ -849,11 +583,7 @@
       <div class="form-group"><label>Delivery Address</label><textarea rows="2" placeholder="121 Xatt is-Sajjieda, Marsaxlokk, Malta"></textarea></div>
       <div class="form-group">
         <label>Payment Method</label>
-        <select>
-          <option>Cash on Delivery</option>
-          <option>UPI / Google Pay</option>
-          <option>Credit / Debit Card</option>
-        </select>
+        <select><option>Cash on Delivery</option><option>UPI / Google Pay</option><option>Credit / Debit Card</option></select>
       </div>
       <div class="order-summary">
         <h4>Order Summary</h4>
@@ -868,868 +598,69 @@
   </div>
 </div>
 
-<!-- THREE.JS CORE -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 <script>
-/**
- * Minimal GLTFLoader for Three.js r128 — classic-script (non-module) edition.
- */
+/* NAVBAR */
 (function () {
-  'use strict';
-
-  function resolveURL(url, path) {
-    if (typeof url !== 'string' || url === '') return '';
-    if (/^https?:\/\//i.test(url)) return url;
-    if (/^\/\//.test(url)) return url;
-    if (/^data:/.test(url)) return url;
-    if (/^blob:/.test(url)) return url;
-    if (path && !/\/$/.test(path)) path += '/';
-    return (path || '') + url;
-  }
-
-  const BINARY_EXTENSION_HEADER_MAGIC   = 0x46546C67;
-  const BINARY_EXTENSION_HEADER_LENGTH  = 12;
-  const BINARY_EXTENSION_CHUNK_TYPES    = { JSON: 0x4E4F534A, BIN: 0x004E4942 };
-
-  function GLTFLoader(manager) {
-    THREE.Loader.call(this, manager);
-    this.dracoLoader = null;
-    this.ktx2Loader  = null;
-  }
-
-  GLTFLoader.prototype = Object.assign(Object.create(THREE.Loader.prototype), {
-    constructor: GLTFLoader,
-
-    load: function (url, onLoad, onProgress, onError) {
-      var scope    = this;
-      var resourcePath;
-      if (this.resourcePath !== '') {
-        resourcePath = this.resourcePath;
-      } else if (this.path !== '') {
-        resourcePath = this.path;
-      } else {
-        resourcePath = THREE.LoaderUtils.extractUrlBase(url);
-      }
-      this.manager.itemStart(url);
-
-      var _onError = function (e) {
-        if (onError) { onError(e); } else { console.error(e); }
-        scope.manager.itemError(url);
-        scope.manager.itemEnd(url);
-      };
-
-      var loader = new THREE.FileLoader(this.manager);
-      loader.setPath(this.path);
-      loader.setResponseType('arraybuffer');
-      loader.setRequestHeader(this.requestHeader);
-      loader.setWithCredentials(this.withCredentials);
-      loader.load(url, function (data) {
-        try {
-          scope.parse(data, resourcePath, function (gltf) {
-            onLoad(gltf);
-            scope.manager.itemEnd(url);
-          }, _onError);
-        } catch (e) { _onError(e); }
-      }, onProgress, _onError);
-    },
-
-    parse: function (data, path, onLoad, onError) {
-      var content;
-      var extensions = {};
-
-      if (typeof data === 'string') {
-        content = data;
-      } else {
-        var magic = new Uint32Array(data, 0, 1)[0];
-        if (magic === BINARY_EXTENSION_HEADER_MAGIC) {
-          try {
-            extensions['KHR_binary_glTF'] = new GLTFBinaryExtension(data);
-            content = extensions['KHR_binary_glTF'].content;
-          } catch (error) { if (onError) onError(error); return; }
-        } else {
-          content = THREE.LoaderUtils.decodeText(new Uint8Array(data));
-        }
-      }
-
-      var json;
-      try { json = JSON.parse(content); } catch (e) { if (onError) onError(e); return; }
-      if (json.asset === undefined || json.asset.version[0] < 2) {
-        if (onError) onError(new Error('Unsupported glTF version.'));
-        return;
-      }
-
-      var parser = new GLTFParser(json, extensions, {
-        path: path || this.resourcePath || '',
-        crossOrigin: this.crossOrigin,
-        manager: this.manager
-      });
-
-      parser.parse(function (scene, scenes, cameras, animations, json) {
-        var result = {
-          scene: scene,
-          scenes: scenes,
-          cameras: cameras,
-          animations: animations,
-          asset: json.asset,
-          parser: parser,
-          userData: {}
-        };
-        onLoad(result);
-      }, onError);
-    }
-  });
-
-  function GLTFBinaryExtension(data) {
-    this.name    = 'KHR_binary_glTF';
-    this.content = null;
-    this.body    = null;
-    var headerView = new DataView(data, 0, BINARY_EXTENSION_HEADER_LENGTH);
-    this.header = {
-      magic:   headerView.getUint32(0, true),
-      version: headerView.getUint32(4, true),
-      length:  headerView.getUint32(8, true)
-    };
-    if (this.header.magic !== BINARY_EXTENSION_HEADER_MAGIC) throw new Error('Invalid GLB magic.');
-    if (this.header.version !== 2) throw new Error('Only GLB version 2 is supported.');
-    var chunkView = new DataView(data, BINARY_EXTENSION_HEADER_LENGTH);
-    var chunkIndex = 0;
-    while (chunkIndex < chunkView.byteLength) {
-      var chunkLength = chunkView.getUint32(chunkIndex, true); chunkIndex += 4;
-      var chunkType   = chunkView.getUint32(chunkIndex, true); chunkIndex += 4;
-      if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.JSON) {
-        var contentArray = new Uint8Array(data, BINARY_EXTENSION_HEADER_LENGTH + chunkIndex, chunkLength);
-        this.content = THREE.LoaderUtils.decodeText(contentArray);
-      } else if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.BIN) {
-        var byteOffset = BINARY_EXTENSION_HEADER_LENGTH + chunkIndex;
-        this.body = data.slice(byteOffset, byteOffset + chunkLength);
-      }
-      chunkIndex += chunkLength;
-    }
-    if (this.content === null) throw new Error('GLB: JSON chunk not found.');
-  }
-
-  function GLTFParser(json, extensions, options) {
-    this.json       = json || {};
-    this.extensions = extensions || {};
-    this.options    = options || {};
-    this.cache      = { refs: {}, uses: {} };
-    this.primitiveCache = {};
-    this.textureCache   = {};
-    this.nodeNamesUsed  = {};
-
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    var isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
-    var firefoxVersion = isFirefox ? navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1] : -1;
-    this.textureLoader = (
-      typeof createImageBitmap !== 'undefined' && !isSafari && !(isFirefox && firefoxVersion < 98)
-    ) ? new THREE.ImageBitmapLoader(this.options.manager)
-      : new THREE.TextureLoader(this.options.manager);
-    this.textureLoader.setCrossOrigin(this.options.crossOrigin || 'anonymous');
-    this.fileLoader = new THREE.FileLoader(this.options.manager);
-    this.fileLoader.setResponseType('arraybuffer');
-  }
-
-  GLTFParser.prototype = {
-
-    parse: function (onLoad, onError) {
-      var json    = this.json;
-      var self    = this;
-      this.markDefs();
-
-      Promise.all([
-        this.getDependencies('scene'),
-        this.getDependencies('animation'),
-        this.getDependencies('camera')
-      ]).then(function (dependencies) {
-        var result = {
-          scene:      dependencies[0][json.scene !== undefined ? json.scene : 0],
-          scenes:     dependencies[0],
-          animations: dependencies[1],
-          cameras:    dependencies[2],
-          asset:      json.asset,
-          userData:   {}
-        };
-        onLoad(result.scene, result.scenes, result.cameras, result.animations, json);
-      }).catch(onError);
-    },
-
-    markDefs: function () {
-      var nodeDefs = this.json.nodes || [];
-      this.json.__nodeDefs = nodeDefs;
-      for (var i = 0; i < nodeDefs.length; i++) {
-        var nodeDef = nodeDefs[i];
-        if (nodeDef.mesh !== undefined) {
-          if (this.cache.refs[nodeDef.mesh] === undefined) this.cache.refs[nodeDef.mesh] = 0;
-          this.cache.refs[nodeDef.mesh]++;
-        }
-      }
-    },
-
-    getDependencies: function (type) {
-      var defs = this.json[type + 's'] || (type === 'scene' ? this.json.scenes : []);
-      if (!defs || defs.length === 0) return Promise.resolve([]);
-      var deps = [];
-      for (var i = 0; i < defs.length; i++) deps.push(this.getDependency(type, i));
-      return Promise.all(deps);
-    },
-
-    getDependency: function (type, index) {
-      var cacheKey = type + ':' + index;
-      var dep = this.cache[cacheKey];
-      if (!dep) {
-        switch (type) {
-          case 'scene':      dep = this.loadScene(index);      break;
-          case 'node':       dep = this.loadNode(index);       break;
-          case 'mesh':       dep = this.loadMesh(index);       break;
-          case 'accessor':   dep = this.loadAccessor(index);   break;
-          case 'bufferView': dep = this.loadBufferView(index); break;
-          case 'buffer':     dep = this.loadBuffer(index);     break;
-          case 'material':   dep = this.loadMaterial(index);   break;
-          case 'texture':    dep = this.loadTexture(index);    break;
-          case 'skin':       dep = Promise.resolve(null);      break;
-          case 'animation':  dep = this.loadAnimation(index);  break;
-          case 'camera':     dep = this.loadCamera(index);     break;
-          default: throw new Error('Unknown type: ' + type);
-        }
-        this.cache[cacheKey] = dep;
-      }
-      return dep;
-    },
-
-    loadBuffer: function (bufferIndex) {
-      var bufferDef = this.json.buffers[bufferIndex];
-      var self = this;
-      if (bufferDef.type && bufferDef.type !== 'arraybuffer') {
-        return Promise.reject(new Error('Unsupported buffer type: ' + bufferDef.type));
-      }
-      if (bufferDef.uri === undefined && bufferIndex === 0) {
-        var ext = this.extensions['KHR_binary_glTF'];
-        if (ext) return Promise.resolve(ext.body);
-        return Promise.reject(new Error('GLB: Body chunk not found.'));
-      }
-      return new Promise(function (resolve, reject) {
-        self.fileLoader.load(resolveURL(bufferDef.uri, self.options.path), resolve, undefined, function () {
-          reject(new Error('Failed to load buffer: ' + bufferDef.uri));
-        });
-      });
-    },
-
-    loadBufferView: function (bufferViewIndex) {
-      var bufferViewDef = this.json.bufferViews[bufferViewIndex];
-      return this.getDependency('buffer', bufferViewDef.buffer).then(function (buffer) {
-        var byteLength = bufferViewDef.byteLength || 0;
-        var byteOffset = bufferViewDef.byteOffset || 0;
-        return buffer.slice(byteOffset, byteOffset + byteLength);
-      });
-    },
-
-    loadAccessor: function (accessorIndex) {
-      var self       = this;
-      var accessorDef = this.json.accessors[accessorIndex];
-      if (accessorDef.bufferView === undefined && accessorDef.sparse === undefined) {
-        return Promise.resolve(null);
-      }
-      var pendingBufferViews = [];
-      if (accessorDef.bufferView !== undefined) {
-        pendingBufferViews.push(this.getDependency('bufferView', accessorDef.bufferView));
-      } else {
-        pendingBufferViews.push(null);
-      }
-      if (accessorDef.sparse !== undefined) {
-        pendingBufferViews.push(this.getDependency('bufferView', accessorDef.sparse.indices.bufferView));
-        pendingBufferViews.push(this.getDependency('bufferView', accessorDef.sparse.values.bufferView));
-      }
-      return Promise.all(pendingBufferViews).then(function (bufferViews) {
-        var COMPONENT_TYPE_MAP = {
-          5120: Int8Array, 5121: Uint8Array, 5122: Int16Array,
-          5123: Uint16Array, 5125: Uint32Array, 5126: Float32Array
-        };
-        var TYPE_SIZES = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT2: 4, MAT3: 9, MAT4: 16 };
-
-        var TypedArray    = COMPONENT_TYPE_MAP[accessorDef.componentType];
-        var elementSize   = TYPE_SIZES[accessorDef.type];
-        var byteOffset    = accessorDef.byteOffset || 0;
-        var count         = accessorDef.count;
-        var bufferView    = bufferViews[0];
-
-        var array;
-        if (bufferView !== null) {
-          var bvDef      = self.json.bufferViews[accessorDef.bufferView];
-          var byteStride = bvDef.byteStride;
-          if (byteStride && byteStride !== elementSize * TypedArray.BYTES_PER_ELEMENT) {
-            array = new TypedArray(count * elementSize);
-            var view = new DataView(bufferView, byteOffset);
-            var getMethod = 'get' + TypedArray.name.replace('Array', '');
-            var little = true;
-            for (var i = 0; i < count; i++) {
-              for (var j = 0; j < elementSize; j++) {
-                array[i * elementSize + j] = view[getMethod]((i * byteStride) + j * TypedArray.BYTES_PER_ELEMENT, little);
-              }
-            }
-          } else {
-            array = new TypedArray(bufferView, byteOffset, count * elementSize);
-          }
-        } else {
-          array = new TypedArray(count * elementSize);
-        }
-
-        if (accessorDef.sparse !== undefined) {
-          var idxCount    = accessorDef.sparse.count;
-          var idxTypedArr = COMPONENT_TYPE_MAP[accessorDef.sparse.indices.componentType];
-          var idxBvOff    = accessorDef.sparse.indices.byteOffset || 0;
-          var valBvOff    = accessorDef.sparse.values.byteOffset  || 0;
-          var indices = new idxTypedArr(bufferViews[1], idxBvOff, idxCount);
-          var values  = new TypedArray(bufferViews[2], valBvOff, idxCount * elementSize);
-          var sparseArr = new TypedArray(array);
-          for (var k = 0; k < idxCount; k++) {
-            for (var m = 0; m < elementSize; m++) {
-              sparseArr[indices[k] * elementSize + m] = values[k * elementSize + m];
-            }
-          }
-          array = sparseArr;
-        }
-
-        var bufferAttribute = new THREE.BufferAttribute(array, elementSize === 1 ? 1 : elementSize);
-        bufferAttribute.normalized = accessorDef.normalized === true;
-        return bufferAttribute;
-      });
-    },
-
-    loadTexture: function (textureIndex) {
-      var self       = this;
-      var textureDef  = this.json.textures[textureIndex];
-      var sourceIndex = textureDef.source;
-      var imageDef    = this.json.images[sourceIndex];
-      var loader      = this.textureLoader;
-
-      var URL = imageDef.uri ? resolveURL(imageDef.uri, this.options.path) : null;
-
-      var promise;
-      if (!URL && imageDef.bufferView !== undefined) {
-        promise = this.getDependency('bufferView', imageDef.bufferView).then(function (bufferView) {
-          var mimeType = imageDef.mimeType || 'image/png';
-          var blob = new Blob([bufferView], { type: mimeType });
-          var blobURL = window.URL.createObjectURL(blob);
-          return new Promise(function (resolve, reject) {
-            loader.load(blobURL, function (texture) {
-              window.URL.revokeObjectURL(blobURL);
-              resolve(texture);
-            }, undefined, function (e) {
-              window.URL.revokeObjectURL(blobURL);
-              reject(e);
-            });
-          });
-        });
-      } else if (URL) {
-        promise = new Promise(function (resolve, reject) {
-          loader.load(URL, resolve, undefined, reject);
-        });
-      } else {
-        return Promise.resolve(new THREE.Texture());
-      }
-
-      return promise.then(function (texture) {
-        var samplerDef = (self.json.samplers || [])[textureDef.sampler] || {};
-        var FILTER_MAP = {
-          9728: THREE.NearestFilter, 9729: THREE.LinearFilter,
-          9984: THREE.NearestMipmapNearestFilter, 9985: THREE.LinearMipmapNearestFilter,
-          9986: THREE.NearestMipmapLinearFilter, 9987: THREE.LinearMipmapLinearFilter
-        };
-        var WRAP_MAP = { 33071: THREE.ClampToEdgeWrapping, 33648: THREE.MirroredRepeatWrapping, 10497: THREE.RepeatWrapping };
-        if (samplerDef.magFilter !== undefined) texture.magFilter = FILTER_MAP[samplerDef.magFilter] || THREE.LinearFilter;
-        if (samplerDef.minFilter !== undefined) texture.minFilter = FILTER_MAP[samplerDef.minFilter] || THREE.LinearMipmapLinearFilter;
-        texture.wrapS = WRAP_MAP[samplerDef.wrapS] || THREE.RepeatWrapping;
-        texture.wrapT = WRAP_MAP[samplerDef.wrapT] || THREE.RepeatWrapping;
-        texture.flipY = false;
-        texture.encoding = 3001;
-        texture.needsUpdate = true;
-        return texture;
-      });
-    },
-
-    loadMaterial: function (materialIndex) {
-      var self        = this;
-      var materialDef = this.json.materials[materialIndex];
-      var params      = {};
-      var pending     = [];
-
-      var pbr = materialDef.pbrMetallicRoughness || {};
-
-      if (pbr.baseColorFactor) {
-        var c = pbr.baseColorFactor;
-        params.color = new THREE.Color(c[0], c[1], c[2]);
-        params.opacity = c[3] !== undefined ? c[3] : 1;
-      }
-      if (pbr.metallicFactor  !== undefined) params.metalness  = pbr.metallicFactor;
-      if (pbr.roughnessFactor !== undefined) params.roughness  = pbr.roughnessFactor;
-
-      if (pbr.baseColorTexture) {
-        pending.push(self.getDependency('texture', pbr.baseColorTexture.index).then(function (t) { params.map = t; }));
-      }
-      if (pbr.metallicRoughnessTexture) {
-        pending.push(self.getDependency('texture', pbr.metallicRoughnessTexture.index).then(function (t) {
-          params.metalnessMap = params.roughnessMap = t;
-        }));
-      }
-      if (materialDef.normalTexture) {
-        pending.push(self.getDependency('texture', materialDef.normalTexture.index).then(function (t) {
-          params.normalMap = t;
-          if (materialDef.normalTexture.scale !== undefined)
-            params.normalScale = new THREE.Vector2(materialDef.normalTexture.scale, materialDef.normalTexture.scale);
-        }));
-      }
-      if (materialDef.occlusionTexture) {
-        pending.push(self.getDependency('texture', materialDef.occlusionTexture.index).then(function (t) { params.aoMap = t; }));
-      }
-      if (materialDef.emissiveTexture) {
-        pending.push(self.getDependency('texture', materialDef.emissiveTexture.index).then(function (t) { params.emissiveMap = t; }));
-      }
-      if (materialDef.emissiveFactor) {
-        var ef = materialDef.emissiveFactor;
-        params.emissive = new THREE.Color(ef[0], ef[1], ef[2]);
-      }
-      if (materialDef.alphaMode === 'BLEND') { params.transparent = true; params.depthWrite = false; }
-      else if (materialDef.alphaMode === 'MASK') { params.alphaTest = materialDef.alphaCutoff !== undefined ? materialDef.alphaCutoff : 0.5; }
-      if (materialDef.doubleSided === true) params.side = THREE.DoubleSide;
-
-      return Promise.all(pending).then(function () {
-        var mat = new THREE.MeshStandardMaterial(params);
-        if (materialDef.name) mat.name = materialDef.name;
-        return mat;
-      });
-    },
-
-    loadMesh: function (meshIndex) {
-      var self    = this;
-      var meshDef = this.json.meshes[meshIndex];
-      var pending = [];
-      var prims   = meshDef.primitives;
-
-      for (var i = 0; i < prims.length; i++) {
-        var prim = prims[i];
-        var geoPending = [];
-        var attrKeys = Object.keys(prim.attributes);
-        for (var j = 0; j < attrKeys.length; j++) {
-          geoPending.push(self.getDependency('accessor', prim.attributes[attrKeys[j]]));
-        }
-        if (prim.indices !== undefined) geoPending.push(self.getDependency('accessor', prim.indices));
-        else geoPending.push(null);
-        if (prim.material !== undefined) geoPending.push(self.getDependency('material', prim.material));
-        else geoPending.push(new THREE.MeshStandardMaterial());
-
-        pending.push(Promise.all(geoPending).then((function (primDef, keys) {
-          return function (results) {
-            var geo      = new THREE.BufferGeometry();
-            var matIdx   = results.length - 1;
-            var idxIdx   = results.length - 2;
-            var material = results[matIdx];
-            var indices  = results[idxIdx];
-            for (var a = 0; a < keys.length; a++) {
-              var attr = results[a];
-              var name = keys[a];
-              var threeAttr = name === 'POSITION'   ? 'position'
-                            : name === 'NORMAL'     ? 'normal'
-                            : name === 'TEXCOORD_0' ? 'uv'
-                            : name === 'TEXCOORD_1' ? 'uv2'
-                            : name === 'COLOR_0'    ? 'color'
-                            : name === 'TANGENT'    ? 'tangent'
-                            : name === 'JOINTS_0'   ? 'skinIndex'
-                            : name === 'WEIGHTS_0'  ? 'skinWeight'
-                            : name.toLowerCase();
-              geo.setAttribute(threeAttr, attr);
-            }
-            if (indices) geo.setIndex(new THREE.BufferAttribute(
-              indices.array instanceof Uint32Array ? indices.array : new Uint32Array(indices.array), 1));
-            var mesh;
-            if (primDef.mode === 1)      mesh = new THREE.LineSegments(geo, material);
-            else if (primDef.mode === 2) mesh = new THREE.Line(geo, material);
-            else if (primDef.mode === 3) mesh = new THREE.LineLoop(geo, material);
-            else if (primDef.mode === 0) mesh = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.01 }));
-            else                         mesh = new THREE.Mesh(geo, material);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            if (!geo.attributes.normal) geo.computeVertexNormals();
-            return mesh;
-          };
-        })(prim, attrKeys)));
-      }
-
-      return Promise.all(pending).then(function (meshes) {
-        if (meshes.length === 1) {
-          if (meshDef.name) meshes[0].name = meshDef.name;
-          return meshes[0];
-        }
-        var group = new THREE.Group();
-        if (meshDef.name) group.name = meshDef.name;
-        for (var n = 0; n < meshes.length; n++) group.add(meshes[n]);
-        return group;
-      });
-    },
-
-    loadCamera: function (cameraIndex) {
-      var camDef = this.json.cameras[cameraIndex];
-      var cam;
-      if (camDef.type === 'perspective') {
-        var p = camDef.perspective;
-        cam = new THREE.PerspectiveCamera(THREE.MathUtils.radToDeg(p.yfov), p.aspectRatio || 1, p.znear || 0.1, p.zfar || 2000);
-      } else {
-        var o = camDef.orthographic;
-        cam = new THREE.OrthographicCamera(-o.xmag, o.xmag, o.ymag, -o.ymag, o.znear, o.zfar);
-      }
-      if (camDef.name) cam.name = camDef.name;
-      return Promise.resolve(cam);
-    },
-
-    loadNode: function (nodeIndex) {
-      var self    = this;
-      var nodeDef = this.json.nodes[nodeIndex];
-      var pending = [];
-      if (nodeDef.mesh   !== undefined) pending.push(this.getDependency('mesh',   nodeDef.mesh));
-      if (nodeDef.camera !== undefined) pending.push(this.getDependency('camera', nodeDef.camera));
-      var childPending = (nodeDef.children || []).map(function (i) { return self.getDependency('node', i); });
-
-      return Promise.all([Promise.all(pending), Promise.all(childPending)]).then(function (results) {
-        var objects  = results[0];
-        var children = results[1];
-        var node;
-        if (objects.length === 0)      node = new THREE.Object3D();
-        else if (objects.length === 1) node = objects[0];
-        else { node = new THREE.Group(); for (var o = 0; o < objects.length; o++) node.add(objects[o]); }
-
-        if (nodeDef.name) {
-          node.userData.name = nodeDef.name;
-          var name = nodeDef.name;
-          if (self.nodeNamesUsed[name]) name += '_' + (++self.nodeNamesUsed[name]);
-          else self.nodeNamesUsed[name] = 0;
-          node.name = name;
-        }
-        if (nodeDef.matrix) { var m = new THREE.Matrix4(); m.fromArray(nodeDef.matrix); node.applyMatrix4(m); }
-        else {
-          if (nodeDef.translation) node.position.fromArray(nodeDef.translation);
-          if (nodeDef.rotation)    node.quaternion.fromArray(nodeDef.rotation);
-          if (nodeDef.scale)       node.scale.fromArray(nodeDef.scale);
-        }
-        for (var c = 0; c < children.length; c++) node.add(children[c]);
-        return node;
-      });
-    },
-
-    loadScene: function (sceneIndex) {
-      var self     = this;
-      var sceneDef = this.json.scenes[sceneIndex];
-      var rootNodes = (sceneDef.nodes || []).map(function (i) { return self.getDependency('node', i); });
-      return Promise.all(rootNodes).then(function (nodes) {
-        var scene = new THREE.Group();
-        if (sceneDef.name) scene.name = sceneDef.name;
-        for (var i = 0; i < nodes.length; i++) scene.add(nodes[i]);
-        return scene;
-      });
-    },
-
-    loadAnimation: function (animIndex) {
-      var self    = this;
-      var animDef = this.json.animations[animIndex];
-      var pending = [];
-      (animDef.samplers || []).forEach(function (sampler) {
-        pending.push(self.getDependency('accessor', sampler.input));
-        pending.push(self.getDependency('accessor', sampler.output));
-      });
-      return Promise.all(pending).then(function (accessors) {
-        var tracks = [];
-        (animDef.channels || []).forEach(function (channel) {
-          var samplerDef = animDef.samplers[channel.sampler];
-          var inputAcc   = accessors[channel.sampler * 2];
-          var outputAcc  = accessors[channel.sampler * 2 + 1];
-          if (!inputAcc || !outputAcc) return;
-          var nodeDef = self.json.nodes[channel.target.node];
-          if (!nodeDef) return;
-          var nodeName = nodeDef.name || ('node_' + channel.target.node);
-          var path = channel.target.path;
-          var TrackClass, trackPath;
-          if (path === 'translation')      { TrackClass = THREE.VectorKeyframeTrack;     trackPath = '.position'; }
-          else if (path === 'rotation')    { TrackClass = THREE.QuaternionKeyframeTrack; trackPath = '.quaternion'; }
-          else if (path === 'scale')       { TrackClass = THREE.VectorKeyframeTrack;     trackPath = '.scale'; }
-          else if (path === 'weights')     { TrackClass = THREE.NumberKeyframeTrack;     trackPath = '.morphTargetInfluences'; }
-          else return;
-          try { tracks.push(new TrackClass(nodeName + trackPath, Array.from(inputAcc.array), Array.from(outputAcc.array))); }
-          catch (e) { /* skip bad tracks */ }
-        });
-        return new THREE.AnimationClip(animDef.name || 'anim_' + animIndex, -1, tracks);
-      });
-    }
-  };
-
-  THREE.GLTFLoader = GLTFLoader;
-})();
-</script>
-
-<script>
-/* ═══════════════════════════════════════════
-   3D MODEL SCENE
-   ──────────────────────────────────────────
-   Place  modelpizza.glb  in the SAME FOLDER
-   as this index.html file and it will load
-   automatically. No fallback object — just
-   clean dark background if file is missing.
-═══════════════════════════════════════════ */
-(function () {
-  var canvas    = document.getElementById('model-canvas');
-  var loadingEl = document.getElementById('model-loading');
-
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding    = 3000;
-
-  var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x141210, 0.018);
-
-  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
-  camera.position.set(0, 1.2, 6);
-  camera.lookAt(0, 0, 0);
-
-  function resize() {
-    var hero = document.getElementById('hero');
-    var w = hero.offsetWidth, h = hero.offsetHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  /* ── LIGHTING ── */
-  var keyLight = new THREE.DirectionalLight(0xfff0d0, 2.8);
-  keyLight.position.set(-5, 9, 5);
-  keyLight.castShadow = true;
-  keyLight.shadow.mapSize.set(2048, 2048);
-  scene.add(keyLight);
-
-  var backLight = new THREE.DirectionalLight(0xb0c8ff, 0.9);
-  backLight.position.set(6, 2, -7);
-  scene.add(backLight);
-
-  var fillLight = new THREE.PointLight(0xff8830, 1.5, 20);
-  fillLight.position.set(3, -1, 4);
-  scene.add(fillLight);
-
-  scene.add(new THREE.AmbientLight(0x3a2810, 1.2));
-
-  var topLight = new THREE.PointLight(0xffd080, 1.2, 15);
-  topLight.position.set(0, 6, 0);
-  scene.add(topLight);
-
-  /* ── MODEL GROUP ── */
-  var modelGroup = new THREE.Group();
-  scene.add(modelGroup);
-
-  /* ── PARTICLES ── */
-  var pCount = 100;
-  var pGeo   = new THREE.BufferGeometry();
-  var pPos   = new Float32Array(pCount * 3);
-  var pCol   = new Float32Array(pCount * 3);
-  for (var i = 0; i < pCount; i++) {
-    var a = Math.random() * Math.PI * 2;
-    var r = 2.5 + Math.random() * 4;
-    pPos[i*3]   = Math.cos(a) * r;
-    pPos[i*3+1] = (Math.random() - 0.3) * 6;
-    pPos[i*3+2] = Math.sin(a) * r;
-    var warm = Math.random() > 0.4;
-    pCol[i*3]   = warm ? 0.85 + Math.random()*0.15 : 0.65;
-    pCol[i*3+1] = warm ? 0.5  + Math.random()*0.2  : 0.65;
-    pCol[i*3+2] = warm ? 0.1 : 0.7;
-  }
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
-  var particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
-    size: 0.05, vertexColors: true, transparent: true, opacity: 0.5, sizeAttenuation: true
-  }));
-  scene.add(particles);
-
-  /* ── LOAD modelpizza.glb ──
-     Put modelpizza.glb in the same folder as this HTML file.
-     If it fails to load, the scene stays clean (dark bg + particles only).
-  ── */
-  try {
-    var loader = new THREE.GLTFLoader();
-    loader.load(
-      'modelpizza.glb',
-      function (gltf) {
-        var model = gltf.scene;
-        var box    = new THREE.Box3().setFromObject(model);
-        var centre = box.getCenter(new THREE.Vector3());
-        var size   = box.getSize(new THREE.Vector3());
-        var scale  = 3.2 / Math.max(size.x, size.y, size.z);
-        model.scale.setScalar(scale);
-        model.position.sub(centre.multiplyScalar(scale));
-        model.traverse(function (child) {
-          if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
-        });
-        modelGroup.add(model);
-        loadingEl.style.display = 'none';
-      },
-      function (xhr) {
-        if (xhr.total > 0) {
-          var pct = Math.round((xhr.loaded / xhr.total) * 100);
-          loadingEl.querySelector('div:last-child').textContent = 'Loading… ' + pct + '%';
-        }
-      },
-      function (err) {
-        /* GLB not found — hide spinner, show nothing (clean dark hero bg) */
-        console.warn('modelpizza.glb not found. Place it in the same folder as index.html.');
-        loadingEl.style.display = 'none';
-      }
-    );
-  } catch (e) {
-    console.warn('GLTFLoader init error:', e);
-    loadingEl.style.display = 'none';
-  }
-
-  /* ── MOUSE / TOUCH ── */
-  var targetY = 0, currentY = 0, mouseX = 0, mouseY = 0;
-  var isDrag = false, lastX = 0;
-
-  var heroEl = document.getElementById('hero');
-  heroEl.addEventListener('mousemove', function (e) {
-    if (isDrag) { targetY += (e.clientX - lastX) * 0.009; lastX = e.clientX; }
-    else {
-      var rect = canvas.getBoundingClientRect();
-      mouseX = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
-      mouseY = -((e.clientY - rect.top)  / rect.height - 0.5) * 2;
-    }
-  });
-  heroEl.addEventListener('mousedown',  function (e) { isDrag = true; lastX = e.clientX; });
-  document.addEventListener('mouseup',  function ()  { isDrag = false; });
-  heroEl.addEventListener('touchstart', function (e) { isDrag = true; lastX = e.touches[0].clientX; });
-  heroEl.addEventListener('touchmove',  function (e) { targetY += (e.touches[0].clientX - lastX) * 0.012; lastX = e.touches[0].clientX; });
-  heroEl.addEventListener('touchend',   function ()  { isDrag = false; });
-
-  /* ── ANIMATION LOOP ── */
-  var clock = new THREE.Clock();
-  (function animate() {
-    requestAnimationFrame(animate);
-    var t = clock.getElapsedTime();
-
-    if (!isDrag) targetY = t * 0.28 + mouseX * 0.3;
-    currentY += (targetY - currentY) * 0.04;
-
-    modelGroup.rotation.y = currentY;
-    modelGroup.rotation.x = Math.sin(t * 0.35) * 0.1 + mouseY * 0.07;
-    modelGroup.position.y = Math.sin(t * 0.55) * 0.14;
-
-    fillLight.intensity = 1.2 + Math.sin(t * 1.8) * 0.5;
-    topLight.intensity  = 1.0 + Math.sin(t * 2.3 + 1) * 0.35;
-
-    var pos = particles.geometry.attributes.position;
-    for (var i = 0; i < pCount; i++) {
-      pos.array[i*3+1] += 0.003 + Math.sin(t + i) * 0.001;
-      if (pos.array[i*3+1] > 5) pos.array[i*3+1] = -3;
-    }
-    pos.needsUpdate = true;
-    particles.rotation.y = t * 0.04;
-
-    renderer.render(scene, camera);
-  })();
-})();
-
-/* ═══════════════════════════════════════════
-   DYNAMIC NAVBAR
-═══════════════════════════════════════════ */
-(function () {
-  var nav      = document.getElementById('main-nav');
-  var links    = document.querySelectorAll('#nav-links li');
+  var nav = document.getElementById('main-nav');
+  var links = document.querySelectorAll('#nav-links li');
   var sections = ['hero', 'menu', 'specials', 'contact'];
-
   window.addEventListener('scroll', function () {
     nav.classList.toggle('scrolled', window.scrollY > 60);
     var current = '';
-    sections.forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 120) current = id;
-    });
-    links.forEach(function (li) {
-      var a = li.querySelector('a');
-      li.classList.toggle('active', a && a.getAttribute('href') === '#' + current);
-    });
+    sections.forEach(function (id) { var el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - 120) current = id; });
+    links.forEach(function (li) { var a = li.querySelector('a'); li.classList.toggle('active', a && a.getAttribute('href') === '#' + current); });
   });
 })();
 
-/* ═══════════════════════════════════════════
-   MENU FILTER
-═══════════════════════════════════════════ */
+/* MENU FILTER */
 function filterMenu(cat, btn) {
   document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
   btn.classList.add('active');
-  document.querySelectorAll('.menu-card').forEach(function (card) {
-    card.style.display = card.dataset.cat === cat ? '' : 'none';
-  });
+  document.querySelectorAll('.menu-card').forEach(function (card) { card.style.display = card.dataset.cat === cat ? '' : 'none'; });
 }
 
-/* ═══════════════════════════════════════════
-   CART
-═══════════════════════════════════════════ */
+/* CART */
 var cart = [];
-
 function addToCart(id, name, price) {
   var ex = cart.find(function (i) { return i.id === id; });
-  if (ex) ex.qty++;
-  else cart.push({ id: id, name: name, price: price, qty: 1 });
+  if (ex) ex.qty++; else cart.push({ id: id, name: name, price: price, qty: 1 });
   updateCart();
   var btn = document.getElementById('cart-btn');
-  btn.classList.remove('cart-bounce');
-  void btn.offsetWidth;
-  btn.classList.add('cart-bounce');
+  btn.classList.remove('cart-bounce'); void btn.offsetWidth; btn.classList.add('cart-bounce');
 }
-
 function updateCart() {
   var count = cart.reduce(function (s, i) { return s + i.qty; }, 0);
   var total = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
   document.getElementById('cart-count').textContent = count;
   document.getElementById('cart-total').textContent = '₹' + total;
   var container = document.getElementById('cart-items');
-  if (cart.length === 0) {
-    container.innerHTML = '<div class="cart-empty">Your cart is empty<br><small>Add items from the menu</small></div>';
-    return;
-  }
+  if (cart.length === 0) { container.innerHTML = '<div class="cart-empty">Your cart is empty<br><small>Add items from the menu</small></div>'; return; }
   container.innerHTML = cart.map(function (item) {
     return '<div class="cart-item"><div class="ci-info"><div class="ci-name">' + item.name + '</div><div class="ci-price">₹' + item.price + ' each</div><div class="ci-qty"><button class="qty-btn" onclick="changeQty(' + item.id + ',-1)">−</button><span class="qty-num">' + item.qty + '</span><button class="qty-btn" onclick="changeQty(' + item.id + ',1)">+</button></div></div><div style="font-weight:700;color:var(--red)">₹' + (item.price * item.qty) + '</div></div>';
   }).join('');
 }
-
 function changeQty(id, delta) {
   var item = cart.find(function (i) { return i.id === id; });
-  if (!item) return;
-  item.qty += delta;
+  if (!item) return; item.qty += delta;
   if (item.qty <= 0) cart = cart.filter(function (i) { return i.id !== id; });
   updateCart();
 }
-
 function toggleCart() {
   document.getElementById('cart-sidebar').classList.toggle('open');
   document.getElementById('cart-overlay').classList.toggle('open');
 }
-
 function openCheckout() {
   if (cart.length === 0) return;
   var total = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
-  document.getElementById('modal-summary-items').innerHTML =
-    cart.map(function (i) { return '<div class="summary-item"><span>' + i.name + ' x' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('');
+  document.getElementById('modal-summary-items').innerHTML = cart.map(function (i) { return '<div class="summary-item"><span>' + i.name + ' x' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('');
   document.getElementById('modal-total').textContent = '₹' + total;
   document.getElementById('checkout-modal').classList.add('open');
   toggleCart();
 }
-
-function closeCheckout() {
-  document.getElementById('checkout-modal').classList.remove('open');
-}
-
+function closeCheckout() { document.getElementById('checkout-modal').classList.remove('open'); }
 function placeOrder() {
-  document.getElementById('checkout-form-area').innerHTML =
-    '<div class="success-screen"><div class="check">✦</div><h3>Order Placed!</h3><p>Your order is on its way.<br>Estimated delivery: <strong>30–40 mins</strong></p></div>';
-  cart = []; updateCart();
-  setTimeout(closeCheckout, 3200);
+  document.getElementById('checkout-form-area').innerHTML = '<div class="success-screen"><div class="check">✦</div><h3>Order Placed!</h3><p>Your order is on its way.<br>Estimated delivery: <strong>30–40 mins</strong></p></div>';
+  cart = []; updateCart(); setTimeout(closeCheckout, 3200);
 }
 </script>
 </body>
