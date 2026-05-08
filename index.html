@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Mr. Fitz Restaurant</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -27,12 +27,14 @@
     --border-silver:  rgba(100,108,120,0.22);
   }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
   body {
     font-family: 'Raleway', sans-serif;
     background: var(--silver-fog);
     color: var(--silver-darkest);
     overflow-x: hidden;
+    max-width: 100%;
+    position: relative;
   }
 
   /* ── NAV ── */
@@ -87,12 +89,14 @@
     position: absolute;
     inset: 0;
     z-index: 0;
+    overflow: hidden;
   }
   .hero-3d-bg iframe {
     width: 100%;
     height: 100%;
     border: none;
-    pointer-events: none; /* lets clicks pass through to buttons */
+    pointer-events: none;
+    max-width: 100%;
   }
   /* Dark overlay so text stays readable over the 3D scene */
   .hero-3d-bg::after {
@@ -278,10 +282,24 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    nav { padding: 14px 20px; }
+    nav {
+      padding: 10px 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
     nav ul { display: none; }
+    .nav-logo-img { width: 34px; height: 34px; }
+    .nav-logo-text { font-size: 1.1rem; }
+    .nav-logo-text span { display: none; }
+    .nav-cart {
+      padding: 7px 12px;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
     .hero-text { padding: 120px 20px 80px; max-width: 100%; }
-    .hero-stats { left: 20px; bottom: 22px; }
+    .hero-stats { left: 20px; bottom: 22px; gap: 22px; }
+    .stat-num { font-size: 1.8rem; }
     section { padding: 60px 20px; }
     .features { grid-template-columns: 1fr; }
     .feature-item { border-right: none; border-bottom: 1px solid var(--border-silver); }
@@ -289,6 +307,8 @@
     #contact { grid-template-columns: 1fr; }
     .cart-sidebar { width: 100%; }
     footer { padding: 36px 20px; }
+    .hero-3d-bg iframe { pointer-events: none; }
+    #hero::after { display: none; }
   }
 </style>
 </head>
