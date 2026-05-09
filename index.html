@@ -354,15 +354,31 @@
     .nav-logo-text { font-size: 1.1rem; letter-spacing: 0.5px; }
     .nav-logo-text span { display: none; }
     .nav-cart { padding: 8px 14px; font-size: 0.7rem; letter-spacing: 1px; flex-shrink: 0; white-space: nowrap; }
-    #hero { width: 100%; max-width: 100vw; overflow: hidden; }
-    .hero-pizza-container { display: none; }
+    /* hero: stack vertically on mobile */
+    #hero { width: 100%; max-width: 100vw; overflow: hidden; flex-direction: column; justify-content: flex-start; min-height: 100vh; padding-bottom: 80px; }
     .scroll-indicator { display: none; }
-    .hero-text { padding: 110px 20px 100px; max-width: 100%; width: 100%; box-sizing: border-box; }
-    .hero-text h1 { font-size: clamp(2.8rem, 10vw, 4rem); }
-    .hero-subtitle { font-size: 1.05rem; }
-    .hero-text p { max-width: 100%; font-size: 0.85rem; }
+    /* text sits at top */
+    .hero-text { padding: 100px 20px 20px; max-width: 100%; width: 100%; box-sizing: border-box; }
+    .hero-text h1 { font-size: clamp(2.4rem, 9vw, 3.6rem); }
+    .hero-subtitle { font-size: 1rem; }
+    .hero-text p { max-width: 100%; font-size: 0.83rem; margin-bottom: 28px; }
     .hero-btns { gap: 10px; }
     .btn-primary, .btn-outline { padding: 12px 24px; font-size: 0.72rem; letter-spacing: 1.5px; }
+    /* model: un-hide, reposition below text as a static block */
+    .hero-pizza-container {
+      position: relative !important;
+      right: auto !important; top: auto !important;
+      transform: none !important;
+      animation: none !important;
+      width: 88% !important;
+      max-width: 360px !important;
+      aspect-ratio: 1 !important;
+      margin: 0 auto;
+      z-index: 2;
+    }
+    /* make iframe taller on mobile to better clip sketchfab bar */
+    .pizza-iframe-wrap iframe { height: 165%; top: -22%; }
+    /* stats shift to bottom of hero */
     .hero-stats { left: 20px; bottom: 24px; gap: 20px; }
     .stat-num { font-size: 1.8rem; }
     .stat-label { font-size: 0.6rem; letter-spacing: 1px; }
