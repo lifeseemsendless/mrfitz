@@ -107,16 +107,16 @@
     50%      { opacity: 1;   transform: scale(1.08); }
   }
 
-  /* iframe wrapper clips the Sketchfab bottom bar out of view */
+  /* iframe fills freely, no clip, no border-radius */
   .pizza-iframe-wrap {
     width: 100%;
     height: 100%;
     position: relative;
-    overflow: hidden;
   }
   .pizza-iframe-wrap iframe {
+    /* CGTrader embed needs a slightly larger frame to hide its chrome */
     width: 140%;
-    height: 158%;  /* extra height pushes bottom bar below clip edge */
+    height: 140%;
     border: none;
     position: absolute;
     top: -20%;
@@ -434,7 +434,7 @@
     <div class="hero-pizza-glow"></div>
     <div class="pizza-iframe-wrap">
       <iframe
-        src="https://sketchfab.com/models/57d747ab160b42c7a75b889b7f20bd4f/embed?autostart=1&transparent=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&ui_color=b8953a&camera=0&autospin=0.4&preload=1"
+        src="https://sketchfab.com/models/40d50989fec1460f8838b608d999ccd0/embed?autostart=1&transparent=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&ui_color=b8953a&camera=0&autospin=0.4&preload=1"
         allow="autoplay; fullscreen; xr-spatial-tracking"
         title="3D Food Model"
         loading="lazy">
