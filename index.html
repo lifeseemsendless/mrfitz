@@ -107,16 +107,16 @@
     50%      { opacity: 1;   transform: scale(1.08); }
   }
 
-  /* iframe fills freely, no clip, no border-radius */
+  /* iframe wrapper clips the Sketchfab bottom bar out of view */
   .pizza-iframe-wrap {
     width: 100%;
     height: 100%;
     position: relative;
+    overflow: hidden;
   }
   .pizza-iframe-wrap iframe {
-    /* CGTrader embed needs a slightly larger frame to hide its chrome */
     width: 140%;
-    height: 140%;
+    height: 158%;  /* extra height pushes bottom bar below clip edge */
     border: none;
     position: absolute;
     top: -20%;
@@ -393,9 +393,130 @@
     .hero-stats { gap: 14px; }
     .stat-num { font-size: 1.5rem; }
   }
+
+  /* ── LOADING SCREEN ── */
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #09090d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), visibility 0.9s;
+  }
+  #loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .loader-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    animation: loaderFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes loaderFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .loader-wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #e8ebef;
+    letter-spacing: 4px;
+  }
+  .loader-wordmark em {
+    color: var(--gold-light);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .loader-sub {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(180,186,195,0.45);
+    font-weight: 500;
+  }
+  /* gold progress bar */
+  .loader-bar-wrap {
+    width: 180px;
+    height: 1px;
+    background: rgba(184,149,58,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .loader-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--gold-light);
+    transition: width 0.4s ease;
+  }
+  /* animated shimmer on the bar */
+  .loader-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: barShimmer 1.2s ease-in-out infinite;
+  }
+  @keyframes barShimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
+  }
+  .loader-status {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(180,186,195,0.3);
+    margin-top: -20px;
+  }
+  /* floating gold dots */
+  .loader-dots {
+    display: flex;
+    gap: 10px;
+    margin-top: -8px;
+  }
+  .loader-dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.3;
+    animation: dotPulse 1.4s ease-in-out infinite;
+  }
+  .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotPulse {
+    0%,100% { opacity: 0.2; transform: scale(0.8); }
+    50%      { opacity: 1;   transform: scale(1.3); }
+  }
 </style>
 </head>
 <body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-logo">
+    <div class="loader-wordmark">Mr. <em>Fitz</em></div>
+    <div class="loader-sub">Est. 1994 &middot; Marsaxlokk, Malta</div>
+  </div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loader-bar"></div>
+  </div>
+  <div class="loader-status" id="loader-status">Preparing your experience</div>
+  <div class="loader-dots">
+    <span></span><span></span><span></span>
+  </div>
+</div>
 
 <div id="cursor-glow"></div>
 <div id="toast"></div>
@@ -1009,6 +1130,89 @@ function placeOrder() {
   document.getElementById('checkout-form-area').innerHTML = '<div class="success-screen"><div class="check">✦</div><h3>Order Placed!</h3><p>Your order is on its way.<br>Estimated delivery: <strong>30–40 mins</strong></p></div>';
   cart = []; updateCart(); setTimeout(closeCheckout, 3400);
 }
+
+/* ── LOADING SCREEN ── */
+(function() {
+  var loader  = document.getElementById('loader');
+  var bar     = document.getElementById('loader-bar');
+  var status  = document.getElementById('loader-status');
+  var iframe  = document.querySelector('.pizza-iframe-wrap iframe');
+  var dismissed = false;
+
+  var messages = [
+    'Preparing your experience',
+    'Heating the stone oven',
+    'Sourcing fresh ingredients',
+    'Loading 3D model',
+    'Almost ready…'
+  ];
+
+  function setProgress(pct, msg) {
+    bar.style.width = pct + '%';
+    if (msg) status.textContent = msg;
+  }
+
+  /* Bar crawls forward in stages to feel alive */
+  setTimeout(function() { setProgress(18, messages[1]); }, 300);
+  setTimeout(function() { setProgress(40, messages[2]); }, 900);
+  setTimeout(function() { setProgress(62, messages[3]); }, 1800);
+
+  /* How this works:
+     - iframe 'load' fires when Sketchfab HTML is received — NOT when textures render
+     - We add a BUFFER after load fires so textures finish painting in the background
+     - Buffer scales with connection speed: slow connections get more time
+     - Hard cap at 12s so nobody ever waits forever                              */
+
+  var iframeLoaded = false;
+  var loadStartTime = Date.now();
+
+  function onIframeLoad() {
+    if (iframeLoaded) return;
+    iframeLoaded = true;
+    var elapsed = Date.now() - loadStartTime;
+
+    /* The slower the iframe took to load, the longer we buffer.
+       Fast load (<2s) → 3s buffer. Slow load (>5s) → 2s buffer (already waited).
+       Minimum total loader time is always 4.5s. */
+    var buffer = elapsed < 2000 ? 3000 : elapsed < 4000 ? 2500 : 2000;
+    var totalSoFar = Date.now() - loadStartTime;
+    var minTotal = 4500;
+    var wait = Math.max(buffer, minTotal - totalSoFar);
+
+    setProgress(82, messages[4]);
+
+    /* Crawl bar from 82 → 96 during the buffer window so it never looks stuck */
+    var crawlSteps = Math.floor(wait / 400);
+    var crawlPct = 82;
+    var crawlInterval = setInterval(function() {
+      crawlPct = Math.min(96, crawlPct + (14 / crawlSteps));
+      bar.style.width = crawlPct + '%';
+    }, 400);
+
+    setTimeout(function() {
+      clearInterval(crawlInterval);
+      dismiss();
+    }, wait);
+  }
+
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    setProgress(100, 'Welcome');
+    setTimeout(function() {
+      loader.classList.add('hidden');
+    }, 500);
+  }
+
+  if (iframe) {
+    iframe.addEventListener('load', onIframeLoad);
+    /* Hard cap: 12s total no matter what */
+    setTimeout(function() { onIframeLoad(); }, 12000);
+  } else {
+    /* No iframe on mobile (hidden) — just use min time */
+    setTimeout(dismiss, 3000);
+  }
+})();
 </script>
 </body>
 </html>
