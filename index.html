@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mr.Fitz — Artisan Pizzeria</title>
+<title>PIZZARO — Artisan Pizzeria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cormorant+Garamond:wght@300;400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script type="importmap">
@@ -660,7 +660,46 @@ nav {
   line-height: 1.5;
 }
 
-/* ─── REVIEWS ─── */
+/* ─── MENU TABS (interactive) ─── */
+.menu-tabs-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 50px;
+  border-bottom: 2px solid #e8dece;
+}
+.menu-tab-btn {
+  background: none;
+  border: none;
+  padding: 14px 36px;
+  font-size: 0.72rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  color: #9a8a6a;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+.menu-tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.menu-tab-btn.active { color: var(--black); }
+.menu-tab-btn.active::after { transform: scaleX(1); }
+.menu-tab-btn:hover { color: var(--black); }
+
+.menu-panel { display: none; }
+.menu-panel.active { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+/* ─── REVIEWS (carousel) ─── */
 #reviews {
   background: var(--dark);
   padding: 100px 80px;
@@ -694,13 +733,15 @@ nav {
   color: var(--white);
 }
 
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+/* Carousel */
+.reviews-carousel-wrap { position: relative; overflow: hidden; }
+.reviews-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-
 .review-card {
+  flex: 0 0 calc(33.333% - 16px);
+  margin-right: 24px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(201,146,42,0.15);
   padding: 40px 36px;
@@ -708,17 +749,10 @@ nav {
   transition: border-color 0.3s, transform 0.3s;
 }
 .review-card:hover {
-  border-color: rgba(201,146,42,0.4);
-  transform: translateY(-4px);
+  border-color: rgba(201,146,42,0.5);
+  transform: translateY(-6px);
 }
-
-.review-stars {
-  color: var(--gold);
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
-
+.review-stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; }
 .review-text {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.1rem;
@@ -727,46 +761,90 @@ nav {
   margin-bottom: 28px;
   font-style: italic;
 }
-
-.review-author {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.review-author { display: flex; align-items: center; gap: 14px; }
 .review-avatar {
   width: 48px; height: 48px;
   border-radius: 50%;
   background: rgba(201,146,42,0.2);
   border: 1px solid rgba(201,146,42,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem;
   color: var(--gold);
   font-weight: 700;
 }
-.review-name {
-  font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--white);
-  margin-bottom: 2px;
+.review-name { font-weight: 600; font-size: 0.88rem; color: var(--white); margin-bottom: 2px; }
+.review-role { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px; }
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
 }
-.review-role {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
+.carousel-btn {
+  width: 52px; height: 52px;
+  border: 1px solid rgba(201,146,42,0.3);
+  background: none;
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.carousel-btn:hover { background: var(--gold); color: var(--black); }
+.carousel-dots { display: flex; gap: 8px; }
+.carousel-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(201,146,42,0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+.carousel-dot.active { background: var(--gold); width: 24px; border-radius: 4px; }
+
+/* ─── GALLERY (lightbox) ─── */
+#gallery-section {
+  background: var(--black);
+  padding: 100px 80px;
+}
+.gallery-header { text-align: center; margin-bottom: 60px; }
+.gallery-header .eyebrow {
+  font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 16px;
+}
+.gallery-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900; color: var(--white); text-transform: uppercase;
 }
 
-/* ─── GALLERY ─── */
-#gallery {
+.gallery-filter-bar {
+  display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; flex-wrap: wrap;
+}
+.gf-btn {
+  background: none;
+  border: 1px solid rgba(201,146,42,0.3);
+  color: var(--text-muted);
+  padding: 9px 24px;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.gf-btn:hover, .gf-btn.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+
+.gallery-masonry {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 280px);
-  gap: 4px;
-  background: var(--black);
+  grid-template-rows: repeat(2, 260px);
+  gap: 6px;
 }
-
 .gallery-item {
   overflow: hidden;
   position: relative;
@@ -776,57 +854,174 @@ nav {
 .gallery-item img {
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
-  filter: brightness(0.85);
+  transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+  filter: brightness(0.8) saturate(0.9);
 }
-.gallery-item:hover img { transform: scale(1.05); filter: brightness(1); }
-
+.gallery-item:hover img { transform: scale(1.08); filter: brightness(1) saturate(1.1); }
 .gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
-  display: flex;
-  align-items: flex-end;
-  padding: 24px;
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,7,3,0.8) 0%, rgba(201,146,42,0.1) 100%);
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  padding: 28px;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s;
 }
 .gallery-item:hover .gallery-overlay { opacity: 1; }
-.gallery-overlay span {
+.gallery-overlay-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: 3px;
-  color: var(--white);
+  font-size: 1.6rem; letter-spacing: 3px; color: var(--white); margin-bottom: 4px;
+}
+.gallery-overlay-sub {
+  font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 600;
+}
+.gallery-zoom-icon {
+  position: absolute; top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.3s 0.05s;
+}
+.gallery-item:hover .gallery-zoom-icon { opacity: 1; transform: scale(1); }
+
+/* Lightbox */
+#lightbox {
+  position: fixed; inset: 0;
+  background: rgba(10,7,3,0.97);
+  z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+}
+#lightbox.open { opacity: 1; pointer-events: all; }
+#lightbox img {
+  max-width: 85vw; max-height: 85vh;
+  object-fit: contain;
+  border: 1px solid rgba(201,146,42,0.3);
+}
+.lb-close {
+  position: absolute; top: 24px; right: 32px;
+  background: none; border: 1px solid rgba(201,146,42,0.4);
+  color: var(--gold); font-size: 1.4rem; width: 48px; height: 48px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.lb-close:hover { background: var(--gold); color: var(--black); }
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: none; border: 1px solid rgba(201,146,42,0.3);
+  color: var(--gold); font-size: 1.4rem;
+  width: 56px; height: 56px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.lb-nav:hover { background: var(--gold); color: var(--black); }
+.lb-prev { left: 32px; }
+.lb-next { right: 32px; }
+.lb-caption {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; color: var(--cream-dark); letter-spacing: 1px;
+  font-style: italic; text-align: center;
 }
 
-/* ─── STATS ─── */
+/* ─── STATS (animated counters) ─── */
 #stats {
   background: var(--gold);
-  padding: 60px 80px;
+  padding: 70px 80px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+#stats::before {
+  content: '★';
+  position: absolute;
+  right: -40px; top: -60px;
+  font-size: 20rem;
+  color: rgba(0,0,0,0.06);
+  pointer-events: none;
+  font-family: serif;
 }
 .stat-item {
   text-align: center;
-  padding: 20px;
+  padding: 24px;
   border-right: 1px solid rgba(0,0,0,0.15);
+  cursor: default;
+  transition: background 0.3s;
 }
 .stat-item:last-child { border-right: none; }
+.stat-item:hover { background: rgba(0,0,0,0.06); }
 .stat-number {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.5rem;
+  font-size: 4rem;
   line-height: 1;
   color: var(--black);
   margin-bottom: 8px;
+  transition: transform 0.3s;
 }
+.stat-item:hover .stat-number { transform: scale(1.08); }
 .stat-label {
   font-size: 0.72rem;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(0,0,0,0.6);
-  font-weight: 600;
+  color: rgba(0,0,0,0.55);
+  font-weight: 700;
 }
+.stat-icon { font-size: 1.6rem; margin-bottom: 10px; }
+
+/* ─── RESERVATION BANNER ─── */
+#reservation {
+  background: var(--dark);
+  padding: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  border-top: 1px solid rgba(201,146,42,0.15);
+  border-bottom: 1px solid rgba(201,146,42,0.15);
+}
+.res-text .eyebrow {
+  font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px; font-weight: 700;
+}
+.res-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 700; color: var(--white); margin-bottom: 10px;
+}
+.res-text p {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--text-muted); font-size: 1.1rem; line-height: 1.7;
+}
+.res-form {
+  display: flex; flex-wrap: wrap; gap: 12px; flex: 1; justify-content: flex-end;
+}
+.res-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,146,42,0.25);
+  color: var(--white);
+  padding: 14px 20px;
+  font-size: 0.82rem;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  width: 180px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.res-input:focus { border-color: var(--gold); background: rgba(201,146,42,0.07); }
+.res-input::placeholder { color: var(--text-muted); }
+.res-submit {
+  background: var(--gold); color: var(--black); border: none;
+  padding: 14px 32px; font-size: 0.72rem; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.3s;
+}
+.res-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
 
 /* ─── CONTACT / FOOTER ─── */
 footer {
@@ -875,10 +1070,11 @@ footer {
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.9rem;
-  transition: color 0.3s;
+  transition: color 0.3s, padding-left 0.3s;
   font-family: 'Cormorant Garamond', serif;
+  display: inline-block;
 }
-.footer-col ul a:hover { color: var(--gold); }
+.footer-col ul a:hover { color: var(--gold); padding-left: 6px; }
 
 .footer-contact-item {
   display: flex; align-items: flex-start; gap: 12px;
@@ -949,7 +1145,7 @@ footer {
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo">MrFitz</div>
+  <div class="loader-logo">PIZZARO</div>
   <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
 
@@ -1048,7 +1244,7 @@ footer {
       <div class="quality-badge">Quality<br>Food<br>★★★</div>
     </div>
     <div class="about-text">
-      <div class="section-eyebrow">Learn About Mr.Fitz</div>
+      <div class="section-eyebrow">Learn About Pizzaro</div>
       <h2 class="about-title">The Amazing & Quality Food<br>For Your Good Health</h2>
       <p class="about-desc">Welcome to our restaurant, where culinary excellence meets warm hospitality in every dish we serve. Nestled in the heart of the city, our culinary journey begins here.</p>
       <div class="about-btns">
@@ -1115,195 +1311,208 @@ footer {
   </div>
 </section>
 
-<!-- MENU -->
+<!-- MENU (tabbed) -->
 <section id="menu">
   <div class="section-header reveal">
     <div class="eyebrow">Popular Menu</div>
     <h2>We Provide Exclusive Food Based On USA<br>Explore Our Popular Food</h2>
   </div>
-  <div class="menu-grid reveal">
-    <!-- Column 1 -->
+
+  <!-- Tab buttons -->
+  <div class="menu-tabs-bar reveal">
+    <button class="menu-tab-btn active" data-tab="pizza">🍕 Pizzas</button>
+    <button class="menu-tab-btn" data-tab="starters">🥗 Starters</button>
+    <button class="menu-tab-btn" data-tab="mains">🥩 Mains</button>
+    <button class="menu-tab-btn" data-tab="desserts">🍮 Desserts</button>
+    <button class="menu-tab-btn" data-tab="drinks">🍷 Drinks</button>
+  </div>
+
+  <!-- Pizza Panel -->
+  <div class="menu-panel active" id="tab-pizza">
     <div class="menu-column">
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Margherita Royale</div>
-          <div class="menu-item-price">$25</div>
-        </div>
-        <div class="menu-item-desc">Fresh mozzarella, San Marzano tomatoes, fresh basil, extra virgin olive oil.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Truffle Bianca</div>
-          <div class="menu-item-price">$38</div>
-        </div>
-        <div class="menu-item-desc">White truffle oil, ricotta, wild mushrooms, fresh thyme, aged parmesan.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Prosciutto Di Parma</div>
-          <div class="menu-item-price">$42</div>
-        </div>
-        <div class="menu-item-desc">24-month aged prosciutto, arugula, shaved parmesan, balsamic reduction.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Quattro Formaggi</div>
-          <div class="menu-item-price">$35</div>
-        </div>
-        <div class="menu-item-desc">Mozzarella, gorgonzola, fontina, aged pecorino, caramelized onion.</div>
-      </div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Margherita Royale</div><div class="menu-item-price">$25</div></div><div class="menu-item-desc">Fresh mozzarella, San Marzano tomatoes, fresh basil, extra virgin olive oil.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Truffle Bianca</div><div class="menu-item-price">$38</div></div><div class="menu-item-desc">White truffle oil, ricotta, wild mushrooms, fresh thyme, aged parmesan.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Prosciutto Di Parma</div><div class="menu-item-price">$42</div></div><div class="menu-item-desc">24-month aged prosciutto, arugula, shaved parmesan, balsamic reduction.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Quattro Formaggi</div><div class="menu-item-price">$35</div></div><div class="menu-item-desc">Mozzarella, gorgonzola, fontina, aged pecorino, caramelized onion.</div></div>
     </div>
-    <!-- Column 2 -->
     <div class="menu-column">
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Diavola Speziale</div>
-          <div class="menu-item-price">$29</div>
-        </div>
-        <div class="menu-item-desc">Spicy Calabrian salami, nduja, fresh chili, smoked mozzarella, honey.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Seafood Lusso</div>
-          <div class="menu-item-price">$52</div>
-        </div>
-        <div class="menu-item-desc">King prawns, scallops, clams, calamari, lemon zest, white wine sauce.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Burrata Suprema</div>
-          <div class="menu-item-price">$40</div>
-        </div>
-        <div class="menu-item-desc">Creamy burrata, heirloom tomatoes, pesto, pine nuts, fresh basil.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Wagyu Beef Special</div>
-          <div class="menu-item-price">$65</div>
-        </div>
-        <div class="menu-item-desc">A5 wagyu, caramelized onions, roasted garlic, truffle mayo, gruyère.</div>
-      </div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Diavola Speziale</div><div class="menu-item-price">$29</div></div><div class="menu-item-desc">Spicy Calabrian salami, nduja, fresh chili, smoked mozzarella, honey.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Seafood Lusso</div><div class="menu-item-price">$52</div></div><div class="menu-item-desc">King prawns, scallops, clams, calamari, lemon zest, white wine sauce.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Burrata Suprema</div><div class="menu-item-price">$40</div></div><div class="menu-item-desc">Creamy burrata, heirloom tomatoes, pesto, pine nuts, fresh basil.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Wagyu Beef Special</div><div class="menu-item-price">$65</div></div><div class="menu-item-desc">A5 wagyu, caramelized onions, roasted garlic, truffle mayo, gruyère.</div></div>
     </div>
-    <!-- Column 3 -->
     <div class="menu-column">
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Capricciosa Classic</div>
-          <div class="menu-item-price">$31</div>
-        </div>
-        <div class="menu-item-desc">Ham, artichokes, mushrooms, olives, mozzarella, tomato base.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Black Squid Ink</div>
-          <div class="menu-item-price">$48</div>
-        </div>
-        <div class="menu-item-desc">Squid ink dough, baby octopus, nduja, smoked ricotta, microgreens.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Porcini & Tartufo</div>
-          <div class="menu-item-price">$55</div>
-        </div>
-        <div class="menu-item-desc">Porcini mushrooms, black truffle shavings, taleggio, crispy sage.</div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-item-header">
-          <div class="menu-item-name">Gold Leaf Prestige</div>
-          <div class="menu-item-price">$99</div>
-        </div>
-        <div class="menu-item-desc">24k gold leaf, lobster, black caviar, champagne cream, saffron.</div>
-      </div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Capricciosa Classic</div><div class="menu-item-price">$31</div></div><div class="menu-item-desc">Ham, artichokes, mushrooms, olives, mozzarella, tomato base.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Black Squid Ink</div><div class="menu-item-price">$48</div></div><div class="menu-item-desc">Squid ink dough, baby octopus, nduja, smoked ricotta, microgreens.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Porcini & Tartufo</div><div class="menu-item-price">$55</div></div><div class="menu-item-desc">Porcini mushrooms, black truffle shavings, taleggio, crispy sage.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Gold Leaf Prestige</div><div class="menu-item-price">$99</div></div><div class="menu-item-desc">24k gold leaf, lobster, black caviar, champagne cream, saffron.</div></div>
+    </div>
+  </div>
+
+  <!-- Starters Panel -->
+  <div class="menu-panel" id="tab-starters">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Bruschetta Al Tartufo</div><div class="menu-item-price">$18</div></div><div class="menu-item-desc">Grilled sourdough, black truffle, cherry tomatoes, aged pecorino.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Burrata Caprese</div><div class="menu-item-price">$22</div></div><div class="menu-item-desc">Fresh burrata, heirloom tomatoes, basil oil, aged balsamic, sea salt.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Arancini Royale</div><div class="menu-item-price">$16</div></div><div class="menu-item-desc">Saffron risotto balls, fontina heart, crispy panko, arrabiata dip.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Carpaccio Di Manzo</div><div class="menu-item-price">$28</div></div><div class="menu-item-desc">Paper-thin beef, rocket, capers, lemon, shaved parmesan.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Zuppa Di Cozze</div><div class="menu-item-price">$24</div></div><div class="menu-item-desc">Fresh mussels, white wine, garlic, cream, sourdough crostini.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Antipasto Lusso</div><div class="menu-item-price">$35</div></div><div class="menu-item-desc">Selection of cured meats, marinated olives, artichokes, grissini.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Focaccia Genovese</div><div class="menu-item-price">$12</div></div><div class="menu-item-desc">House-baked focaccia, rosemary, fleur de sel, extra virgin olive oil.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Tartare Di Salmone</div><div class="menu-item-price">$32</div></div><div class="menu-item-desc">Wild salmon tartare, avocado, cucumber, lemon, caviar crown.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Insalata Di Tartufo</div><div class="menu-item-price">$26</div></div><div class="menu-item-desc">Mixed greens, black truffle vinaigrette, toasted pine nuts, parmesan.</div></div>
+    </div>
+  </div>
+
+  <!-- Mains Panel -->
+  <div class="menu-panel" id="tab-mains">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Filetto Di Manzo</div><div class="menu-item-price">$72</div></div><div class="menu-item-desc">Wagyu beef tenderloin, truffle jus, roasted bone marrow, asparagus.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Branzino Al Sale</div><div class="menu-item-price">$58</div></div><div class="menu-item-desc">Salt-crusted sea bass, lemon oil, capers, fennel, herb salad.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Agnello In Crosta</div><div class="menu-item-price">$68</div></div><div class="menu-item-desc">Herb-crusted rack of lamb, rosemary jus, gratin dauphinois.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Risotto Al Tartufo</div><div class="menu-item-price">$48</div></div><div class="menu-item-desc">Carnaroli risotto, black truffle, aged parmesan, white wine foam.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Aragosta Griglia</div><div class="menu-item-price">$95</div></div><div class="menu-item-desc">Grilled whole lobster, garlic butter, bisque, saffron potatoes.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Pollo Al Tartufo</div><div class="menu-item-price">$44</div></div><div class="menu-item-desc">Free-range chicken, truffle butter, wild mushroom ragù, polenta.</div></div>
+    </div>
+  </div>
+
+  <!-- Desserts Panel -->
+  <div class="menu-panel" id="tab-desserts">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Tiramisù Classico</div><div class="menu-item-price">$16</div></div><div class="menu-item-desc">House mascarpone, espresso-soaked ladyfingers, dark cocoa dusting.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Panna Cotta Al Oro</div><div class="menu-item-price">$19</div></div><div class="menu-item-desc">Vanilla bean panna cotta, 24k gold leaf, raspberry coulis, brittle.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Soufflé Al Cioccolato</div><div class="menu-item-price">$22</div></div><div class="menu-item-desc">Warm Valrhona chocolate soufflé, Madagascar vanilla ice cream.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Cannoli Siciliani</div><div class="menu-item-price">$14</div></div><div class="menu-item-desc">Crisp pastry shells, sweet ricotta, pistachios, candied orange peel.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Affogato Al Tartufo</div><div class="menu-item-price">$18</div></div><div class="menu-item-desc">Truffle-infused vanilla gelato drowned in fresh double espresso.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Gelato Selection</div><div class="menu-item-price">$12</div></div><div class="menu-item-desc">Three scoops of seasonal artisan gelato, wafer, fresh berry compote.</div></div>
+    </div>
+  </div>
+
+  <!-- Drinks Panel -->
+  <div class="menu-panel" id="tab-drinks">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Barolo Chinato</div><div class="menu-item-price">$22</div></div><div class="menu-item-desc">Piedmont Barolo, alpine herbs, quinine bark — the king of digestivos.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Negroni Sbagliato</div><div class="menu-item-price">$18</div></div><div class="menu-item-desc">Campari, sweet vermouth, Prosecco, blood orange slice.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Amarone Selection</div><div class="menu-item-price">$28</div></div><div class="menu-item-desc">Glass of curated Amarone della Valpolicella, perfectly cellared.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Limoncello Spritz</div><div class="menu-item-price">$15</div></div><div class="menu-item-desc">House limoncello, Prosecco, fresh mint, Amalfi lemon wheel.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Acqua Panna / S.Pellegrino</div><div class="menu-item-price">$6</div></div><div class="menu-item-desc">Still or sparkling Italian mineral water, perfectly chilled.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Espresso Napoletano</div><div class="menu-item-price">$5</div></div><div class="menu-item-desc">Single origin Neapolitan espresso, served with a square of dark chocolate.</div></div>
     </div>
   </div>
 </section>
 
-<!-- REVIEWS -->
+<!-- REVIEWS (carousel) -->
 <section id="reviews">
   <div class="reviews-header reveal">
     <div class="eyebrow">What Our Guests Say</div>
     <h2>Praised by Food Lovers<br>Across the World</h2>
   </div>
-  <div class="reviews-grid reveal">
-    <div class="review-card">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"Absolutely the finest pizza I've ever had. The truffle bianca was transcendent — a perfect balance of earthy richness and delicate cream. An unforgettable evening."</p>
-      <div class="review-author">
-        <div class="review-avatar">A</div>
-        <div>
-          <div class="review-name">Alexandra Monroe</div>
-          <div class="review-role">Food Critic, The Times</div>
-        </div>
-      </div>
+  <div class="reviews-carousel-wrap reveal">
+    <div class="reviews-track" id="reviewsTrack">
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Absolutely the finest pizza I've ever had. The truffle bianca was transcendent — a perfect balance of earthy richness and delicate cream. An unforgettable evening."</p><div class="review-author"><div class="review-avatar">A</div><div><div class="review-name">Alexandra Monroe</div><div class="review-role">Food Critic, The Times</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The ambiance is exquisite, the service impeccable, and the wagyu pizza defies all expectations. Pizzaro has redefined what luxury dining means in New York. A must-visit."</p><div class="review-author"><div class="review-avatar">J</div><div><div class="review-name">James Whitmore</div><div class="review-role">Michelin Guide Contributor</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"From the moment we walked in, we knew this was special. The gold leaf prestige pizza is an experience unto itself. Extraordinary in every single dimension."</p><div class="review-author"><div class="review-avatar">S</div><div><div class="review-name">Sophia Bellaforte</div><div class="review-role">Culinary Influencer</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The porcini and truffle pizza with aged taleggio melted in my mouth. The wine pairing suggestions were impeccable. Pizzaro is truly in a league of its own."</p><div class="review-author"><div class="review-avatar">M</div><div><div class="review-name">Marco di Napoli</div><div class="review-role">Restaurateur, Rome</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Celebrated our anniversary here and it was pure magic. Every detail — from the hand-painted menu to the tableside service — spoke of genuine artistry and love."</p><div class="review-author"><div class="review-avatar">L</div><div><div class="review-name">Lucia Fernandez</div><div class="review-role">Travel & Food Writer</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I've eaten pizza across Naples, Rome, and New York. Nothing compares to Pizzaro's crust — blistered perfection with that unmistakable wood-fired char. Brilliant."</p><div class="review-author"><div class="review-avatar">R</div><div><div class="review-name">Robert Ashford</div><div class="review-role">Gourmet Magazine Editor</div></div></div></div>
     </div>
-    <div class="review-card">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"The ambiance is exquisite, the service impeccable, and the wagyu pizza defies all expectations. Mr.Fitz has redefined what luxury dining means. A must-visit."</p>
-      <div class="review-author">
-        <div class="review-avatar">J</div>
-        <div>
-          <div class="review-name">James Whitmore</div>
-          <div class="review-role">Michelin Guide Contributor</div>
-        </div>
-      </div>
-    </div>
-    <div class="review-card">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"From the moment we walked in, we knew this was special. The gold leaf prestige pizza is an experience unto itself. Extraordinary in every dimension."</p>
-      <div class="review-author">
-        <div class="review-avatar">S</div>
-        <div>
-          <div class="review-name">Sophia Bellaforte</div>
-          <div class="review-role">Culinary Influencer</div>
-        </div>
-      </div>
-    </div>
+  </div>
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="revPrev">←</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+    <button class="carousel-btn" id="revNext">→</button>
   </div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="gallery-item">
-    <img src="food1.jpeg" alt="Gallery 1">
-    <div class="gallery-overlay"><span>Signature Creations</span></div>
+<!-- GALLERY (lightbox) -->
+<section id="gallery-section">
+  <div class="gallery-header reveal">
+    <div class="eyebrow">Our Gallery</div>
+    <h2>A Feast for the Eyes</h2>
   </div>
-  <div class="gallery-item">
-    <img src="food6.jpeg" alt="Gallery 2">
-    <div class="gallery-overlay"><span>Fresh Daily</span></div>
+  <div class="gallery-filter-bar reveal">
+    <button class="gf-btn active" data-filter="all">All</button>
+    <button class="gf-btn" data-filter="pizza">Pizzas</button>
+    <button class="gf-btn" data-filter="mains">Mains</button>
+    <button class="gf-btn" data-filter="ambiance">Ambiance</button>
   </div>
-  <div class="gallery-item">
-    <img src="food2.jpeg" alt="Gallery 3">
-    <div class="gallery-overlay"><span>Premium Ingredients</span></div>
-  </div>
-  <div class="gallery-item">
-    <img src="food4.jpeg" alt="Gallery 4">
-    <div class="gallery-overlay"><span>Artisan Craft</span></div>
-  </div>
-  <div class="gallery-item">
-    <img src="food5.jpeg" alt="Gallery 5">
-    <div class="gallery-overlay"><span>Wood-Fired Perfection</span></div>
+  <div class="gallery-masonry reveal">
+    <div class="gallery-item" data-cat="pizza" data-caption="Margherita Royale — Our Signature" data-src="food1.jpeg"><img src="food1.jpeg" alt="Gallery 1"><div class="gallery-overlay"><div class="gallery-overlay-title">Signature Creations</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="mains" data-caption="Premium Ingredients, Sourced Daily" data-src="food6.jpeg"><img src="food6.jpeg" alt="Gallery 2"><div class="gallery-overlay"><div class="gallery-overlay-title">Fresh Daily</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="pizza" data-caption="Truffle Bianca — A True Delicacy" data-src="food2.jpeg"><img src="food2.jpeg" alt="Gallery 3"><div class="gallery-overlay"><div class="gallery-overlay-title">Premium Ingredients</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="ambiance" data-caption="Wood-Fired Oven Heritage" data-src="food4.jpeg"><img src="food4.jpeg" alt="Gallery 4"><div class="gallery-overlay"><div class="gallery-overlay-title">Artisan Craft</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="mains" data-caption="Grilled to Perfection" data-src="food5.jpeg"><img src="food5.jpeg" alt="Gallery 5"><div class="gallery-overlay"><div class="gallery-overlay-title">Wood-Fired Perfection</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
   </div>
 </section>
 
-<!-- STATS -->
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev">←</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" id="lbNext">→</button>
+  <div class="lb-caption" id="lbCaption"></div>
+</div>
+
+<!-- STATS (animated counters) -->
 <div id="stats">
-  <div class="stat-item reveal">
-    <div class="stat-number">250+</div>
+  <div class="stat-item">
+    <div class="stat-icon">🍕</div>
+    <div class="stat-number" data-target="250" data-suffix="+">0</div>
     <div class="stat-label">Menu Items</div>
   </div>
-  <div class="stat-item reveal">
-    <div class="stat-number">18K+</div>
+  <div class="stat-item">
+    <div class="stat-icon">😊</div>
+    <div class="stat-number" data-target="18000" data-suffix="K+">0</div>
     <div class="stat-label">Happy Customers</div>
   </div>
-  <div class="stat-item reveal">
-    <div class="stat-number">15+</div>
+  <div class="stat-item">
+    <div class="stat-icon">🏅</div>
+    <div class="stat-number" data-target="15" data-suffix="+">0</div>
     <div class="stat-label">Years of Excellence</div>
   </div>
-  <div class="stat-item reveal">
-    <div class="stat-number">4.9★</div>
+  <div class="stat-item">
+    <div class="stat-icon">⭐</div>
+    <div class="stat-number" data-target="49" data-suffix="★" data-decimal="true">0</div>
     <div class="stat-label">Average Rating</div>
   </div>
 </div>
+
+<!-- RESERVATION BANNER -->
+<section id="reservation">
+  <div class="res-text reveal">
+    <div class="eyebrow">Reserve a Table</div>
+    <h2>Book Your Dining<br>Experience Tonight</h2>
+    <p>Tables fill quickly. Reserve yours and we'll craft an evening to remember.</p>
+  </div>
+  <div class="res-form reveal">
+    <input type="text" class="res-input" placeholder="Your Name">
+    <input type="email" class="res-input" placeholder="Email Address">
+    <input type="date" class="res-input">
+    <select class="res-input" style="cursor:pointer;">
+      <option value="" disabled selected>Guests</option>
+      <option>1 Guest</option><option>2 Guests</option><option>3 Guests</option>
+      <option>4 Guests</option><option>5+ Guests</option>
+    </select>
+    <button class="res-submit">Reserve Now →</button>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer id="contact">
@@ -1325,7 +1534,7 @@ footer {
         <li><a href="#menu">Menu</a></li>
         <li><a href="#about-categories">About Us</a></li>
         <li><a href="#reviews">Reviews</a></li>
-        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#gallery-section">Gallery</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1340,26 +1549,14 @@ footer {
     </div>
     <div class="footer-col">
       <h4>Contact Us</h4>
-      <div class="footer-contact-item">
-        <span class="contact-icon">📍</span>
-        <span class="contact-text">42 Artisan Lane, Gourmet District, New York, NY 10001</span>
-      </div>
-      <div class="footer-contact-item">
-        <span class="contact-icon">📞</span>
-        <span class="contact-text">+880 123 456 88</span>
-      </div>
-      <div class="footer-contact-item">
-        <span class="contact-icon">✉️</span>
-        <span class="contact-text">reserve@mrfitz.com</span>
-      </div>
-      <div class="footer-contact-item">
-        <span class="contact-icon">🕐</span>
-        <span class="contact-text">Mon–Sun: 11:00 AM – 11:00 PM</span>
-      </div>
+      <div class="footer-contact-item"><span class="contact-icon">📍</span><span class="contact-text">42 Artisan Lane, Gourmet District, New York, NY 10001</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">📞</span><span class="contact-text">+880 123 456 88</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">✉️</span><span class="contact-text">reserve@pizzaro.com</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">🕐</span><span class="contact-text">Mon–Sun: 11:00 AM – 11:00 PM</span></div>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Mr.Fitz. All rights reserved. Crafted with passion.</p>
+    <p>© 2026 PIZZARO. All rights reserved. Crafted with passion.</p>
     <p>Privacy Policy · Terms of Service</p>
   </div>
 </footer>
@@ -1522,7 +1719,7 @@ window.addEventListener('resize', () => {
 </script>
 
 <script>
-// Loader
+/* ── LOADER ── */
 window.addEventListener('load', () => {
   setTimeout(() => {
     const loader = document.getElementById('loader');
@@ -1531,16 +1728,168 @@ window.addEventListener('load', () => {
   }, 1600);
 });
 
-// Reveal on scroll
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-    }
+/* ── REVEAL ON SCROLL ── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ── MENU TABS ── */
+document.querySelectorAll('.menu-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.menu-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.getElementById('tab-' + btn.dataset.tab);
+    if (target) target.classList.add('active');
   });
-}, { threshold: 0.1 });
-reveals.forEach(el => observer.observe(el));
+});
+
+/* ── REVIEWS CAROUSEL ── */
+(function() {
+  const track = document.getElementById('reviewsTrack');
+  const dots  = document.getElementById('carouselDots');
+  const cards = track ? track.querySelectorAll('.review-card') : [];
+  const total = cards.length;
+  const perPage = 3;
+  const pages = Math.ceil(total / perPage);
+  let current = 0;
+  let autoTimer;
+
+  if (!track || total === 0) return;
+
+  // Build dots
+  for (let i = 0; i < pages; i++) {
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dots.appendChild(d);
+  }
+
+  function goTo(page) {
+    current = (page + pages) % pages;
+    const cardWidth = cards[0].offsetWidth + 24;
+    track.style.transform = `translateX(-${current * perPage * cardWidth}px)`;
+    dots.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => goTo(current + 1), 5000);
+  }
+
+  document.getElementById('revPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('revNext').addEventListener('click', () => goTo(current + 1));
+  autoTimer = setTimeout(() => goTo(1), 5000);
+})();
+
+/* ── GALLERY FILTER + LIGHTBOX ── */
+(function() {
+  const items = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lbImg');
+  const lbCap    = document.getElementById('lbCaption');
+  let currentImages = [...items];
+  let currentIdx = 0;
+
+  // Filter buttons
+  document.querySelectorAll('.gf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      currentImages = [];
+      items.forEach(item => {
+        const show = filter === 'all' || item.dataset.cat === filter;
+        item.style.display = show ? '' : 'none';
+        if (show) currentImages.push(item);
+      });
+    });
+  });
+
+  // Open lightbox
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      currentIdx = currentImages.indexOf(item);
+      openLB(currentIdx);
+    });
+  });
+
+  function openLB(idx) {
+    currentIdx = (idx + currentImages.length) % currentImages.length;
+    lbImg.src = currentImages[currentIdx].dataset.src;
+    lbCap.textContent = currentImages[currentIdx].dataset.caption;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('lbClose').addEventListener('click', closeLB);
+  document.getElementById('lbPrev').addEventListener('click', () => openLB(currentIdx - 1));
+  document.getElementById('lbNext').addEventListener('click', () => openLB(currentIdx + 1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLB(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') openLB(currentIdx - 1);
+    if (e.key === 'ArrowRight') openLB(currentIdx + 1);
+  });
+
+  function closeLB() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+})();
+
+/* ── ANIMATED COUNTERS ── */
+(function() {
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  let triggered = false;
+
+  const statsObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !triggered) {
+      triggered = true;
+      counters.forEach(el => {
+        const target = +el.dataset.target;
+        const suffix = el.dataset.suffix || '';
+        const isDecimal = el.dataset.decimal === 'true';
+        const duration = 1800;
+        const start = performance.now();
+
+        function tick(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          let val = target * ease;
+
+          if (isDecimal) {
+            // e.g. target 49 → display 4.9
+            el.textContent = (val / 10).toFixed(1) + suffix;
+          } else if (target >= 1000) {
+            // convert to K
+            el.textContent = Math.round(val / 1000) + (progress === 1 ? suffix : 'K+');
+          } else {
+            el.textContent = Math.round(val) + (progress === 1 ? suffix : '+');
+          }
+
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+  }, { threshold: 0.3 });
+
+  const statsEl = document.getElementById('stats');
+  if (statsEl) statsObs.observe(statsEl);
+})();
+
+/* ── RESERVATION FORM FEEDBACK ── */
+document.querySelector('.res-submit') && document.querySelector('.res-submit').addEventListener('click', function() {
+  const inputs = document.querySelectorAll('.res-input');
+  let allFilled = true;
+  inputs.forEach(i => { if (!i.value) { allFilled = false; i.style.borderColor = 'var(--red)'; } else i.style.borderColor = ''; });
+  if (allFilled) {
+    this.textContent = '✓ Reserved!';
+    this.style.background = '#2ecc71';
+    setTimeout(() => { this.textContent = 'Reserve Now →'; this.style.background = ''; inputs.forEach(i => i.value = ''); }, 2800);
+  }
+});
 </script>
 </body>
 </html>
