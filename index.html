@@ -7,8 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Three.js for 3D model support -->
+<!-- Three.js core -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  GLTFLoader — required to load .glb / .gltf 3-D models         │
+  │  Do NOT remove this script tag.                                 │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script id="tailwind-config">
   tailwind.config = {
     darkMode: "class",
@@ -94,9 +101,6 @@
   }
 </script>
 <style>
-  /* =====================================================
-     CORE DESIGN SYSTEM
-     ===================================================== */
   :root {
     --cyan: #8aebff;
     --cyan-glow: rgba(138,235,255,0.4);
@@ -104,433 +108,108 @@
     --bg: #0c1324;
     --surface: #191f31;
   }
-
   * { box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
+  body { min-height: 100dvh; overflow-x: hidden; cursor: none; background: var(--bg); }
+  #cursor-dot { width:8px;height:8px;background:var(--cyan);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s ease,background .2s;box-shadow:0 0 10px var(--cyan-glow); }
+  #cursor-ring { width:36px;height:36px;border:1.5px solid rgba(138,235,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,transform .15s ease; }
+  body:has(a:hover) #cursor-ring,body:has(button:hover) #cursor-ring { width:56px;height:56px;border-color:var(--cyan); }
+  .glass-card { background:rgba(2,6,23,.6);backdrop-filter:blur(20px);border:1px solid rgba(138,235,255,.15);box-shadow:inset 0 0 20px rgba(138,235,255,.05);transition:all .35s cubic-bezier(.4,0,.2,1); }
+  .glass-card:hover { border-color:rgba(138,235,255,.45);box-shadow:0 0 30px rgba(138,235,255,.12),inset 0 0 20px rgba(138,235,255,.07);transform:translateY(-3px); }
+  .glass-card:active { transform:scale(.97); }
+  .scanning-line { height:2px;background:linear-gradient(90deg,transparent,rgba(138,235,255,.8),transparent);width:100%;position:absolute;z-index:10;animation:scan 4s linear infinite;box-shadow:0 0 15px rgba(138,235,255,.4); }
+  @keyframes scan { 0%{top:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0} }
+  @keyframes spin-slow { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
+  .animate-spin-slow { animation:spin-slow 12s linear infinite; }
+  @keyframes bio-pulse { 0%,100%{filter:brightness(1) drop-shadow(0 0 5px rgba(138,235,255,.3))}50%{filter:brightness(1.3) drop-shadow(0 0 15px rgba(138,235,255,.6))} }
+  .animate-bio-pulse { animation:bio-pulse 4s ease-in-out infinite; }
+  @keyframes hud-flicker { 0%{opacity:1}3%{opacity:.8}6%{opacity:1}7%{opacity:.9}8%{opacity:1}100%{opacity:1} }
+  .animate-hud-flicker { animation:hud-flicker 5s infinite; }
+  @keyframes drift { 0%{transform:translateY(0) translateX(0) scale(1);opacity:.1}50%{transform:translateY(-50px) translateX(20px) scale(1.1);opacity:.3}100%{transform:translateY(-100px) translateX(0) scale(1);opacity:.1} }
+  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
+  .animate-float { animation:float 6s ease-in-out infinite; }
+  @keyframes shimmer { 0%{background-position:-200% center}100%{background-position:200% center} }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)} }
+  .fade-in-up { animation:fadeInUp .9s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(138,235,255,.2)}50%{box-shadow:0 0 50px rgba(138,235,255,.5),0 0 100px rgba(138,235,255,.2)} }
+  .reveal { opacity:0;transform:translateY(50px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1); }
+  .reveal.revealed { opacity:1;transform:translateY(0); }
+  .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}
+  .food-card { transition:transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .4s ease;transform-style:preserve-3d;will-change:transform; }
+  .food-card:hover { transform:translateY(-8px) rotateX(4deg) scale(1.02);box-shadow:0 20px 60px rgba(138,235,255,.15),0 0 0 1px rgba(138,235,255,.3); }
+  .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+  .navbar-scrolled { background:rgba(12,19,36,.95) !important;box-shadow:0 4px 30px rgba(138,235,255,.1); }
+  .bioluminescent-glow { text-shadow:0 0 15px rgba(138,235,255,.6); }
+  .outer-glow-cyan { box-shadow:0 0 30px rgba(138,235,255,.15); }
+  .btn-primary { background:var(--cyan);color:#00363e;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;font-weight:700;position:relative;overflow:hidden;transition:all .3s;animation:bio-pulse 4s ease-in-out infinite; }
+  .btn-primary::before { content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.3) 50%,transparent 100%);background-size:200% auto;opacity:0;transition:opacity .3s; }
+  .btn-primary:hover::before { opacity:1;animation:shimmer 1.2s linear infinite; }
+  .btn-primary:hover { filter:brightness(1.15);transform:translateY(-2px); }
+  .btn-primary:active { transform:scale(.96); }
+  .particle { position:fixed;background:white;border-radius:50%;pointer-events:none;z-index:1; }
+  #model-container { position:relative;width:100%;max-width:700px;aspect-ratio:1/1;margin:0 auto;display:flex;align-items:center;justify-content:center; }
+  #model-container canvas { border-radius:50%; }
+  #model-container::after { content:'';position:absolute;inset:-2px;background:radial-gradient(ellipse at center,transparent 40%,var(--bg) 75%);pointer-events:none;z-index:5; }
+  .cat-btn { flex:1;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;font-weight:700;transition:all .3s;color:#859397; }
+  .cat-btn.active { background:rgba(138,235,255,.15);color:#8aebff;border:1px solid rgba(138,235,255,.4);animation:bio-pulse 4s ease-in-out infinite; }
+  .cat-btn:hover:not(.active){color:#8aebff;}
+  .noise-overlay { position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:256px 256px; }
+  .grid-overlay { position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:linear-gradient(to right,#22d3ee 1px,transparent 1px),linear-gradient(to bottom,#22d3ee 1px,transparent 1px);background-size:80px 80px;z-index:1; }
+  #scroll-progress { position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#8aebff,#ffb2b9);z-index:200;transition:width .1s;box-shadow:0 0 8px rgba(138,235,255,.7); }
+  #menu-modal { position:fixed;inset:0;z-index:500;background:rgba(7,13,31,.96);backdrop-filter:blur(30px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s; }
+  #menu-modal.open { opacity:1;pointer-events:all; }
+  .menu-link { font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:700;color:rgba(220,225,251,.3);letter-spacing:-.02em;transition:all .3s;display:block;line-height:1.2; }
+  .menu-link:hover { color:#8aebff;text-shadow:0 0 30px rgba(138,235,255,.5);transform:translateX(10px); }
+  body { min-height:max(884px,100dvh); }
+  @keyframes steam { 0%{transform:translateY(0) scaleX(1);opacity:.6}100%{transform:translateY(-60px) scaleX(1.4);opacity:0} }
+  .steam-particle { position:absolute;width:3px;border-radius:50%;background:rgba(138,235,255,.4);animation:steam 2s ease-out infinite; }
+  .ambient-orb { position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:bio-pulse 6s ease-in-out infinite; }
+  @media (pointer:coarse){body{cursor:auto}#cursor-dot,#cursor-ring{display:none}}
+  section{position:relative}
+  .magnetic{transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
 
-  body {
-    min-height: 100dvh;
-    overflow-x: hidden;
-    cursor: none;
-    background: var(--bg);
-  }
-
-  /* =====================================================
-     CUSTOM CURSOR
-     ===================================================== */
-  #cursor-dot {
-    width: 8px; height: 8px;
-    background: var(--cyan);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%,-50%);
-    transition: transform 0.1s ease, background 0.2s;
-    box-shadow: 0 0 10px var(--cyan-glow);
-  }
-  #cursor-ring {
-    width: 36px; height: 36px;
-    border: 1.5px solid rgba(138,235,255,0.5);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%,-50%);
-    transition: width 0.3s, height 0.3s, border-color 0.3s, transform 0.15s ease;
-  }
-  body:has(a:hover) #cursor-ring,
-  body:has(button:hover) #cursor-ring {
-    width: 56px; height: 56px;
-    border-color: var(--cyan);
-  }
-
-  /* =====================================================
-     GLASS CARD
-     ===================================================== */
-  .glass-card {
-    background: rgba(2, 6, 23, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(138, 235, 255, 0.15);
-    box-shadow: inset 0 0 20px rgba(138, 235, 255, 0.05);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .glass-card:hover {
-    border-color: rgba(138, 235, 255, 0.45);
-    box-shadow: 0 0 30px rgba(138, 235, 255, 0.12), inset 0 0 20px rgba(138, 235, 255, 0.07);
-    transform: translateY(-3px);
-  }
-  .glass-card:active { transform: scale(0.97); }
-
-  /* =====================================================
-     SCANNING LINE
-     ===================================================== */
-  .scanning-line {
+  /* Loading bar shown while GLB is fetching */
+  #glb-loading-bar {
+    position: absolute;
+    bottom: 18%;
+    left: 20%;
+    right: 20%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(138,235,255,0.8), transparent);
-    width: 100%;
-    position: absolute;
-    z-index: 10;
-    animation: scan 4s linear infinite;
-    box-shadow: 0 0 15px rgba(138,235,255,0.4);
-  }
-  @keyframes scan {
-    0% { top: 0%; opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
-
-  /* =====================================================
-     ANIMATIONS
-     ===================================================== */
-  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  .animate-spin-slow { animation: spin-slow 12s linear infinite; }
-
-  @keyframes bio-pulse {
-    0%,100% { filter: brightness(1) drop-shadow(0 0 5px rgba(138,235,255,0.3)); }
-    50% { filter: brightness(1.3) drop-shadow(0 0 15px rgba(138,235,255,0.6)); }
-  }
-  .animate-bio-pulse { animation: bio-pulse 4s ease-in-out infinite; }
-
-  @keyframes hud-flicker {
-    0% { opacity: 1; } 3% { opacity: 0.8; } 6% { opacity: 1; }
-    7% { opacity: 0.9; } 8% { opacity: 1; } 100% { opacity: 1; }
-  }
-  .animate-hud-flicker { animation: hud-flicker 5s infinite; }
-
-  @keyframes drift {
-    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.1; }
-    50% { transform: translateY(-50px) translateX(20px) scale(1.1); opacity: 0.3; }
-    100% { transform: translateY(-100px) translateX(0) scale(1); opacity: 0.1; }
-  }
-
-  @keyframes float {
-    0%,100% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
-  }
-  .animate-float { animation: float 6s ease-in-out infinite; }
-
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .fade-in-up { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) both; }
-
-  @keyframes revealLeft {
-    from { clip-path: inset(0 100% 0 0); }
-    to { clip-path: inset(0 0% 0 0); }
-  }
-
-  @keyframes glowPulse {
-    0%,100% { box-shadow: 0 0 20px rgba(138,235,255,0.2); }
-    50% { box-shadow: 0 0 50px rgba(138,235,255,0.5), 0 0 100px rgba(138,235,255,0.2); }
-  }
-
-  /* =====================================================
-     SCROLL REVEAL
-     ===================================================== */
-  .reveal {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
-  }
-  .reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-  .reveal-delay-4 { transition-delay: 0.4s; }
-
-  /* =====================================================
-     FOOD CARD HOVER PHYSICS
-     ===================================================== */
-  .food-card {
-    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-  .food-card:hover {
-    transform: translateY(-8px) rotateX(4deg) scale(1.02);
-    box-shadow: 0 20px 60px rgba(138,235,255,0.15), 0 0 0 1px rgba(138,235,255,0.3);
-  }
-
-  /* =====================================================
-     NAV + SCROLLBAR
-     ===================================================== */
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-  .navbar-scrolled {
-    background: rgba(12,19,36,0.95) !important;
-    box-shadow: 0 4px 30px rgba(138,235,255,0.1);
-  }
-
-  /* =====================================================
-     BIOLUMINESCENT TEXT
-     ===================================================== */
-  .bioluminescent-glow { text-shadow: 0 0 15px rgba(138,235,255,0.6); }
-  .outer-glow-cyan { box-shadow: 0 0 30px rgba(138,235,255,0.15); }
-
-  /* =====================================================
-     SHIMMER BUTTON
-     ===================================================== */
-  .btn-primary {
-    background: var(--cyan);
-    color: #00363e;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    font-weight: 700;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    animation: bio-pulse 4s ease-in-out infinite;
-  }
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-    background-size: 200% auto;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .btn-primary:hover::before {
-    opacity: 1;
-    animation: shimmer 1.2s linear infinite;
-  }
-  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
-  .btn-primary:active { transform: scale(0.96); }
-
-  /* =====================================================
-     PARTICLE
-     ===================================================== */
-  .particle {
-    position: fixed;
-    background: white;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* =====================================================
-     3D VIEWPORT - SEAMLESS
-     ===================================================== */
-  #model-container {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    aspect-ratio: 1/1;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  #model-container canvas {
-    border-radius: 50%;
-  }
-  /* Radial fade to blend with background */
-  #model-container::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: radial-gradient(ellipse at center, transparent 40%, var(--bg) 75%);
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  /* =====================================================
-     CATEGORY TOGGLE
-     ===================================================== */
-  .cat-btn {
-    flex: 1;
-    padding: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    font-weight: 700;
-    transition: all 0.3s;
-    color: #859397;
-  }
-  .cat-btn.active {
     background: rgba(138,235,255,0.15);
-    color: #8aebff;
-    border: 1px solid rgba(138,235,255,0.4);
-    animation: bio-pulse 4s ease-in-out infinite;
+    z-index: 8;
+    overflow: hidden;
   }
-  .cat-btn:hover:not(.active) { color: #8aebff; }
-
-  /* =====================================================
-     NOISE OVERLAY
-     ===================================================== */
-  .noise-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
-
-  /* =====================================================
-     GRID OVERLAY
-     ===================================================== */
-  .grid-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.04;
-    background-image:
-      linear-gradient(to right, #22d3ee 1px, transparent 1px),
-      linear-gradient(to bottom, #22d3ee 1px, transparent 1px);
-    background-size: 80px 80px;
-    z-index: 1;
-  }
-
-  /* =====================================================
-     SCROLL PROGRESS
-     ===================================================== */
-  #scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #8aebff, #ffb2b9);
-    z-index: 200;
-    transition: width 0.1s;
-    box-shadow: 0 0 8px rgba(138,235,255,0.7);
-  }
-
-  /* =====================================================
-     MENU MODAL
-     ===================================================== */
-  #menu-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    background: rgba(7,13,31,0.96);
-    backdrop-filter: blur(30px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s;
-  }
-  #menu-modal.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-  .menu-link {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(32px, 5vw, 64px);
-    font-weight: 700;
-    color: rgba(220,225,251,0.3);
-    letter-spacing: -0.02em;
-    transition: all 0.3s;
+  #glb-loading-bar span {
     display: block;
-    line-height: 1.2;
+    height: 100%;
+    background: #8aebff;
+    box-shadow: 0 0 8px rgba(138,235,255,0.8);
+    width: 0%;
+    transition: width 0.3s ease;
   }
-  .menu-link:hover {
-    color: #8aebff;
-    text-shadow: 0 0 30px rgba(138,235,255,0.5);
-    transform: translateX(10px);
-  }
-
-  /* =====================================================
-     MOBILE NAV + OVERFLOW
-     ===================================================== */
-  body { min-height: max(884px, 100dvh); }
-
-  /* =====================================================
-     STEAM / GLOW EFFECTS
-     ===================================================== */
-  @keyframes steam {
-    0% { transform: translateY(0) scaleX(1); opacity: 0.6; }
-    100% { transform: translateY(-60px) scaleX(1.4); opacity: 0; }
-  }
-  .steam-particle {
-    position: absolute;
-    width: 3px;
-    border-radius: 50%;
-    background: rgba(138,235,255,0.4);
-    animation: steam 2s ease-out infinite;
-  }
-
-  /* =====================================================
-     AMBIENT LIGHT ORB
-     ===================================================== */
-  .ambient-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    animation: bio-pulse 6s ease-in-out infinite;
-  }
-
-  /* =====================================================
-     MOBILE CURSOR OVERRIDE
-     ===================================================== */
-  @media (pointer: coarse) {
-    body { cursor: auto; }
-    #cursor-dot, #cursor-ring { display: none; }
-  }
-
-  /* =====================================================
-     SECTION TRANSITION
-     ===================================================== */
-  section { position: relative; }
-
-  /* =====================================================
-     MAGNETIC BUTTON EFFECT
-     ===================================================== */
-  .magnetic { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 </style>
 </head>
 <body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
 
-<!-- Custom Cursor -->
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
-
-<!-- Scroll Progress Bar -->
 <div id="scroll-progress"></div>
-
-<!-- Fixed Background Effects -->
 <div class="noise-overlay"></div>
 <div class="grid-overlay"></div>
 
-<!-- Ambient Orbs -->
 <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
   <div class="ambient-orb w-96 h-96 bg-cyan-500/10 top-1/4 -left-32" style="animation-delay:-2s"></div>
   <div class="ambient-orb w-80 h-80 bg-red-400/8 bottom-1/3 right-0" style="animation-delay:-4s"></div>
   <div class="ambient-orb w-64 h-64 bg-cyan-400/5 top-3/4 left-1/2" style="animation-delay:-1s"></div>
 </div>
-
-<!-- Particle Background -->
 <div class="fixed inset-0 pointer-events-none z-0">
-  <div class="particle w-1 h-1 top-[20%] left-[10%]" style="animation: drift 15s infinite"></div>
-  <div class="particle w-2 h-2 top-[50%] left-[80%]" style="animation: drift 25s infinite -2s"></div>
-  <div class="particle w-1 h-1 top-[70%] left-[30%]" style="animation: drift 20s infinite -5s"></div>
-  <div class="particle w-1.5 h-1.5 top-[10%] left-[60%]" style="animation: drift 18s infinite -8s"></div>
-  <div class="particle w-1 h-1 top-[85%] left-[50%]" style="animation: drift 22s infinite -12s"></div>
+  <div class="particle w-1 h-1 top-[20%] left-[10%]" style="animation:drift 15s infinite"></div>
+  <div class="particle w-2 h-2 top-[50%] left-[80%]" style="animation:drift 25s infinite -2s"></div>
+  <div class="particle w-1 h-1 top-[70%] left-[30%]" style="animation:drift 20s infinite -5s"></div>
+  <div class="particle w-1.5 h-1.5 top-[10%] left-[60%]" style="animation:drift 18s infinite -8s"></div>
+  <div class="particle w-1 h-1 top-[85%] left-[50%]" style="animation:drift 22s infinite -12s"></div>
 </div>
 
-<!-- =====================================================
-     FULLSCREEN MENU MODAL
-     ===================================================== -->
 <div id="menu-modal">
   <button id="close-menu" class="absolute top-8 right-8 text-primary text-4xl material-symbols-outlined hover:scale-110 transition-transform">close</button>
   <nav class="flex flex-col gap-2 text-center md:text-left px-8">
@@ -546,26 +225,14 @@
   </div>
 </div>
 
-<!-- =====================================================
-     TOP NAVIGATION
-     ===================================================== -->
 <header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-surface/60 backdrop-blur-lg border-b border-outline-variant/30 h-20 flex justify-between items-center px-5 md:px-20 transition-all duration-300">
   <div class="flex items-center gap-4">
     <button id="menu-toggle" class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform animate-hud-flicker magnetic text-2xl">menu</button>
-
-    <!-- ══════════════════════════════════════════
-         LOGO — place logo.jpg in the same folder
-         as this HTML file, then it shows here.
-         ══════════════════════════════════════════ -->
     <div class="flex items-center gap-3">
-      <img src="logo.jpeg" alt="Mr. Fitz Logo"
-           class="h-10 w-auto object-contain animate-bio-pulse"
-           style="max-width:120px;"
-           onerror="this.style.display='none'"/>
+      <img src="logo.jpeg" alt="Mr. Fitz Logo" class="h-10 w-auto object-contain animate-bio-pulse" style="max-width:120px;" onerror="this.style.display='none'"/>
       <span class="font-headline-md font-bold text-primary tracking-widest bioluminescent-glow animate-bio-pulse" style="font-size:22px">MR. FITZ</span>
     </div>
   </div>
-
   <div class="flex items-center gap-6">
     <nav class="hidden md:flex items-center gap-8">
       <a class="font-label-caps text-label-caps text-primary font-bold hover:animate-hud-flicker" href="#menu">MENU</a>
@@ -576,72 +243,54 @@
   </div>
 </header>
 
-<!-- =====================================================
-     MAIN CONTENT
-     ===================================================== -->
 <main id="home" class="pt-20 pb-32 relative z-10">
 
-  <!-- ===================================================
-       HERO SECTION
-       =================================================== -->
   <section class="relative min-h-[700px] w-full flex flex-col items-center justify-center overflow-hidden mb-16">
-
-    <!-- REPLACE HERO BACKGROUND IMAGE HERE -->
     <div class="absolute inset-0 z-0">
-      <!-- ══ HERO BACKGROUND IMAGE ══ filename: hero.jpg ══ -->
-      <img alt="Abyssal Ocean Depth"
-        class="w-full h-full object-cover opacity-30 scale-105"
-        id="hero-bg"
-        src="hero.jpg"/>
+      <img alt="Abyssal Ocean Depth" class="w-full h-full object-cover opacity-30 scale-105" id="hero-bg" src="hero.jpg"/>
       <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
       <div class="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60"></div>
     </div>
 
     <div class="relative z-10 w-full max-w-6xl mx-auto px-5 md:px-20 flex flex-col items-center pt-8">
-
-      <!-- Depth Status -->
       <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 border border-primary/30 bg-primary/5 backdrop-blur-sm animate-bio-pulse reveal">
         <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
         <span class="font-technical-sm text-technical-sm text-primary uppercase tracking-[0.2em] animate-hud-flicker">[ SYSTEM ONLINE — DEPTH 2400M ]</span>
       </div>
 
-      <!-- Brand Title -->
-      <h1 class="font-display-lg text-center mb-4 reveal reveal-delay-1" style="font-size: clamp(48px, 10vw, 96px); line-height:1.05; letter-spacing:-0.04em; font-weight:700">
+      <h1 class="font-display-lg text-center mb-4 reveal reveal-delay-1" style="font-size:clamp(48px,10vw,96px);line-height:1.05;letter-spacing:-.04em;font-weight:700">
         <span class="text-primary bioluminescent-glow">MR.</span>
         <span class="text-on-surface"> FITZ</span>
       </h1>
       <p class="font-body-lg text-on-surface-variant text-center max-w-lg mb-12 reveal reveal-delay-2">
-        Premium seafood & curated dining from the ocean's deepest frontiers. Where luxury meets the abyss.
+        Premium seafood &amp; curated dining from the ocean's deepest frontiers. Where luxury meets the abyss.
       </p>
 
-      <!-- ================================================
-           3D MODEL VIEWPORT — SEAMLESS
-           ================================================ -->
-      <!-- 3D Model Area. Replace the fallback placeholder with Three.js model loader -->
-      <!-- REPLACE YOUR 3D MODEL HERE: const modelPath = "assets/models/model.glb"; -->
+      <!-- =====================================================
+           3D MODEL VIEWPORT
+           ===================================================== -->
       <div id="model-container" class="reveal reveal-delay-2">
-        <!-- Three.js canvas renders here -->
         <canvas id="three-canvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;"></canvas>
 
-        <!-- Fallback / overlay UI — visible until 3D loads -->
-        <div id="model-fallback" class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+        <!-- Fallback icon — fades out once model is loaded -->
+        <div id="model-fallback" class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none" style="transition:opacity 0.8s">
           <span class="material-symbols-outlined text-[100px] text-primary/20 animate-float">view_in_ar</span>
           <div class="mt-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-[18px] animate-spin-slow">rotate_right</span>
-            <span class="font-technical-sm text-technical-sm text-primary/60 uppercase tracking-widest animate-hud-flicker">INTERACTIVE HOLOGRAM</span>
+            <span class="font-technical-sm text-technical-sm text-primary/60 uppercase tracking-widest animate-hud-flicker" id="model-status">LOADING MODEL…</span>
           </div>
         </div>
 
-        <!-- Scanning Line over model -->
-        <div class="scanning-line" style="z-index:6"></div>
+        <!-- GLB loading progress bar -->
+        <div id="glb-loading-bar" style="z-index:8">
+          <span id="glb-progress-fill"></span>
+        </div>
 
-        <!-- HUD corners — seamlessly placed without hard border -->
+        <div class="scanning-line" style="z-index:6"></div>
         <div class="absolute top-[15%] left-[15%] w-5 h-5 border-t-2 border-l-2 border-primary animate-bio-pulse" style="z-index:7"></div>
         <div class="absolute top-[15%] right-[15%] w-5 h-5 border-t-2 border-r-2 border-primary animate-bio-pulse" style="z-index:7"></div>
         <div class="absolute bottom-[15%] left-[15%] w-5 h-5 border-b-2 border-l-2 border-primary animate-bio-pulse" style="z-index:7"></div>
         <div class="absolute bottom-[15%] right-[15%] w-5 h-5 border-b-2 border-r-2 border-primary animate-bio-pulse" style="z-index:7"></div>
-
-        <!-- Steam particles -->
         <div class="steam-particle" style="left:48%;bottom:30%;height:20px;animation-delay:0s"></div>
         <div class="steam-particle" style="left:52%;bottom:28%;height:15px;animation-delay:0.7s"></div>
         <div class="steam-particle" style="left:45%;bottom:32%;height:25px;animation-delay:1.4s"></div>
@@ -662,211 +311,119 @@
 
       <!-- Food Card Grid -->
       <div id="food-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-20 reveal reveal-delay-4">
-
-        <!-- SEAFOOD CARDS (visible by default) -->
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ SEAFOOD CARD 1 ══ filename: food1.jpg ══ -->
-            <img alt="King Crab" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
-              src="food1.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <img alt="King Crab" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="food1.jpeg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">CRUSTACEA</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">King Crab</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$145</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">King Crab</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$145</span></div>
         </div>
-
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ SEAFOOD CARD 2 ══ filename: food2.jpg ══ -->
-            <img alt="Bluefin Tuna" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
-              src="food2.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <img alt="Bluefin Tuna" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="food2.jpeg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">ACTINOPTERYGII</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Bluefin</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$92</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Bluefin</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$92</span></div>
         </div>
-
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ SEAFOOD CARD 3 ══ filename: food3.jpg ══ -->
-            <img alt="Giant Squid" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
-              src="food3.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <img alt="Giant Squid" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="food3.jpeg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">CEPHALOPODA</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Giant Squid</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$210</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Giant Squid</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$210</span></div>
         </div>
-
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ SEAFOOD CARD 4 ══ filename: food4.jpg ══ -->
-            <img alt="Crystal Scallop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
-              src="food4.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <img alt="Crystal Scallop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="food4.jpeg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">BIVALVIA</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Crystal Scallop</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$58</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Crystal Scallop</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$58</span></div>
         </div>
 
-        <!-- DRINKS CARDS (hidden by default) -->
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DRINKS CARD 1 ══ filename: drink1.jpg ══ -->
             <img alt="Abyss Negroni" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="side1.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">SIGNATURE</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Abyss Negroni</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$32</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Abyss Negroni</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$32</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DRINKS CARD 2 ══ filename: drink2.jpg ══ -->
             <img alt="Hydro Martini" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="side2.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">MOLECULAR</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Hydro Martini</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$28</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Hydro Martini</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$28</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DRINKS CARD 3 ══ filename: drink3.jpg ══ -->
             <img alt="Glow Gin" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="side3.jpeg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">BIOLUMINESCENT</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Glow Gin</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$38</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Glow Gin</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$38</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DRINKS CARD 4 ══ filename: drink4.jpg ══ -->
             <img alt="Deep Sea Soda" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="drink4.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">VIRGIN</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Deep Sea Soda</span>
-            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$14</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Deep Sea Soda</span><span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$14</span></div>
         </div>
 
-        <!-- DESSERTS CARDS (hidden by default) -->
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DESSERTS CARD 1 ══ filename: dessert1.jpg ══ -->
             <img alt="Midnight Tart" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert1.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">CONFECTION</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Midnight Tart</span>
-            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$24</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Midnight Tart</span><span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$24</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DESSERTS CARD 2 ══ filename: dessert2.jpg ══ -->
             <img alt="Glow Panna Cotta" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert2.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">MOLECULAR</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Glow Panna Cotta</span>
-            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$29</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Glow Panna Cotta</span><span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$29</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DESSERTS CARD 3 ══ filename: dessert3.jpg ══ -->
             <img alt="Abyss Truffle" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert3.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">ARTISAN</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Abyss Truffle</span>
-            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$19</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Abyss Truffle</span><span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$19</span></div>
         </div>
         <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
           <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
-            <!-- ══ DESSERTS CARD 4 ══ filename: dessert4.jpg ══ -->
             <img alt="Cryo Sorbet" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert4.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
-              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2"><span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span></div>
           </div>
           <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">NITROGEN</h3>
-          <div class="flex justify-between items-end">
-            <span class="font-body-md text-on-surface font-bold">Cryo Sorbet</span>
-            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$22</span>
-          </div>
+          <div class="flex justify-between items-end"><span class="font-body-md text-on-surface font-bold">Cryo Sorbet</span><span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$22</span></div>
         </div>
       </div>
     </div>
-
-    <!-- Background grid -->
-    <div class="absolute inset-0 pointer-events-none opacity-[0.04] z-0" style="background-image: linear-gradient(to right, #22d3ee 1px, transparent 1px), linear-gradient(to bottom, #22d3ee 1px, transparent 1px); background-size: 80px 80px;"></div>
+    <div class="absolute inset-0 pointer-events-none opacity-[0.04] z-0" style="background-image:linear-gradient(to right,#22d3ee 1px,transparent 1px),linear-gradient(to bottom,#22d3ee 1px,transparent 1px);background-size:80px 80px;"></div>
   </section>
 
-  <!-- ===================================================
-       TONIGHT'S SPECIAL
-       =================================================== -->
+  <!-- TONIGHT'S SPECIAL -->
   <section id="special" class="px-5 md:px-20 mb-32">
     <div class="flex items-center gap-4 mb-8 reveal">
       <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
       <span class="font-technical-sm text-primary tracking-[0.3em] uppercase whitespace-nowrap animate-hud-flicker">// SPECIAL_TODAY: UNIT_01</span>
       <span class="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></span>
     </div>
-
-    <div class="glass-card overflow-hidden border-primary/30 flex flex-col lg:flex-row reveal" style="animation: glowPulse 4s ease-in-out infinite;">
-
-      <!-- ══ TONIGHT'S SPECIAL IMAGE ══ filename: special.jpg ══ -->
+    <div class="glass-card overflow-hidden border-primary/30 flex flex-col lg:flex-row reveal" style="animation:glowPulse 4s ease-in-out infinite;">
       <div class="lg:w-3/5 h-[400px] lg:h-[600px] relative overflow-hidden group">
-        <img alt="Neon Scarlet Prawn — Tonight's Special"
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]"
-          src="food6.jpeg"/>
+        <img alt="Neon Scarlet Prawn — Tonight's Special" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]" src="food6.jpeg"/>
         <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-transparent to-background/20"></div>
         <div class="absolute bottom-8 left-8">
@@ -880,64 +437,37 @@
             </div>
           </div>
         </div>
-        <!-- Parallax depth overlay -->
         <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background/30 to-transparent pointer-events-none"></div>
       </div>
-
       <div class="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-primary/20">
         <span class="font-technical-sm text-secondary mb-4 tracking-widest uppercase animate-hud-flicker">[ EXTREME_RARITY ]</span>
         <h2 class="font-display-lg leading-tight mb-6 text-on-surface" style="font-size:clamp(40px,5vw,64px)">NEON SCARLET PRAWN</h2>
-        <p class="font-body-lg text-on-surface-variant mb-10 leading-relaxed">
-          Harvested from the hydrothermal vents of the Mid-Atlantic Ridge. Its bioluminescent properties remain active for 12 hours post-ascent. A Mr. Fitz exclusive.
-        </p>
-
+        <p class="font-body-lg text-on-surface-variant mb-10 leading-relaxed">Harvested from the hydrothermal vents of the Mid-Atlantic Ridge. Its bioluminescent properties remain active for 12 hours post-ascent. A Mr. Fitz exclusive.</p>
         <div class="grid grid-cols-2 gap-y-8 gap-x-12 mb-12 border-y border-outline-variant/20 py-8">
-          <div>
-            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">RECOVERY_DEPTH</span>
-            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">3,800M</span>
-          </div>
-          <div>
-            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">SPECIMEN_WEIGHT</span>
-            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">450G</span>
-          </div>
-          <div>
-            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">TRACE_ID</span>
-            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">#AX-209</span>
-          </div>
-          <div>
-            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">ORIGIN</span>
-            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">ATLANTIC</span>
-          </div>
+          <div><span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">RECOVERY_DEPTH</span><span class="font-headline-md text-[24px] text-primary animate-hud-flicker">3,800M</span></div>
+          <div><span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">SPECIMEN_WEIGHT</span><span class="font-headline-md text-[24px] text-primary animate-hud-flicker">450G</span></div>
+          <div><span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">TRACE_ID</span><span class="font-headline-md text-[24px] text-primary animate-hud-flicker">#AX-209</span></div>
+          <div><span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">ORIGIN</span><span class="font-headline-md text-[24px] text-primary animate-hud-flicker">ATLANTIC</span></div>
         </div>
-
-        <button class="btn-primary w-full py-5" onclick="addToCart('Neon Scarlet Prawn', 420)">
-          COMMENCE ACQUISITION — $420.00
-        </button>
-        <div id="cart-confirm" class="hidden mt-3 font-technical-sm text-[11px] text-primary text-center animate-hud-flicker">
-          ✓ ADDED TO VAULT — ACQUISITION LOGGED
-        </div>
+        <button class="btn-primary w-full py-5" onclick="addToCart('Neon Scarlet Prawn', 420)">COMMENCE ACQUISITION — $420.00</button>
+        <div id="cart-confirm" class="hidden mt-3 font-technical-sm text-[11px] text-primary text-center animate-hud-flicker">✓ ADDED TO VAULT — ACQUISITION LOGGED</div>
       </div>
     </div>
   </section>
 
-  <!-- ===================================================
-       RESERVATIONS SECTION
-       =================================================== -->
+  <!-- RESERVATIONS -->
   <section id="reservations" class="px-5 md:px-20 mb-32">
     <div class="flex items-center gap-4 mb-10 reveal">
       <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
       <span class="font-technical-sm text-primary tracking-[0.3em] uppercase whitespace-nowrap animate-hud-flicker">// RESERVE_TABLE: MR.FITZ</span>
       <span class="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></span>
     </div>
-
     <div class="glass-card p-8 md:p-12 border-primary/20 reveal">
       <div class="grid md:grid-cols-2 gap-12">
         <div>
           <span class="font-technical-sm text-primary uppercase tracking-widest block mb-3 animate-hud-flicker">DEPTH PROTOCOL</span>
           <h2 class="font-headline-lg text-[clamp(28px,4vw,44px)] text-on-surface mb-6 leading-tight">SECURE YOUR VOYAGE</h2>
-          <p class="font-body-lg text-on-surface-variant leading-relaxed mb-8">
-            Reservations at Mr. Fitz are limited to 24 covers per evening. Each table receives a personalized specimen menu curated from that night's deep-sea harvest.
-          </p>
+          <p class="font-body-lg text-on-surface-variant leading-relaxed mb-8">Reservations at Mr. Fitz are limited to 24 covers per evening. Each table receives a personalized specimen menu curated from that night's deep-sea harvest.</p>
           <div class="flex items-center gap-3 font-technical-sm text-[11px] text-primary animate-hud-flicker">
             <span class="material-symbols-outlined text-[16px]">schedule</span>
             TUE–SAT: 18:00 – 23:00 &nbsp;|&nbsp; SUN: 17:00 – 21:00
@@ -965,102 +495,50 @@
             <label class="font-technical-sm text-[10px] text-primary tracking-widest animate-hud-flicker">SPECIAL REQUESTS</label>
             <textarea rows="3" placeholder="DIETARY REQUIREMENTS, OCCASIONS..." class="bg-surface-container border border-outline-variant/40 px-4 py-3 text-on-surface font-technical-sm text-technical-sm focus:border-primary/60 focus:outline-none transition-colors resize-none placeholder:text-outline/40"></textarea>
           </div>
-          <button class="btn-primary py-4 mt-2" onclick="submitReservation(this)">
-            INITIATE RESERVATION PROTOCOL
-          </button>
+          <button class="btn-primary py-4 mt-2" onclick="submitReservation(this)">INITIATE RESERVATION PROTOCOL</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===================================================
-       REVIEWS — VOICES FROM THE ABYSS
-       =================================================== -->
+  <!-- REVIEWS -->
   <section id="voices" class="px-5 md:px-20 mb-20">
     <div class="mb-12 reveal">
       <span class="font-technical-sm text-primary uppercase mb-2 block tracking-widest animate-hud-flicker">// COMMS_LOG: SURFACED_FEEDBACK</span>
       <h2 class="font-headline-lg text-[clamp(28px,5vw,48px)] text-on-surface">VOICES FROM THE ABYSS</h2>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
       <div class="glass-card p-8 relative group hover:border-primary/50 transition-all reveal reveal-delay-1">
         <div class="absolute -top-3 left-8 px-3 py-1 bg-surface border border-primary/20 font-technical-sm text-[10px] text-primary animate-bio-pulse">LOG_ENTRY_#0882</div>
-        <div class="flex gap-1 mb-6 text-primary">
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker" style="--fill:1">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-        </div>
-        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">
-          "The flavor profile of the Abyssal Sablefish is unlike anything surfaced before. The mineral content from those depths adds a technical precision to the palate."
-        </p>
+        <div class="flex gap-1 mb-6 text-primary"><span class="material-symbols-outlined text-[16px] animate-hud-flicker" style="--fill:1">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span></div>
+        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">"The flavor profile of the Abyssal Sablefish is unlike anything surfaced before. The mineral content from those depths adds a technical precision to the palate."</p>
         <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
-          <div>
-            <span class="font-label-caps text-on-surface block text-[13px]">E. VANDERBILT</span>
-            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">CITIZEN_VETERAN</span>
-          </div>
-          <div class="text-right">
-            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">PURITY_INDEX</span>
-            <span class="block font-label-caps text-primary animate-hud-flicker">99.8%</span>
-          </div>
+          <div><span class="font-label-caps text-on-surface block text-[13px]">E. VANDERBILT</span><span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">CITIZEN_VETERAN</span></div>
+          <div class="text-right"><span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">PURITY_INDEX</span><span class="block font-label-caps text-primary animate-hud-flicker">99.8%</span></div>
         </div>
       </div>
-
       <div class="glass-card p-8 relative group border-primary/40 shadow-[0_0_20px_rgba(138,235,255,0.05)] reveal reveal-delay-2">
         <div class="absolute -top-3 left-8 px-3 py-1 bg-primary text-on-primary font-technical-sm text-[10px] animate-bio-pulse">LOG_ENTRY_#1041</div>
-        <div class="flex gap-1 mb-6 text-primary">
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-        </div>
-        <p class="font-body-md text-on-surface italic mb-8 leading-relaxed">
-          "The Scarlet Prawn arrived in a pressurized cold-cell that looked like it came off a spacecraft. The experience of the unboxing is as elite as the specimen itself."
-        </p>
+        <div class="flex gap-1 mb-6 text-primary"><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span></div>
+        <p class="font-body-md text-on-surface italic mb-8 leading-relaxed">"The Scarlet Prawn arrived in a pressurized cold-cell that looked like it came off a spacecraft. The experience of the unboxing is as elite as the specimen itself."</p>
         <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
-          <div>
-            <span class="font-label-caps text-on-surface block text-[13px]">M. CHEN</span>
-            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">EXECUTIVE_CHEF</span>
-          </div>
-          <div class="text-right">
-            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">DENSITY_RATING</span>
-            <span class="block font-label-caps text-primary animate-hud-flicker">A+</span>
-          </div>
+          <div><span class="font-label-caps text-on-surface block text-[13px]">M. CHEN</span><span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">EXECUTIVE_CHEF</span></div>
+          <div class="text-right"><span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">DENSITY_RATING</span><span class="block font-label-caps text-primary animate-hud-flicker">A+</span></div>
         </div>
       </div>
-
       <div class="glass-card p-8 relative group hover:border-primary/50 transition-all reveal reveal-delay-3">
         <div class="absolute -top-3 left-8 px-3 py-1 bg-surface border border-primary/20 font-technical-sm text-[10px] text-primary animate-bio-pulse">LOG_ENTRY_#0923</div>
-        <div class="flex gap-1 mb-6 text-primary">
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
-          <span class="material-symbols-outlined text-[16px] opacity-40">grade</span>
-        </div>
-        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">
-          "Expensive, yes. But where else can you source actinopterygii caught at 2000m with full DNA traceability? A necessity for the modern luxury vault."
-        </p>
+        <div class="flex gap-1 mb-6 text-primary"><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span><span class="material-symbols-outlined text-[16px] opacity-40">grade</span></div>
+        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">"Expensive, yes. But where else can you source actinopterygii caught at 2000m with full DNA traceability? A necessity for the modern luxury vault."</p>
         <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
-          <div>
-            <span class="font-label-caps text-on-surface block text-[13px]">L. STERLING</span>
-            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">ARTIFACT_COLLECTOR</span>
-          </div>
-          <div class="text-right">
-            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">SCARCITY_VAL</span>
-            <span class="block font-label-caps text-primary animate-hud-flicker">OMEGA</span>
-          </div>
+          <div><span class="font-label-caps text-on-surface block text-[13px]">L. STERLING</span><span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">ARTIFACT_COLLECTOR</span></div>
+          <div class="text-right"><span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">SCARCITY_VAL</span><span class="block font-label-caps text-primary animate-hud-flicker">OMEGA</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===================================================
-       ABOUT SECTION
-       =================================================== -->
+  <!-- ABOUT -->
   <section id="about" class="px-5 md:px-20 mb-20">
     <div class="flex items-center gap-4 mb-10 reveal">
       <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
@@ -1070,41 +548,20 @@
     <div class="glass-card p-8 md:p-16 border-primary/15 text-center reveal">
       <span class="font-technical-sm text-primary tracking-widest block mb-4 animate-hud-flicker">ESTABLISHED AT DEPTH</span>
       <h2 class="font-display-lg text-[clamp(36px,6vw,72px)] text-on-surface mb-6 leading-tight">THE MR. FITZ<br/>PHILOSOPHY</h2>
-      <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
-        At Mr. Fitz, we believe that extraordinary dining begins where the light ends. Our team of deep-sea culinary scientists work at the frontier of ocean gastronomy — sourcing specimens no other restaurant can access, preparing them with molecular precision, and serving them in an atmosphere that mirrors the alien beauty of the ocean floor.
-      </p>
+      <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">At Mr. Fitz, we believe that extraordinary dining begins where the light ends. Our team of deep-sea culinary scientists work at the frontier of ocean gastronomy — sourcing specimens no other restaurant can access, preparing them with molecular precision, and serving them in an atmosphere that mirrors the alien beauty of the ocean floor.</p>
     </div>
   </section>
 
 </main>
 
-<!-- =====================================================
-     BOTTOM NAVIGATION
-     ===================================================== -->
 <nav class="fixed bottom-0 left-0 w-full z-50 rounded-t-full bg-surface-container/80 backdrop-blur-2xl border-t border-primary/20 shadow-[0_-10px_40px_rgba(138,235,255,0.15)] flex justify-around items-center px-4 py-3 pb-6">
-  <a class="flex flex-col items-center justify-center text-primary drop-shadow-[0_0_10px_rgba(138,235,255,0.8)] scale-110 active:scale-90 transition-transform duration-300 animate-bio-pulse" href="#home">
-    <span class="material-symbols-outlined mb-1">explore</span>
-    <span class="font-label-caps text-label-caps">HOME</span>
-  </a>
-  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#menu">
-    <span class="material-symbols-outlined mb-1">restaurant_menu</span>
-    <span class="font-label-caps text-label-caps">MENU</span>
-  </a>
-  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#special">
-    <span class="material-symbols-outlined mb-1">stars</span>
-    <span class="font-label-caps text-label-caps">SPECIALS</span>
-  </a>
-  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#reservations">
-    <span class="material-symbols-outlined mb-1">event_seat</span>
-    <span class="font-label-caps text-label-caps">RESERVE</span>
-  </a>
-  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#about">
-    <span class="material-symbols-outlined mb-1">person</span>
-    <span class="font-label-caps text-label-caps">ABOUT</span>
-  </a>
+  <a class="flex flex-col items-center justify-center text-primary drop-shadow-[0_0_10px_rgba(138,235,255,0.8)] scale-110 active:scale-90 transition-transform duration-300 animate-bio-pulse" href="#home"><span class="material-symbols-outlined mb-1">explore</span><span class="font-label-caps text-label-caps">HOME</span></a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#menu"><span class="material-symbols-outlined mb-1">restaurant_menu</span><span class="font-label-caps text-label-caps">MENU</span></a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#special"><span class="material-symbols-outlined mb-1">stars</span><span class="font-label-caps text-label-caps">SPECIALS</span></a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#reservations"><span class="material-symbols-outlined mb-1">event_seat</span><span class="font-label-caps text-label-caps">RESERVE</span></a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#about"><span class="material-symbols-outlined mb-1">person</span><span class="font-label-caps text-label-caps">ABOUT</span></a>
 </nav>
 
-<!-- Floating Action Button -->
 <button class="fixed bottom-24 right-6 md:right-12 z-40 w-16 h-16 bg-primary-container text-on-primary-container flex items-center justify-center outer-glow-cyan active:scale-90 transition-transform animate-bio-pulse" onclick="window.location.href='#reservations'" title="Reserve a table">
   <span class="material-symbols-outlined text-[32px]">anchor</span>
 </button>
@@ -1113,280 +570,273 @@
      JAVASCRIPT
      ===================================================== -->
 <script>
-/* =====================================================
-   CUSTOM CURSOR
-   ===================================================== */
+/* ----- Cursor ----- */
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animateCursor() {
-  rx += (mx - rx) * 0.15;
-  ry += (my - ry) * 0.15;
-  dot.style.left = mx + 'px';
-  dot.style.top = my + 'px';
-  ring.style.left = rx + 'px';
-  ring.style.top = ry + 'px';
-  requestAnimationFrame(animateCursor);
-}
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+function animateCursor(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateCursor);}
 animateCursor();
 
-/* =====================================================
-   SCROLL PROGRESS
-   ===================================================== */
-const progressBar = document.getElementById('scroll-progress');
-window.addEventListener('scroll', () => {
-  const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-  progressBar.style.width = scrolled + '%';
-  // Navbar background on scroll
-  const navbar = document.getElementById('navbar');
-  if (window.scrollY > 60) navbar.classList.add('navbar-scrolled');
+/* ----- Scroll Progress ----- */
+const progressBar=document.getElementById('scroll-progress');
+window.addEventListener('scroll',()=>{
+  const scrolled=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
+  progressBar.style.width=scrolled+'%';
+  const navbar=document.getElementById('navbar');
+  if(window.scrollY>60)navbar.classList.add('navbar-scrolled');
   else navbar.classList.remove('navbar-scrolled');
 });
 
-/* =====================================================
-   SCROLL REVEAL (Intersection Observer)
-   ===================================================== */
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('revealed');
-    }
-  });
-}, { threshold: 0.1 });
-revealEls.forEach(el => observer.observe(el));
+/* ----- Scroll Reveal ----- */
+const revealEls=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.1});
+revealEls.forEach(el=>observer.observe(el));
 
-/* =====================================================
-   MENU MODAL
-   ===================================================== */
-document.getElementById('menu-toggle').addEventListener('click', () => {
-  document.getElementById('menu-modal').classList.add('open');
-});
-document.getElementById('close-menu').addEventListener('click', closeMenu);
-function closeMenu() {
-  document.getElementById('menu-modal').classList.remove('open');
-}
+/* ----- Menu Modal ----- */
+document.getElementById('menu-toggle').addEventListener('click',()=>{document.getElementById('menu-modal').classList.add('open');});
+document.getElementById('close-menu').addEventListener('click',closeMenu);
+function closeMenu(){document.getElementById('menu-modal').classList.remove('open');}
 
-/* =====================================================
-   CATEGORY TOGGLE
-   ===================================================== */
-const catLabels = { seafood: '01_SEAFOOD', drinks: '02_DRINKS', desserts: '03_DESSERTS' };
-function switchCategory(btn, cat) {
-  // Update button states
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+/* ----- Category Toggle ----- */
+const catLabels={seafood:'01_SEAFOOD',drinks:'02_DRINKS',desserts:'03_DESSERTS'};
+function switchCategory(btn,cat){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('cat-label').textContent = catLabels[cat];
-  // Show/hide cards
-  const cards = document.querySelectorAll('#food-grid [data-cat]');
-  cards.forEach(card => {
-    if (card.dataset.cat === cat) {
-      card.classList.remove('hidden');
-      card.style.animation = 'fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both';
-    } else {
-      card.classList.add('hidden');
-    }
+  document.getElementById('cat-label').textContent=catLabels[cat];
+  document.querySelectorAll('#food-grid [data-cat]').forEach(card=>{
+    if(card.dataset.cat===cat){card.classList.remove('hidden');card.style.animation='fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both';}
+    else card.classList.add('hidden');
   });
 }
 
-/* =====================================================
-   ADD TO CART
-   ===================================================== */
-function addToCart(name, price) {
-  const confirm = document.getElementById('cart-confirm');
-  confirm.classList.remove('hidden');
-  confirm.textContent = `✓ ${name.toUpperCase()} ADDED TO VAULT`;
-  setTimeout(() => confirm.classList.add('hidden'), 3000);
+/* ----- Cart ----- */
+function addToCart(name,price){
+  const c=document.getElementById('cart-confirm');
+  c.classList.remove('hidden');
+  c.textContent=`✓ ${name.toUpperCase()} ADDED TO VAULT`;
+  setTimeout(()=>c.classList.add('hidden'),3000);
 }
 
-/* =====================================================
-   RESERVATION SUBMIT
-   ===================================================== */
-function submitReservation(btn) {
-  const original = btn.textContent;
-  btn.textContent = '✓ RESERVATION CONFIRMED — STAND BY';
-  btn.style.background = 'rgba(138,235,255,0.3)';
-  btn.style.color = '#8aebff';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = original;
-    btn.style.background = '';
-    btn.style.color = '';
-    btn.disabled = false;
-  }, 4000);
+/* ----- Reservation ----- */
+function submitReservation(btn){
+  const original=btn.textContent;
+  btn.textContent='✓ RESERVATION CONFIRMED — STAND BY';
+  btn.style.background='rgba(138,235,255,0.3)';btn.style.color='#8aebff';btn.disabled=true;
+  setTimeout(()=>{btn.textContent=original;btn.style.background='';btn.style.color='';btn.disabled=false;},4000);
 }
 
-/* =====================================================
-   HERO PARALLAX ON SCROLL
-   ===================================================== */
-window.addEventListener('scroll', () => {
-  const heroBg = document.getElementById('hero-bg');
-  if (heroBg) {
-    heroBg.style.transform = `scale(1.05) translateY(${window.scrollY * 0.25}px)`;
-  }
+/* ----- Hero Parallax ----- */
+window.addEventListener('scroll',()=>{
+  const heroBg=document.getElementById('hero-bg');
+  if(heroBg)heroBg.style.transform=`scale(1.05) translateY(${window.scrollY*.25}px)`;
 });
 
 /* =====================================================
-   THREE.JS — 3D HOLOGRAPHIC ORBS (fallback 3D scene)
-   Replace modelPath below with your .glb file to load
-   your own 3D model using GLTFLoader.
-   ===================================================== */
-// REPLACE YOUR 3D MODEL HERE:
-// const modelPath = "assets/models/model.glb";
-// Use THREE.GLTFLoader to load it.
+   THREE.JS — GLB MODEL LOADER
+   =====================================================
 
+   ★ TO CHANGE THE MODEL:
+     Find the line that says:   const MODEL_PATH = "pizza.glb";
+     Replace "pizza.glb" with the filename of your .glb file.
+     The file must be in the SAME folder as this HTML file.
+
+   ★ TEXTURE RESOLUTION TO USE:
+     Use the 1K version.  It is the best balance for a
+     browser viewport.  4K / 8K textures are unnecessary
+     at the ~700 px display size and will cause slow loads
+     and high GPU memory use on most devices.
+
+   ===================================================== */
 (function initThreeScene() {
-  const canvas = document.getElementById('three-canvas');
+  const canvas    = document.getElementById('three-canvas');
+  const fallback  = document.getElementById('model-fallback');
+  const statusEl  = document.getElementById('model-status');
+  const barFill   = document.getElementById('glb-progress-fill');
+  const barWrap   = document.getElementById('glb-loading-bar');
+
   if (!canvas || !window.THREE) return;
 
-  const container = document.getElementById('model-container');
-  const w = container.offsetWidth || 400;
-  const h = container.offsetHeight || 400;
+  /* ─────────────────────────────────────────────────
+     ★ REPLACE THIS PATH WITH YOUR OWN .glb FILE ★
+     The file must sit in the same folder as index.html
+     ───────────────────────────────────────────────── */
+  const MODEL_PATH = "pizza.glb";   // ← change only this line
 
+  const container = document.getElementById('model-container');
+  const size = container.offsetWidth || 500;
+
+  /* Renderer */
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(w, h);
+  renderer.setSize(size, size);
   renderer.setClearColor(0x000000, 0);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping    = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.4;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-  camera.position.set(0, 0, 5);
+  /* Scene & Camera */
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
+  camera.position.set(0, 0.5, 3.5);
 
-  // Ambient + directional light
-  scene.add(new THREE.AmbientLight(0x8aebff, 0.4));
-  const dirLight = new THREE.DirectionalLight(0x8aebff, 1.2);
-  dirLight.position.set(2, 4, 3);
-  scene.add(dirLight);
-  const redLight = new THREE.PointLight(0xffb2b9, 0.8, 8);
-  redLight.position.set(-3, -2, 2);
-  scene.add(redLight);
+  /* Lighting rig */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const keyLight = new THREE.DirectionalLight(0x8aebff, 2.0);
+  keyLight.position.set(3, 5, 4);
+  scene.add(keyLight);
+  const fillLight = new THREE.PointLight(0xffb2b9, 1.0, 12);
+  fillLight.position.set(-4, -2, 2);
+  scene.add(fillLight);
+  const rimLight = new THREE.DirectionalLight(0x8aebff, 0.8);
+  rimLight.position.set(-2, 3, -3);
+  scene.add(rimLight);
 
-  // Main orb - Icosahedron
-  const geo = new THREE.IcosahedronGeometry(1.2, 3);
-  const mat = new THREE.MeshPhongMaterial({
-    color: 0x003040,
-    emissive: 0x001830,
-    specular: 0x8aebff,
-    shininess: 80,
-    transparent: true,
-    opacity: 0.85,
-    wireframe: false,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-
-  // Wireframe overlay
-  const wireMat = new THREE.MeshBasicMaterial({ color: 0x8aebff, wireframe: true, transparent: true, opacity: 0.12 });
-  const wireMesh = new THREE.Mesh(geo, wireMat);
-  wireMesh.scale.setScalar(1.01);
-  scene.add(wireMesh);
-
-  // Floating ring
-  const ringGeo = new THREE.TorusGeometry(1.8, 0.015, 8, 80);
-  const ringMat = new THREE.MeshBasicMaterial({ color: 0x8aebff, transparent: true, opacity: 0.35 });
-  const ring3d = new THREE.Mesh(ringGeo, ringMat);
-  ring3d.rotation.x = Math.PI * 0.3;
-  scene.add(ring3d);
-
-  // Particle field
-  const pCount = 200;
+  /* Subtle particle cloud (always visible, behind model) */
   const pGeo = new THREE.BufferGeometry();
-  const pPos = new Float32Array(pCount * 3);
-  for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 6;
+  const pPos = new Float32Array(300 * 3);
+  for (let i = 0; i < 300 * 3; i++) pPos[i] = (Math.random() - 0.5) * 6;
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  const pMat = new THREE.PointsMaterial({ color: 0x8aebff, size: 0.03, transparent: true, opacity: 0.6 });
-  const particles = new THREE.Points(pGeo, pMat);
+  const particles = new THREE.Points(pGeo,
+    new THREE.PointsMaterial({ color: 0x8aebff, size: 0.025, transparent: true, opacity: 0.5 }));
   scene.add(particles);
 
-  // Mouse interaction
+  /* Floating ring (always visible) */
+  const ring3d = new THREE.Mesh(
+    new THREE.TorusGeometry(1.6, 0.012, 8, 80),
+    new THREE.MeshBasicMaterial({ color: 0x8aebff, transparent: true, opacity: 0.3 })
+  );
+  ring3d.rotation.x = Math.PI * 0.25;
+  scene.add(ring3d);
+
+  /* Mouse interaction */
   let mouseX = 0, mouseY = 0;
   document.addEventListener('mousemove', e => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
     mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  // Resize
+  /* Resize */
   window.addEventListener('resize', () => {
-    const w2 = container.offsetWidth;
-    renderer.setSize(w2, w2);
+    const s = container.offsetWidth;
+    renderer.setSize(s, s);
   });
 
-  // Animate
+  /* ── Load the GLB ── */
+  let model = null;
+
+  if (typeof THREE.GLTFLoader === 'undefined') {
+    statusEl.textContent = 'GLTFLOADER NOT FOUND';
+    return;
+  }
+
+  const loader = new THREE.GLTFLoader();
+
+  loader.load(
+    MODEL_PATH,
+
+    /* onLoad */
+    (gltf) => {
+      model = gltf.scene;
+
+      /* Auto-centre + auto-scale to fit the viewport */
+      const box    = new THREE.Box3().setFromObject(model);
+      const centre = box.getCenter(new THREE.Vector3());
+      const size3  = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size3.x, size3.y, size3.z);
+      const scale  = 2.2 / maxDim;        // fit inside a 2.2-unit sphere
+      model.position.sub(centre);          // move to origin
+      model.scale.setScalar(scale);
+
+      scene.add(model);
+
+      /* Hide fallback, progress bar */
+      barWrap.style.opacity = '0';
+      fallback.style.opacity = '0';
+      setTimeout(() => { fallback.style.display = 'none'; barWrap.style.display = 'none'; }, 900);
+    },
+
+    /* onProgress */
+    (xhr) => {
+      if (xhr.lengthComputable) {
+        const pct = (xhr.loaded / xhr.total * 100).toFixed(0);
+        barFill.style.width = pct + '%';
+        statusEl.textContent = `LOADING MODEL… ${pct}%`;
+      }
+    },
+
+    /* onError */
+    (err) => {
+      console.warn('GLB load error:', err);
+      statusEl.textContent = 'MODEL NOT FOUND — HOLOGRAM ACTIVE';
+      barWrap.style.opacity = '0';
+
+      /* Fallback: render the icosahedron placeholder */
+      const geo = new THREE.IcosahedronGeometry(1.2, 3);
+      const mat = new THREE.MeshPhongMaterial({
+        color: 0x003040, emissive: 0x001830, specular: 0x8aebff,
+        shininess: 80, transparent: true, opacity: 0.85
+      });
+      model = new THREE.Mesh(geo, mat);
+      scene.add(model);
+      scene.add(new THREE.Mesh(geo,
+        new THREE.MeshBasicMaterial({ color: 0x8aebff, wireframe: true, transparent: true, opacity: 0.12 })));
+    }
+  );
+
+  /* Animation loop */
   const clock = new THREE.Clock();
   function animate() {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
-    mesh.rotation.y = t * 0.25 + mouseX * 0.4;
-    mesh.rotation.x = Math.sin(t * 0.3) * 0.2 + mouseY * 0.2;
-    mesh.position.y = Math.sin(t * 0.8) * 0.15;
-    wireMesh.rotation.copy(mesh.rotation);
-    wireMesh.position.copy(mesh.position);
-    ring3d.rotation.z = t * 0.15;
-    ring3d.rotation.y = t * 0.08;
-    particles.rotation.y = t * 0.05;
+
+    if (model) {
+      model.rotation.y = t * 0.35 + mouseX * 0.5;
+      model.rotation.x = Math.sin(t * 0.25) * 0.12 + mouseY * 0.15;
+      model.position.y = Math.sin(t * 0.7) * 0.12;
+    }
+
+    ring3d.rotation.z = t * 0.12;
+    ring3d.rotation.y = t * 0.06;
+    particles.rotation.y = t * 0.04;
+
     renderer.render(scene, camera);
   }
   animate();
-
-  // Hide fallback once 3D is running
-  setTimeout(() => {
-    const fallback = document.getElementById('model-fallback');
-    if (fallback) fallback.style.opacity = '0';
-  }, 500);
 })();
 
-/* =====================================================
-   FOOD CARD 3D TILT
-   ===================================================== */
-document.querySelectorAll('.food-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const rotX = ((e.clientY - cy) / rect.height) * -12;
-    const rotY = ((e.clientX - cx) / rect.width) * 12;
-    card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px)`;
+/* ----- Food card tilt ----- */
+document.querySelectorAll('.food-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    card.style.transform=`perspective(600px) rotateX(${((e.clientY-cy)/r.height)*-12}deg) rotateY(${((e.clientX-cx)/r.width)*12}deg) translateY(-6px)`;
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
 });
 
-/* =====================================================
-   MAGNETIC BUTTON EFFECT
-   ===================================================== */
-document.querySelectorAll('.magnetic').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const rect = btn.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) * 0.3;
-    const dy = (e.clientY - cy) * 0.3;
-    btn.style.transform = `translate(${dx}px, ${dy}px)`;
+/* ----- Magnetic buttons ----- */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.3}px)`;
   });
-  btn.addEventListener('mouseleave', () => {
-    btn.style.transform = '';
-  });
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
 });
 
-/* =====================================================
-   BOTTOM NAV ACTIVE STATE ON SCROLL
-   ===================================================== */
-const sections = ['home','menu','special','reservations','about'];
-const navLinks = document.querySelectorAll('nav a[href^="#"]');
-window.addEventListener('scroll', () => {
-  let current = 'home';
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && window.scrollY >= el.offsetTop - 200) current = id;
+/* ----- Bottom nav active state ----- */
+const sections=['home','menu','special','reservations','about'];
+const navLinks=document.querySelectorAll('nav a[href^="#"]');
+window.addEventListener('scroll',()=>{
+  let current='home';
+  sections.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-200)current=id;});
+  navLinks.forEach(link=>{
+    link.classList.toggle('text-primary',link.getAttribute('href')==='#'+current);
+    link.classList.toggle('opacity-100',link.getAttribute('href')==='#'+current);
+    link.classList.toggle('text-outline',link.getAttribute('href')!=='#'+current);
+    link.classList.toggle('opacity-60',link.getAttribute('href')!=='#'+current);
   });
-  navLinks.forEach(link => {
-    link.classList.toggle('text-primary', link.getAttribute('href') === '#' + current);
-    link.classList.toggle('opacity-100', link.getAttribute('href') === '#' + current);
-    link.classList.toggle('text-outline', link.getAttribute('href') !== '#' + current);
-    link.classList.toggle('opacity-60', link.getAttribute('href') !== '#' + current);
-  });
-}, { passive: true });
+},{passive:true});
 </script>
 </body>
 </html>
