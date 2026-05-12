@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MR. FITZ — Abyssal Dining Experience</title>
+<title>MR. FITZ — Artisan Pizza Experience</title>
 
-<!-- Premium Typography Stack -->
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cinzel:wght@400;500;600;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=Nunito+Sans:wght@200;300;400;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -18,19 +17,20 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        gold:        "#C9A84C",
-        "gold-light":"#E8C97A",
-        "gold-dim":  "#8B6E2E",
-        obsidian:    "#080A0E",
-        "deep":      "#0D0F14",
-        "surface":   "#12151C",
-        "surface-2": "#181B24",
-        "surface-3": "#1E2230",
-        "ivory":     "#F2EDE4",
-        "ivory-dim": "#B8B0A2",
-        "ivory-muted":"#6B6560",
-        "crimson":   "#8B1A1A",
-        "border-luxury": "rgba(201,168,76,0.18)",
+        crimson:     "#C0392B",
+        "crimson-light":"#E74C3C",
+        "crimson-dim":"#8B1A1A",
+        "crimson-deep":"#5C0A0A",
+        char:        "#0A0808",
+        "deep":      "#100C0C",
+        "surface":   "#160E0E",
+        "surface-2": "#1E1212",
+        "surface-3": "#261616",
+        "cream":     "#F5ECD7",
+        "cream-dim": "#C4B49A",
+        "cream-muted":"#7A6E62",
+        "ember":     "#D4522A",
+        "border-fire": "rgba(192,57,43,0.2)",
       }
     }
   }
@@ -38,154 +38,149 @@ tailwind.config = {
 </script>
 
 <style>
-/* ═══════════════════════════════════════════════════
-   ROOT TOKENS
-   ═══════════════════════════════════════════════════ */
 :root {
-  --gold:        #C9A84C;
-  --gold-light:  #E8C97A;
-  --gold-dim:    #8B6E2E;
-  --gold-glow:   rgba(201,168,76,0.25);
-  --obsidian:    #080A0E;
-  --deep:        #0D0F14;
-  --surface:     #12151C;
-  --ivory:       #F2EDE4;
-  --ivory-dim:   #B8B0A2;
-  --crimson:     #8B1A1A;
-  --border:      rgba(201,168,76,0.18);
+  --crimson:      #C0392B;
+  --crimson-light:#E74C3C;
+  --crimson-dim:  #8B1A1A;
+  --crimson-glow: rgba(192,57,43,0.28);
+  --ember:        #D4522A;
+  --char:         #0A0808;
+  --deep:         #100C0C;
+  --surface:      #160E0E;
+  --cream:        #F5ECD7;
+  --cream-dim:    #C4B49A;
+  --border:       rgba(192,57,43,0.2);
+  --gold-acc:     #D4A853;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
-
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--obsidian);
-  color: var(--ivory-dim);
-  font-family: 'Jost', sans-serif;
+  background: var(--char);
+  color: var(--cream-dim);
+  font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
   min-height: 100dvh;
   overflow-x: hidden;
   cursor: none;
 }
 
-/* Selection */
-::selection { background: rgba(201,168,76,0.25); color: var(--gold-light); }
+::selection { background: rgba(192,57,43,0.3); color: var(--cream); }
 
-/* ═══════════════════════════════════════════════════
-   CUSTOM CURSOR — golden pin
-   ═══════════════════════════════════════════════════ */
+/* ── Custom Cursor ── */
 #cursor-dot {
-  width: 6px; height: 6px;
-  background: var(--gold);
+  width: 7px; height: 7px;
+  background: var(--crimson);
   border-radius: 50%;
   position: fixed; top: 0; left: 0;
   pointer-events: none; z-index: 9999;
   transform: translate(-50%,-50%);
-  box-shadow: 0 0 12px var(--gold-glow);
-  transition: background 0.2s;
+  box-shadow: 0 0 14px var(--crimson-glow);
 }
 #cursor-ring {
-  width: 32px; height: 32px;
-  border: 1px solid rgba(201,168,76,0.4);
+  width: 34px; height: 34px;
+  border: 1px solid rgba(192,57,43,0.45);
   border-radius: 50%;
   position: fixed; top: 0; left: 0;
   pointer-events: none; z-index: 9998;
   transform: translate(-50%,-50%);
-  transition: width 0.35s, height 0.35s, border-color 0.35s;
+  transition: width 0.3s, height 0.3s, border-color 0.3s;
 }
 body:has(a:hover) #cursor-ring,
 body:has(button:hover) #cursor-ring {
-  width: 52px; height: 52px;
-  border-color: var(--gold);
+  width: 54px; height: 54px;
+  border-color: var(--crimson);
 }
 @media (pointer: coarse) {
   body { cursor: auto; }
   #cursor-dot, #cursor-ring { display: none; }
 }
 
-/* ═══════════════════════════════════════════════════
-   SCROLL PROGRESS — thin gold line
-   ═══════════════════════════════════════════════════ */
+/* ── Scroll Progress ── */
 #scroll-progress {
   position: fixed; top: 0; left: 0;
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold-light), var(--gold-dim));
+  height: 2px;
+  background: linear-gradient(90deg, var(--crimson-dim), var(--crimson-light), var(--ember));
   z-index: 300;
   transition: width 0.1s;
-  box-shadow: 0 0 6px var(--gold-glow);
+  box-shadow: 0 0 8px var(--crimson-glow);
 }
 
-/* ═══════════════════════════════════════════════════
-   FIXED OVERLAYS
-   ═══════════════════════════════════════════════════ */
+/* ── Grain + Vignette ── */
 .grain-overlay {
   position: fixed; inset: 0;
-  pointer-events: none; z-index: 2; opacity: 0.045;
+  pointer-events: none; z-index: 2; opacity: 0.055;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
 }
-
-/* Subtle vignette */
 .vignette {
   position: fixed; inset: 0;
   pointer-events: none; z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.75) 100%);
 }
 
-/* ═══════════════════════════════════════════════════
-   NAVIGATION
-   ═══════════════════════════════════════════════════ */
+/* ── Brick texture overlay ── */
+.brick-texture {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 28px,
+    rgba(192,57,43,0.15) 28px, rgba(192,57,43,0.15) 30px
+  ),
+  repeating-linear-gradient(
+    90deg, transparent, transparent 60px,
+    rgba(192,57,43,0.08) 60px, rgba(192,57,43,0.08) 62px
+  );
+}
+
+/* ── Navbar ── */
 #navbar {
   position: fixed; top: 0; left: 0; right: 0;
   z-index: 100;
-  height: 80px;
+  height: 82px;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 48px;
   transition: all 0.4s;
   border-bottom: 1px solid transparent;
 }
 #navbar.scrolled {
-  background: rgba(8,10,14,0.97);
+  background: rgba(10,8,8,0.97);
   border-bottom-color: var(--border);
   backdrop-filter: blur(20px);
 }
 
 .nav-brand {
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  color: var(--gold);
-  text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.18em;
+  color: var(--crimson-light);
+  text-shadow: 0 0 28px rgba(192,57,43,0.4);
 }
 
 .nav-link {
-  font-family: 'Jost', sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ivory-dim);
+  color: var(--cream-dim);
   transition: color 0.3s;
   position: relative;
 }
 .nav-link::after {
   content: '';
   position: absolute; bottom: -2px; left: 0; right: 0;
-  height: 1px; background: var(--gold);
+  height: 1px; background: var(--crimson);
   transform: scaleX(0);
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
 }
-.nav-link:hover { color: var(--gold-light); }
+.nav-link:hover { color: var(--cream); }
 .nav-link:hover::after { transform: scaleX(1); }
 
-/* ═══════════════════════════════════════════════════
-   FULLSCREEN MENU
-   ═══════════════════════════════════════════════════ */
+/* ── Fullscreen Menu ── */
 #menu-modal {
   position: fixed; inset: 0; z-index: 500;
-  background: rgba(5,6,10,0.98);
+  background: rgba(5,3,3,0.98);
   backdrop-filter: blur(40px);
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
@@ -194,47 +189,42 @@ body:has(button:hover) #cursor-ring {
 #menu-modal.open { opacity: 1; pointer-events: all; }
 
 .menu-link {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(28px, 4vw, 56px);
-  font-weight: 400;
-  color: rgba(242,237,228,0.2);
-  letter-spacing: 0.1em;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 68px);
+  letter-spacing: 0.12em;
+  color: rgba(245,236,215,0.15);
   transition: all 0.4s;
   display: block;
   line-height: 1.4;
 }
 .menu-link:hover {
-  color: var(--gold-light);
-  text-shadow: 0 0 40px rgba(201,168,76,0.4);
-  letter-spacing: 0.14em;
+  color: var(--crimson-light);
+  text-shadow: 0 0 50px rgba(192,57,43,0.5);
+  letter-spacing: 0.16em;
 }
 
-/* ═══════════════════════════════════════════════════
-   GOLD DIVIDER
-   ═══════════════════════════════════════════════════ */
-.gold-divider {
+/* ── Divider ── */
+.fire-divider {
   display: flex; align-items: center; gap: 16px;
   margin-bottom: 32px;
 }
-.gold-divider::before, .gold-divider::after {
+.fire-divider::before, .fire-divider::after {
   content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim));
+  background: linear-gradient(90deg, transparent, var(--crimson-dim));
 }
-.gold-divider::after {
-  background: linear-gradient(90deg, var(--gold-dim), transparent);
+.fire-divider::after {
+  background: linear-gradient(90deg, var(--crimson-dim), transparent);
 }
-.gold-divider span {
-  font-family: 'Jost', sans-serif;
+.fire-divider span {
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 9px; font-weight: 400;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--gold-dim);
+  color: var(--crimson-dim);
   white-space: nowrap;
 }
 
-/* ═══════════════════════════════════════════════════
-   LUXURY CARD
-   ═══════════════════════════════════════════════════ */
+/* ── Luxury Card ── */
 .luxury-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -245,20 +235,17 @@ body:has(button:hover) #cursor-ring {
 .luxury-card::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s;
+  background: linear-gradient(135deg, rgba(192,57,43,0.05) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
 }
 .luxury-card:hover {
-  border-color: rgba(201,168,76,0.4);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(201,168,76,0.08);
+  border-color: rgba(192,57,43,0.4);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(192,57,43,0.1);
   transform: translateY(-4px);
 }
 .luxury-card:hover::before { opacity: 1; }
 
-/* ═══════════════════════════════════════════════════
-   FOOD CARD
-   ═══════════════════════════════════════════════════ */
+/* ── Food Card ── */
 .food-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -269,21 +256,19 @@ body:has(button:hover) #cursor-ring {
 }
 .food-card:hover {
   transform: translateY(-6px) rotateX(3deg) scale(1.01);
-  border-color: rgba(201,168,76,0.5);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 30px rgba(201,168,76,0.1);
+  border-color: rgba(192,57,43,0.55);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 30px rgba(192,57,43,0.12);
 }
 
-/* ═══════════════════════════════════════════════════
-   PRIMARY BUTTON — gold foil
-   ═══════════════════════════════════════════════════ */
-.btn-gold {
-  background: linear-gradient(135deg, #8B6E2E 0%, #C9A84C 40%, #E8C97A 60%, #C9A84C 80%, #8B6E2E 100%);
+/* ── Primary Button ── */
+.btn-fire {
+  background: linear-gradient(135deg, #8B1A1A 0%, #C0392B 40%, #E74C3C 60%, #C0392B 80%, #8B1A1A 100%);
   background-size: 200% auto;
-  color: #1A0F00;
-  font-family: 'Jost', sans-serif;
+  color: #FFF5F0;
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.3em;
+  font-weight: 600;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   border: none;
   position: relative;
@@ -291,38 +276,36 @@ body:has(button:hover) #cursor-ring {
   transition: all 0.4s;
   cursor: none;
 }
-.btn-gold:hover {
+.btn-fire:hover {
   background-position: right center;
-  box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+  box-shadow: 0 8px 32px rgba(192,57,43,0.4);
   transform: translateY(-2px);
 }
-.btn-gold:active { transform: scale(0.97); }
+.btn-fire:active { transform: scale(0.97); }
 
-/* Ghost button */
+/* Ghost */
 .btn-ghost {
   background: transparent;
-  color: var(--gold);
-  font-family: 'Jost', sans-serif;
+  color: var(--crimson-light);
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  border: 1px solid rgba(201,168,76,0.4);
+  border: 1px solid rgba(192,57,43,0.45);
   transition: all 0.3s;
   cursor: none;
 }
 .btn-ghost:hover {
-  background: rgba(201,168,76,0.08);
-  border-color: var(--gold);
-  color: var(--gold-light);
+  background: rgba(192,57,43,0.08);
+  border-color: var(--crimson-light);
+  color: var(--cream);
 }
 
-/* ═══════════════════════════════════════════════════
-   3D MODEL CONTAINER
-   ═══════════════════════════════════════════════════ */
+/* ── 3D Container ── */
 #model-container {
   position: relative;
-  width: 100%; max-width: 620px;
+  width: 100%; max-width: 600px;
   aspect-ratio: 1/1;
   margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
@@ -331,19 +314,17 @@ body:has(button:hover) #cursor-ring {
 #model-container::after {
   content: '';
   position: absolute; inset: -4px;
-  background: radial-gradient(ellipse at center, transparent 35%, var(--obsidian) 72%);
+  background: radial-gradient(ellipse at center, transparent 35%, var(--char) 72%);
   pointer-events: none; z-index: 5;
 }
 
-/* ═══════════════════════════════════════════════════
-   SCANNING LINE
-   ═══════════════════════════════════════════════════ */
+/* ── Scanning Line ── */
 .scan-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(192,57,43,0.7), transparent);
   width: 100%; position: absolute; z-index: 10;
   animation: scan 5s linear infinite;
-  box-shadow: 0 0 8px rgba(201,168,76,0.3);
+  box-shadow: 0 0 10px rgba(192,57,43,0.4);
 }
 @keyframes scan {
   0%   { top: 0%;   opacity: 0; }
@@ -352,35 +333,31 @@ body:has(button:hover) #cursor-ring {
   100% { top: 100%; opacity: 0; }
 }
 
-/* ═══════════════════════════════════════════════════
-   CATEGORY TOGGLE
-   ═══════════════════════════════════════════════════ */
+/* ── Category Toggle ── */
 .cat-btn {
   flex: 1; padding: 14px;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 10px; font-weight: 400;
-  letter-spacing: 0.3em; text-transform: uppercase;
+  letter-spacing: 0.28em; text-transform: uppercase;
   transition: all 0.3s;
-  color: var(--ivory-muted);
+  color: var(--cream-muted);
   border: 1px solid transparent;
   background: transparent;
   cursor: none;
 }
 .cat-btn.active {
-  background: rgba(201,168,76,0.1);
-  color: var(--gold-light);
-  border-color: rgba(201,168,76,0.35);
+  background: rgba(192,57,43,0.12);
+  color: var(--cream);
+  border-color: rgba(192,57,43,0.4);
 }
-.cat-btn:hover:not(.active) { color: var(--gold); }
+.cat-btn:hover:not(.active) { color: var(--crimson-light); }
 
-/* ═══════════════════════════════════════════════════
-   ANIMATIONS
-   ═══════════════════════════════════════════════════ */
-@keyframes gold-pulse {
-  0%,100% { filter: brightness(1) drop-shadow(0 0 4px rgba(201,168,76,0.2)); }
-  50%      { filter: brightness(1.15) drop-shadow(0 0 12px rgba(201,168,76,0.5)); }
+/* ── Animations ── */
+@keyframes fire-pulse {
+  0%,100% { filter: brightness(1) drop-shadow(0 0 5px rgba(192,57,43,0.2)); }
+  50%      { filter: brightness(1.18) drop-shadow(0 0 14px rgba(192,57,43,0.55)); }
 }
-.gold-pulse { animation: gold-pulse 4s ease-in-out infinite; }
+.fire-pulse { animation: fire-pulse 3.5s ease-in-out infinite; }
 
 @keyframes float-gentle {
   0%,100% { transform: translateY(0); }
@@ -393,31 +370,29 @@ body:has(button:hover) #cursor-ring {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes shimmer-gold {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-}
-
 @keyframes drift {
-  0%   { transform: translateY(0)   translateX(0)  scale(1);   opacity: 0.08; }
-  50%  { transform: translateY(-60px) translateX(20px) scale(1.08); opacity: 0.2; }
-  100% { transform: translateY(-120px) translateX(0) scale(1);  opacity: 0.08; }
+  0%   { transform: translateY(0)   translateX(0)  scale(1);   opacity: 0.06; }
+  50%  { transform: translateY(-60px) translateX(20px) scale(1.08); opacity: 0.18; }
+  100% { transform: translateY(-120px) translateX(0) scale(1);  opacity: 0.06; }
 }
 
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-.spin-slow { animation: spin-slow 16s linear infinite; }
+.spin-slow { animation: spin-slow 20s linear infinite; }
 
 @keyframes glow-border {
-  0%,100% { box-shadow: 0 0 20px rgba(201,168,76,0.08); }
-  50%      { box-shadow: 0 0 50px rgba(201,168,76,0.2), 0 0 100px rgba(201,168,76,0.08); }
+  0%,100% { box-shadow: 0 0 20px rgba(192,57,43,0.07); }
+  50%      { box-shadow: 0 0 60px rgba(192,57,43,0.22), 0 0 100px rgba(192,57,43,0.08); }
 }
 
-/* ═══════════════════════════════════════════════════
-   SCROLL REVEAL
-   ═══════════════════════════════════════════════════ */
+@keyframes ember-float {
+  0%   { transform: translateY(0) scale(1);   opacity: 0.7; }
+  100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+}
+
+/* ── Scroll Reveal ── */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -429,13 +404,11 @@ body:has(button:hover) #cursor-ring {
 .reveal-delay-3 { transition-delay: 0.36s; }
 .reveal-delay-4 { transition-delay: 0.48s; }
 
-/* ═══════════════════════════════════════════════════
-   BOTTOM NAV
-   ═══════════════════════════════════════════════════ */
+/* ── Bottom Nav ── */
 #bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   z-index: 80;
-  background: rgba(8,10,14,0.96);
+  background: rgba(10,8,8,0.97);
   border-top: 1px solid var(--border);
   backdrop-filter: blur(30px);
   display: flex; justify-content: space-around; align-items: center;
@@ -443,95 +416,81 @@ body:has(button:hover) #cursor-ring {
 }
 .bnav-item {
   display: flex; flex-direction: column; align-items: center;
-  gap: 4px; color: var(--ivory-muted);
-  font-family: 'Jost', sans-serif;
+  gap: 4px; color: var(--cream-muted);
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 9px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
   transition: all 0.3s;
 }
-.bnav-item:hover, .bnav-item.active {
-  color: var(--gold);
-}
+.bnav-item:hover, .bnav-item.active { color: var(--crimson-light); }
 .bnav-item .material-symbols-outlined { font-size: 20px; }
 
-/* ═══════════════════════════════════════════════════
-   GLB LOADING BAR
-   ═══════════════════════════════════════════════════ */
+/* ── GLB loading bar ── */
 #glb-loading-bar {
   position: absolute; bottom: 16%; left: 22%; right: 22%;
-  height: 1px; background: rgba(201,168,76,0.12); z-index: 8; overflow: hidden;
+  height: 1px; background: rgba(192,57,43,0.12); z-index: 8; overflow: hidden;
 }
 #glb-loading-bar span {
   display: block; height: 100%;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
-  box-shadow: 0 0 6px rgba(201,168,76,0.8);
+  background: linear-gradient(90deg, var(--crimson-dim), var(--crimson-light));
+  box-shadow: 0 0 6px rgba(192,57,43,0.8);
   width: 0%; transition: width 0.3s ease;
 }
 
-/* ═══════════════════════════════════════════════════
-   INPUT FIELDS
-   ═══════════════════════════════════════════════════ */
+/* ── Inputs ── */
 .luxury-input {
   background: var(--deep);
-  border: 1px solid rgba(201,168,76,0.15);
-  color: var(--ivory);
-  font-family: 'Jost', sans-serif;
+  border: 1px solid rgba(192,57,43,0.15);
+  color: var(--cream);
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 12px; font-weight: 300;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   padding: 14px 18px;
   outline: none;
   transition: border-color 0.3s;
   width: 100%;
 }
-.luxury-input:focus { border-color: rgba(201,168,76,0.5); }
-.luxury-input::placeholder { color: var(--ivory-muted); letter-spacing: 0.15em; }
+.luxury-input:focus { border-color: rgba(192,57,43,0.5); }
+.luxury-input::placeholder { color: var(--cream-muted); }
 .luxury-input option { background: var(--deep); }
 
 label.field-label {
-  font-family: 'Jost', sans-serif;
-  font-size: 9px; font-weight: 400;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 9px; font-weight: 600;
   letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--gold-dim);
+  color: var(--crimson-dim);
   display: block; margin-bottom: 8px;
 }
 
-/* ═══════════════════════════════════════════════════
-   ORNAMENT CORNER MARKS
-   ═══════════════════════════════════════════════════ */
-.corner-tl { position: absolute; top: 16px; left: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(201,168,76,0.4); border-left: 1px solid rgba(201,168,76,0.4); }
-.corner-tr { position: absolute; top: 16px; right: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(201,168,76,0.4); border-right: 1px solid rgba(201,168,76,0.4); }
-.corner-bl { position: absolute; bottom: 16px; left: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(201,168,76,0.4); border-left: 1px solid rgba(201,168,76,0.4); }
-.corner-br { position: absolute; bottom: 16px; right: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(201,168,76,0.4); border-right: 1px solid rgba(201,168,76,0.4); }
+/* ── Corner Marks ── */
+.corner-tl { position: absolute; top: 16px; left: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(192,57,43,0.45); border-left: 1px solid rgba(192,57,43,0.45); }
+.corner-tr { position: absolute; top: 16px; right: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(192,57,43,0.45); border-right: 1px solid rgba(192,57,43,0.45); }
+.corner-bl { position: absolute; bottom: 16px; left: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(192,57,43,0.45); border-left: 1px solid rgba(192,57,43,0.45); }
+.corner-br { position: absolute; bottom: 16px; right: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(192,57,43,0.45); border-right: 1px solid rgba(192,57,43,0.45); }
 
-/* Section label style */
 .section-eyebrow {
-  font-family: 'Jost', sans-serif;
-  font-size: 9px; font-weight: 400;
-  letter-spacing: 0.45em; text-transform: uppercase;
-  color: var(--gold-dim);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.42em; text-transform: uppercase;
+  color: var(--crimson-dim);
 }
 
-/* ═══════════════════════════════════════════════════
-   AMBIENT ORBS
-   ═══════════════════════════════════════════════════ */
+/* ── Orbs ── */
 .ambient-orb {
   position: absolute; border-radius: 50%;
   filter: blur(90px); pointer-events: none;
-  animation: gold-pulse 8s ease-in-out infinite;
+  animation: fire-pulse 8s ease-in-out infinite;
 }
 
-/* Particle dots */
-.particle {
+/* Ember sparks */
+.ember-spark {
   position: fixed; border-radius: 50%;
   pointer-events: none; z-index: 1;
-  background: rgba(201,168,76,0.6);
+  background: rgba(192,57,43,0.65);
 }
 
-/* Magnetic */
 .magnetic { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 
-/* ═══════════════════════════════════════════════════
-   REVIEW CARD
-   ═══════════════════════════════════════════════════ */
+/* ── Review Card ── */
 .review-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -541,62 +500,88 @@ label.field-label {
 }
 .review-card::before {
   content: '"';
-  position: absolute; top: -12px; left: 28px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 80px; font-weight: 300; line-height: 1;
-  color: var(--gold-dim);
-  opacity: 0.5;
+  position: absolute; top: -10px; left: 24px;
+  font-family: 'Playfair Display', serif;
+  font-size: 90px; font-weight: 700; line-height: 1;
+  color: var(--crimson-dim);
+  opacity: 0.45;
 }
 .review-card:hover {
-  border-color: rgba(201,168,76,0.35);
-  box-shadow: 0 16px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.06);
+  border-color: rgba(192,57,43,0.38);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.6), 0 0 30px rgba(192,57,43,0.07);
 }
 
-/* ═══════════════════════════════════════════════════
-   STAR — gold filled
-   ═══════════════════════════════════════════════════ */
-.star { color: var(--gold); font-size: 14px; }
-.star-dim { color: rgba(201,168,76,0.25); font-size: 14px; }
+.star { color: var(--crimson-light); font-size: 14px; }
+.star-dim { color: rgba(192,57,43,0.25); font-size: 14px; }
+
+/* ── Diagonal stripe accent ── */
+.stripe-accent {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0px, transparent 18px,
+    rgba(192,57,43,0.03) 18px, rgba(192,57,43,0.03) 20px
+  );
+}
+
+/* ── Pizza badge ── */
+.pizza-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(192,57,43,0.3);
+  background: rgba(192,57,43,0.06);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--crimson-dim);
+}
+.pizza-badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--crimson-light);
+  animation: fire-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── Decorative flame icons using CSS ── */
+.flame-icon {
+  display: inline-block;
+  font-size: 18px;
+  filter: sepia(1) saturate(5) hue-rotate(-30deg);
+}
 </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
-<!-- Scroll Progress -->
 <div id="scroll-progress"></div>
-<!-- Overlays -->
 <div class="grain-overlay"></div>
 <div class="vignette"></div>
+<div class="brick-texture"></div>
 
-<!-- Ambient Orbs -->
+<!-- Ambient Orbs — warm fire tones -->
 <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-  <div class="ambient-orb" style="width:500px;height:500px;background:rgba(201,168,76,0.04);top:10%;left:-15%;animation-delay:-3s;"></div>
-  <div class="ambient-orb" style="width:400px;height:400px;background:rgba(139,26,26,0.05);bottom:20%;right:-10%;animation-delay:-6s;"></div>
-  <div class="ambient-orb" style="width:300px;height:300px;background:rgba(201,168,76,0.03);top:60%;left:40%;animation-delay:-1s;"></div>
+  <div class="ambient-orb" style="width:550px;height:550px;background:rgba(192,57,43,0.06);top:5%;left:-18%;animation-delay:-2s;"></div>
+  <div class="ambient-orb" style="width:420px;height:420px;background:rgba(212,82,42,0.05);bottom:15%;right:-12%;animation-delay:-5s;"></div>
+  <div class="ambient-orb" style="width:280px;height:280px;background:rgba(139,26,26,0.04);top:55%;left:38%;animation-delay:-9s;"></div>
 </div>
 
-<!-- Floating Particles -->
+<!-- Ember Sparks -->
 <div class="fixed inset-0 pointer-events-none z-0">
-  <div class="particle w-0.5 h-0.5 top-[22%] left-[8%]"  style="animation:drift 18s infinite;"></div>
-  <div class="particle w-1 h-1 top-[48%] left-[82%]"     style="animation:drift 26s infinite -3s;"></div>
-  <div class="particle w-0.5 h-0.5 top-[72%] left-[25%]" style="animation:drift 22s infinite -7s;"></div>
-  <div class="particle w-1 h-1 top-[15%] left-[62%]"     style="animation:drift 20s infinite -10s;"></div>
-  <div class="particle w-0.5 h-0.5 top-[88%] left-[55%]" style="animation:drift 24s infinite -14s;"></div>
+  <div class="ember-spark w-1 h-1 top-[20%] left-[10%]"   style="animation:drift 16s infinite;"></div>
+  <div class="ember-spark w-1.5 h-1.5 top-[45%] left-[80%]" style="animation:drift 22s infinite -4s;"></div>
+  <div class="ember-spark w-0.5 h-0.5 top-[70%] left-[22%]" style="animation:drift 20s infinite -8s;"></div>
+  <div class="ember-spark w-1 h-1 top-[12%] left-[60%]"  style="animation:drift 18s infinite -12s;"></div>
+  <div class="ember-spark w-0.5 h-0.5 top-[85%] left-[50%]" style="animation:drift 25s infinite -6s;"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     FULLSCREEN MENU MODAL
-     ═══════════════════════════════════════════════════ -->
+<!-- ── Fullscreen Menu ── -->
 <div id="menu-modal">
   <button id="close-menu" class="absolute top-8 right-8 material-symbols-outlined hover:scale-110 transition-transform"
-    style="color:var(--gold);font-size:28px;background:none;border:none;cursor:none;">close</button>
+    style="color:var(--crimson-light);font-size:28px;background:none;border:none;cursor:none;">close</button>
 
-  <!-- Decorative vertical line -->
-  <div style="position:absolute;left:48px;top:10%;bottom:10%;width:1px;background:linear-gradient(to bottom,transparent,var(--gold-dim),transparent);opacity:0.4;"></div>
+  <div style="position:absolute;left:48px;top:10%;bottom:10%;width:1px;background:linear-gradient(to bottom,transparent,var(--crimson-dim),transparent);opacity:0.45;"></div>
 
-  <nav class="flex flex-col gap-1 text-center px-8" style="padding-left:80px;">
+  <nav class="flex flex-col gap-1 text-center px-8" style="padding-left:88px;">
     <a class="menu-link" href="#home"         onclick="closeMenu()">HOME</a>
     <a class="menu-link" href="#menu-section" onclick="closeMenu()">MENU</a>
     <a class="menu-link" href="#special"      onclick="closeMenu()">TONIGHT'S SPECIAL</a>
@@ -606,20 +591,18 @@ label.field-label {
   </nav>
 
   <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);">
-    <p class="section-eyebrow" style="color:rgba(201,168,76,0.25);">MR. FITZ — ABYSSAL DINING EXPERIENCE</p>
+    <p class="section-eyebrow" style="color:rgba(192,57,43,0.3);">MR. FITZ — ARTISAN PIZZA EXPERIENCE</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     TOP NAVIGATION
-     ═══════════════════════════════════════════════════ -->
+<!-- ── Navbar ── -->
 <header id="navbar">
   <div style="display:flex;align-items:center;gap:20px;">
     <button id="menu-toggle" class="material-symbols-outlined magnetic"
-      style="color:var(--gold);background:none;border:none;cursor:none;font-size:22px;transition:color 0.3s;">menu</button>
+      style="color:var(--crimson-light);background:none;border:none;cursor:none;font-size:22px;transition:color 0.3s;">menu</button>
     <div style="display:flex;align-items:center;gap:12px;">
       <img src="logo.jpeg" alt="Mr. Fitz"
-        style="height:36px;width:auto;object-fit:contain;filter:sepia(30%) saturate(150%) hue-rotate(-10deg);"
+        style="height:36px;width:auto;object-fit:contain;filter:sepia(60%) saturate(200%) hue-rotate(-15deg) brightness(0.9);"
         onerror="this.style.display='none'"/>
       <span class="nav-brand">MR. FITZ</span>
     </div>
@@ -630,142 +613,138 @@ label.field-label {
     <a class="nav-link" href="#special">Specials</a>
     <a class="nav-link" href="#reservations">Reserve</a>
     <button class="material-symbols-outlined magnetic"
-      style="color:var(--gold-dim);background:none;border:none;cursor:none;font-size:20px;transition:color 0.3s;"
-      onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--gold-dim)'">notifications</button>
+      style="color:var(--crimson-dim);background:none;border:none;cursor:none;font-size:20px;transition:color 0.3s;"
+      onmouseover="this.style.color='var(--crimson-light)'" onmouseout="this.style.color='var(--crimson-dim)'">notifications</button>
   </nav>
 </header>
 
-<!-- ═══════════════════════════════════════════════════
+<!-- ══════════════════════════
      MAIN
-     ═══════════════════════════════════════════════════ -->
+     ══════════════════════════ -->
 <main id="home" style="padding-top:80px;padding-bottom:120px;position:relative;z-index:10;">
 
-  <!-- ─────────────────────────────────────────────
-       HERO SECTION
-       ───────────────────────────────────────────── -->
-  <section style="position:relative;min-height:800px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;margin-bottom:80px;">
+  <!-- ── HERO ── -->
+  <section style="position:relative;min-height:820px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;margin-bottom:80px;">
 
-    <!-- Hero background -->
+    <!-- Hero BG with red-tinted dark overlay -->
     <div style="position:absolute;inset:0;z-index:0;">
-      <img id="hero-bg" src="hero.jpg" alt="Abyssal Depth"
-        style="width:100%;height:100%;object-fit:cover;opacity:0.18;transform:scale(1.06);"/>
-      <div style="position:absolute;inset:0;background:linear-gradient(to top, var(--obsidian) 0%, rgba(8,10,14,0.5) 50%, rgba(8,10,14,0.2) 100%);"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(8,10,14,0.8) 0%, transparent 50%, rgba(8,10,14,0.8) 100%);"></div>
+      <img id="hero-bg" src="hero.jpg" alt="Pizza"
+        style="width:100%;height:100%;object-fit:cover;opacity:0.14;transform:scale(1.06);filter:saturate(1.3) hue-rotate(-10deg);"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, var(--char) 0%, rgba(10,8,8,0.55) 50%, rgba(10,8,8,0.22) 100%);"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(10,8,8,0.85) 0%, transparent 50%, rgba(10,8,8,0.85) 100%);"></div>
+      <!-- Red hotspot at bottom to simulate oven glow -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top, rgba(192,57,43,0.06), transparent);"></div>
     </div>
 
     <div style="position:relative;z-index:10;width:100%;max-width:1100px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;align-items:center;padding-top:40px;">
 
       <!-- Status badge -->
-      <div class="reveal" style="display:inline-flex;align-items:center;gap:10px;margin-bottom:32px;padding:8px 20px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);">
-        <div style="width:5px;height:5px;border-radius:50%;background:var(--gold);animation:gold-pulse 3s ease-in-out infinite;"></div>
-        <span style="font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.45em;text-transform:uppercase;color:var(--gold-dim);">SYSTEM ONLINE — DEPTH 2400M</span>
+      <div class="pizza-badge reveal" style="margin-bottom:36px;">
+        <div class="pizza-badge-dot"></div>
+        <span>WOOD-FIRED · EST. 1994 · NAPLES TRADITION</span>
       </div>
 
-      <!-- Main headline -->
-      <h1 class="reveal reveal-delay-1" style="font-family:'Cinzel',serif;font-size:clamp(52px,9vw,108px);line-height:1;letter-spacing:0.08em;font-weight:400;text-align:center;margin-bottom:10px;">
-        <span style="color:var(--gold-light);text-shadow:0 0 40px rgba(201,168,76,0.3);">MR.</span>
-        <span style="color:var(--ivory);"> FITZ</span>
+      <!-- Headline -->
+      <h1 class="reveal reveal-delay-1" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,120px);line-height:0.92;letter-spacing:0.06em;font-weight:400;text-align:center;margin-bottom:14px;">
+        <span style="color:var(--crimson-light);text-shadow:0 0 50px rgba(192,57,43,0.35);">MR.</span>
+        <span style="color:var(--cream);"> FITZ</span>
       </h1>
 
-      <!-- Subtitle in italic serif -->
-      <p class="reveal reveal-delay-2" style="font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.5vw,22px);font-style:italic;font-weight:300;color:var(--ivory-dim);text-align:center;max-width:500px;line-height:1.7;margin-bottom:48px;letter-spacing:0.03em;">
-        Premium seafood &amp; curated dining from the ocean's deepest frontiers. Where luxury meets the abyss.
+      <!-- Sub-headline italic serif -->
+      <p class="reveal reveal-delay-2" style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.4vw,22px);font-style:italic;font-weight:400;color:var(--cream-dim);text-align:center;max-width:520px;line-height:1.7;margin-bottom:52px;letter-spacing:0.02em;">
+        Artisan pizza &amp; curated Italian dining. Stone-fired perfection from the hearth of Naples. Where craft meets desire.
       </p>
 
       <!-- Ornamental rule -->
-      <div class="reveal reveal-delay-2" style="display:flex;align-items:center;gap:16px;width:100%;max-width:340px;margin-bottom:56px;">
-        <span style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-dim));"></span>
-        <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.4em;color:var(--gold-dim);">✦</span>
-        <span style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--gold-dim));"></span>
+      <div class="reveal reveal-delay-2" style="display:flex;align-items:center;gap:16px;width:100%;max-width:360px;margin-bottom:60px;">
+        <span style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--crimson-dim));"></span>
+        <span style="font-family:'Playfair Display',serif;font-size:12px;color:var(--crimson-dim);">✦</span>
+        <span style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--crimson-dim));"></span>
       </div>
 
-      <!-- 3D Model Viewport -->
+      <!-- 3D Viewport -->
       <div id="model-container" class="reveal reveal-delay-2">
         <canvas id="three-canvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;"></canvas>
 
-        <!-- Fallback -->
         <div id="model-fallback" class="float-gentle" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;pointer-events:none;transition:opacity 0.8s;">
-          <span class="material-symbols-outlined" style="font-size:90px;color:rgba(201,168,76,0.15);">view_in_ar</span>
+          <span class="material-symbols-outlined" style="font-size:90px;color:rgba(192,57,43,0.15);">local_pizza</span>
           <div style="margin-top:16px;display:flex;align-items:center;gap:8px;">
-            <span class="material-symbols-outlined spin-slow" style="color:var(--gold);font-size:16px;">rotate_right</span>
-            <span id="model-status" style="font-family:'Jost',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;text-transform:uppercase;color:rgba(201,168,76,0.5);">LOADING MODEL…</span>
+            <span class="material-symbols-outlined spin-slow" style="color:var(--crimson);font-size:16px;">rotate_right</span>
+            <span id="model-status" style="font-family:'Nunito Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;text-transform:uppercase;color:rgba(192,57,43,0.5);">LOADING MODEL…</span>
           </div>
         </div>
 
-        <!-- Progress bar -->
         <div id="glb-loading-bar"><span id="glb-progress-fill"></span></div>
-
-        <!-- Scan line -->
         <div class="scan-line" style="z-index:6;"></div>
 
-        <!-- Corner ornaments on model -->
-        <div style="position:absolute;top:14%;left:14%;width:18px;height:18px;border-top:1px solid rgba(201,168,76,0.35);border-left:1px solid rgba(201,168,76,0.35);z-index:7;"></div>
-        <div style="position:absolute;top:14%;right:14%;width:18px;height:18px;border-top:1px solid rgba(201,168,76,0.35);border-right:1px solid rgba(201,168,76,0.35);z-index:7;"></div>
-        <div style="position:absolute;bottom:14%;left:14%;width:18px;height:18px;border-bottom:1px solid rgba(201,168,76,0.35);border-left:1px solid rgba(201,168,76,0.35);z-index:7;"></div>
-        <div style="position:absolute;bottom:14%;right:14%;width:18px;height:18px;border-bottom:1px solid rgba(201,168,76,0.35);border-right:1px solid rgba(201,168,76,0.35);z-index:7;"></div>
+        <!-- Corner ornaments -->
+        <div style="position:absolute;top:14%;left:14%;width:18px;height:18px;border-top:1px solid rgba(192,57,43,0.4);border-left:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
+        <div style="position:absolute;top:14%;right:14%;width:18px;height:18px;border-top:1px solid rgba(192,57,43,0.4);border-right:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
+        <div style="position:absolute;bottom:14%;left:14%;width:18px;height:18px;border-bottom:1px solid rgba(192,57,43,0.4);border-left:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
+        <div style="position:absolute;bottom:14%;right:14%;width:18px;height:18px;border-bottom:1px solid rgba(192,57,43,0.4);border-right:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
       </div>
 
       <!-- Category Toggle -->
-      <div id="menu-section" class="reveal reveal-delay-3" style="width:100%;max-width:500px;margin-bottom:48px;margin-top:16px;">
+      <div id="menu-section" class="reveal reveal-delay-3" style="width:100%;max-width:520px;margin-bottom:48px;margin-top:16px;">
         <div style="display:flex;border:1px solid var(--border);background:var(--surface);">
-          <button class="cat-btn active" onclick="switchCategory(this,'seafood')">Seafood</button>
+          <button class="cat-btn active" onclick="switchCategory(this,'seafood')">Pizzas</button>
           <button class="cat-btn"        onclick="switchCategory(this,'drinks')">Drinks</button>
           <button class="cat-btn"        onclick="switchCategory(this,'desserts')">Desserts</button>
         </div>
         <div style="margin-top:10px;display:flex;justify-content:space-between;padding:0 4px;">
-          <span style="font-family:'Jost',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.3);">MODULE: <span id="cat-label">SEAFOOD</span></span>
-          <span style="font-family:'Jost',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(201,168,76,0.3);">LOADED: 100%</span>
+          <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(192,57,43,0.35);">MODULE: <span id="cat-label">PIZZAS</span></span>
+          <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(192,57,43,0.35);">LOADED: 100%</span>
         </div>
       </div>
 
       <!-- Food Cards -->
       <div id="food-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;margin-bottom:80px;" class="reveal reveal-delay-4">
 
-        <!-- SEAFOOD -->
+        <!-- SEAFOOD / PIZZA -->
         <div class="food-card" data-cat="seafood" style="padding:12px;">
           <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food1.jpeg" alt="King Crab" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.1)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:10px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
-              <span style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--gold);">VIEW DETAILS →</span>
+            <img src="food1.jpeg" alt="Margherita Royale" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55),transparent);opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:10px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+              <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--crimson-light);">VIEW DETAILS →</span>
             </div>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">CRUSTACEA</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">CLASSICO</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">King Crab</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;font-weight:300;color:rgba(201,168,76,0.7);">$145</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">King Crab</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$145</span>
           </div>
         </div>
 
         <div class="food-card" data-cat="seafood" style="padding:12px;">
           <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food2.jpeg" alt="Bluefin Tuna" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.1)'" onmouseout="this.style.filter='grayscale(100%)'"/>
+            <img src="food2.jpeg" alt="Diavola" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">ACTINOPTERYGII</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">PICCANTE</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Bluefin</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;font-weight:300;color:rgba(201,168,76,0.7);">$92</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Bluefin</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$92</span>
           </div>
         </div>
 
         <div class="food-card" data-cat="seafood" style="padding:12px;">
           <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food3.jpeg" alt="Giant Squid" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.1)'" onmouseout="this.style.filter='grayscale(100%)'"/>
+            <img src="food3.jpeg" alt="Quattro Formaggi" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">CEPHALOPODA</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">FORMAGGI</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Giant Squid</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;font-weight:300;color:rgba(201,168,76,0.7);">$210</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Giant Squid</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$210</span>
           </div>
         </div>
 
         <div class="food-card" data-cat="seafood" style="padding:12px;">
           <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food4.jpeg" alt="Crystal Scallop" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.1)'" onmouseout="this.style.filter='grayscale(100%)'"/>
+            <img src="food4.jpeg" alt="Truffle Bianca" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">BIVALVIA</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">BIANCA</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Crystal Scallop</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;font-weight:300;color:rgba(201,168,76,0.7);">$58</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Crystal Scallop</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$58</span>
           </div>
         </div>
 
@@ -774,40 +753,40 @@ label.field-label {
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="side1.jpeg" alt="Abyss Negroni" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">SIGNATURE</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">SIGNATURE</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Abyss Negroni</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$32</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Abyss Negroni</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$32</span>
           </div>
         </div>
         <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="side2.jpeg" alt="Hydro Martini" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">MOLECULAR</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">MOLECULAR</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Hydro Martini</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$28</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Hydro Martini</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$28</span>
           </div>
         </div>
         <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="side3.jpeg" alt="Glow Gin" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">BIOLUMINESCENT</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">BIOLUMINESCENT</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Glow Gin</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$38</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Glow Gin</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$38</span>
           </div>
         </div>
         <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="drink4.jpg" alt="Deep Sea Soda" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">VIRGIN</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">VIRGIN</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Deep Sea Soda</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$14</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Deep Sea Soda</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$14</span>
           </div>
         </div>
 
@@ -816,40 +795,40 @@ label.field-label {
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="dessert1.jpg" alt="Midnight Tart" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">CONFECTION</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">CONFECTION</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Midnight Tart</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$24</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Midnight Tart</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$24</span>
           </div>
         </div>
         <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="dessert2.jpg" alt="Glow Panna Cotta" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">MOLECULAR</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">MOLECULAR</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Glow Panna Cotta</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$29</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Glow Panna Cotta</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$29</span>
           </div>
         </div>
         <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="dessert3.jpg" alt="Abyss Truffle" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">ARTISAN</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">ARTISAN</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Abyss Truffle</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$19</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Abyss Truffle</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$19</span>
           </div>
         </div>
         <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
           <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
             <img src="dessert4.jpg" alt="Cryo Sorbet" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
           </div>
-          <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px;">NITROGEN</p>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">NITROGEN</p>
           <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ivory);">Cryo Sorbet</span>
-            <span style="font-family:'Jost',sans-serif;font-size:13px;color:rgba(201,168,76,0.7);">$22</span>
+            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Cryo Sorbet</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$22</span>
           </div>
         </div>
 
@@ -857,110 +836,103 @@ label.field-label {
     </div>
   </section>
 
-  <!-- ─────────────────────────────────────────────
-       TONIGHT'S SPECIAL
-       ───────────────────────────────────────────── -->
+  <!-- ── TONIGHT'S SPECIAL ── -->
   <section id="special" style="padding:0 40px;margin-bottom:120px;max-width:1200px;margin-left:auto;margin-right:auto;">
 
-    <div class="gold-divider reveal">
+    <div class="fire-divider reveal">
       <span>SPECIAL_TODAY — UNIT 01</span>
     </div>
 
     <div class="luxury-card reveal" style="overflow:hidden;display:flex;flex-direction:column;animation:glow-border 6s ease-in-out infinite;">
-
       <div style="display:flex;flex-direction:column;" class="lg-row">
         <!-- Image -->
         <div style="position:relative;height:460px;overflow:hidden;flex:1 1 60%;">
           <img src="food6.jpeg" alt="Neon Scarlet Prawn"
-            style="width:100%;height:100%;object-fit:cover;transition:transform 3s ease;filter:saturate(1.15);"
+            style="width:100%;height:100%;object-fit:cover;transition:transform 3s ease;filter:saturate(1.2) hue-rotate(-5deg);"
             onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"/>
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,14,0.85) 0%,transparent 50%);"></div>
-          <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent,rgba(8,10,14,0.3));"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,8,0.9) 0%,transparent 55%);"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent,rgba(10,8,8,0.3));"></div>
+          <!-- Red oven glow at bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:150px;background:linear-gradient(to top, rgba(192,57,43,0.12), transparent);"></div>
 
-          <!-- Status indicator -->
           <div style="position:absolute;bottom:28px;left:28px;display:flex;align-items:center;gap:14px;">
-            <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;animation:spin-slow 20s linear infinite;">
-              <span class="material-symbols-outlined" style="color:var(--gold);font-size:24px;">ac_unit</span>
+            <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(192,57,43,0.5);display:flex;align-items:center;justify-content:center;animation:spin-slow 20s linear infinite;">
+              <span class="material-symbols-outlined" style="color:var(--crimson-light);font-size:24px;">local_fire_department</span>
             </div>
             <div>
-              <p style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:0.4em;color:var(--gold-dim);text-transform:uppercase;">Storage Status</p>
-              <p style="font-family:'Jost',sans-serif;font-size:11px;letter-spacing:0.25em;color:var(--ivory);text-transform:uppercase;">Cryogenic Locked</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.4em;color:var(--crimson-dim);text-transform:uppercase;">Oven Status</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;letter-spacing:0.25em;color:var(--cream);text-transform:uppercase;">Stone-Fired 485°C</p>
             </div>
           </div>
         </div>
 
-        <!-- Details panel -->
-        <div style="flex:1 1 40%;padding:44px 40px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid var(--border);">
-          <p style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:16px;">[ EXTREME RARITY ]</p>
+        <!-- Details -->
+        <div style="flex:1 1 40%;padding:44px 40px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid var(--border);position:relative;">
+          <div class="stripe-accent"></div>
+          <p style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:16px;position:relative;">[ EXTREME RARITY ]</p>
 
-          <h2 style="font-family:'Cinzel',serif;font-size:clamp(28px,4vw,48px);font-weight:400;color:var(--ivory);line-height:1.15;margin-bottom:20px;letter-spacing:0.06em;">NEON SCARLET<br/>PRAWN</h2>
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:400;color:var(--cream);line-height:1.1;margin-bottom:20px;letter-spacing:0.06em;position:relative;">NEON SCARLET<br/>PRAWN</h2>
 
-          <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ivory-dim);line-height:1.75;margin-bottom:36px;">
+          <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:36px;position:relative;">
             Harvested from the hydrothermal vents of the Mid-Atlantic Ridge. Its bioluminescent properties remain active for 12 hours post-ascent. A Mr. Fitz exclusive.
           </p>
 
-          <!-- Specs grid -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 24px;margin-bottom:36px;padding:28px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 24px;margin-bottom:36px;padding:28px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;">
             <div>
-              <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--ivory-muted);margin-bottom:6px;">Recovery Depth</p>
-              <p style="font-family:'Cinzel',serif;font-size:20px;font-weight:400;color:var(--gold);">3,800M</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Recovery Depth</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">3,800M</p>
             </div>
             <div>
-              <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--ivory-muted);margin-bottom:6px;">Specimen Weight</p>
-              <p style="font-family:'Cinzel',serif;font-size:20px;font-weight:400;color:var(--gold);">450G</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Specimen Weight</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">450G</p>
             </div>
             <div>
-              <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--ivory-muted);margin-bottom:6px;">Trace ID</p>
-              <p style="font-family:'Cinzel',serif;font-size:20px;font-weight:400;color:var(--gold);">#AX-209</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Trace ID</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">#AX-209</p>
             </div>
             <div>
-              <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--ivory-muted);margin-bottom:6px;">Origin</p>
-              <p style="font-family:'Cinzel',serif;font-size:20px;font-weight:400;color:var(--gold);">ATLANTIC</p>
+              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Origin</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">ATLANTIC</p>
             </div>
           </div>
 
-          <button class="btn-gold" style="width:100%;padding:18px 24px;" onclick="addToCart('Neon Scarlet Prawn', 420)">
+          <button class="btn-fire" style="width:100%;padding:18px 24px;" onclick="addToCart('Neon Scarlet Prawn', 420)">
             Commence Acquisition — $420.00
           </button>
-          <div id="cart-confirm" style="display:none;margin-top:12px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);text-align:center;">
+          <div id="cart-confirm" style="display:none;margin-top:12px;font-family:'Nunito Sans',sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--crimson-light);text-align:center;">
             ✦ Added to Vault — Acquisition Logged
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- ─────────────────────────────────────────────
-       RESERVATIONS
-       ───────────────────────────────────────────── -->
+  <!-- ── RESERVATIONS ── -->
   <section id="reservations" style="padding:0 40px;margin-bottom:120px;max-width:1200px;margin-left:auto;margin-right:auto;">
 
-    <div class="gold-divider reveal">
+    <div class="fire-divider reveal">
       <span>RESERVE — MR. FITZ</span>
     </div>
 
     <div class="luxury-card reveal" style="padding:60px;position:relative;">
+      <div class="stripe-accent"></div>
       <div class="corner-tl"></div><div class="corner-tr"></div>
       <div class="corner-bl"></div><div class="corner-br"></div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;">
-        <!-- Left copy -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;position:relative;">
         <div>
-          <p class="section-eyebrow" style="margin-bottom:12px;">Depth Protocol</p>
-          <h2 style="font-family:'Cinzel',serif;font-size:clamp(26px,3.5vw,40px);font-weight:400;color:var(--ivory);letter-spacing:0.06em;line-height:1.2;margin-bottom:20px;">SECURE YOUR<br/>VOYAGE</h2>
-          <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ivory-dim);line-height:1.75;margin-bottom:28px;">
+          <p class="section-eyebrow" style="margin-bottom:12px;">Reserve Your Table</p>
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,48px);color:var(--cream);letter-spacing:0.08em;line-height:1.15;margin-bottom:20px;">SECURE YOUR<br/>VOYAGE</h2>
+          <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
             Reservations at Mr. Fitz are limited to 24 covers per evening. Each table receives a personalized specimen menu curated from that night's deep-sea harvest.
           </p>
-          <!-- Separator -->
-          <div style="width:60px;height:1px;background:var(--gold-dim);margin-bottom:24px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;color:var(--gold-dim);">
+          <div style="width:60px;height:1px;background:var(--crimson-dim);margin-bottom:24px;"></div>
+          <div style="display:flex;align-items:center;gap:10px;color:var(--crimson-dim);">
             <span class="material-symbols-outlined" style="font-size:16px;">schedule</span>
-            <span style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;">Tue–Sat: 18:00–23:00 &nbsp;|&nbsp; Sun: 17:00–21:00</span>
+            <span style="font-family:'Nunito Sans',sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;">Tue–Sat: 18:00–23:00 &nbsp;|&nbsp; Sun: 17:00–21:00</span>
           </div>
         </div>
 
-        <!-- Right form -->
         <div style="display:flex;flex-direction:column;gap:18px;">
           <div>
             <label class="field-label">Full Name</label>
@@ -983,7 +955,7 @@ label.field-label {
             <label class="field-label">Special Requests</label>
             <textarea rows="3" placeholder="DIETARY REQUIREMENTS, OCCASIONS…" class="luxury-input" style="resize:none;"></textarea>
           </div>
-          <button class="btn-gold" style="padding:18px 24px;margin-top:4px;" onclick="submitReservation(this)">
+          <button class="btn-fire" style="padding:18px 24px;margin-top:4px;" onclick="submitReservation(this)">
             Initiate Reservation Protocol
           </button>
         </div>
@@ -991,86 +963,84 @@ label.field-label {
     </div>
   </section>
 
-  <!-- ─────────────────────────────────────────────
-       REVIEWS
-       ───────────────────────────────────────────── -->
+  <!-- ── REVIEWS ── -->
   <section id="voices" style="padding:0 40px;margin-bottom:100px;max-width:1200px;margin-left:auto;margin-right:auto;">
 
     <div class="reveal" style="margin-bottom:48px;">
       <p class="section-eyebrow" style="margin-bottom:10px;">Comms Log — Surfaced Feedback</p>
-      <h2 style="font-family:'Cinzel',serif;font-size:clamp(28px,4vw,44px);font-weight:400;color:var(--ivory);letter-spacing:0.06em;">VOICES FROM<br/>THE ABYSS</h2>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:400;color:var(--cream);letter-spacing:0.08em;">VOICES FROM<br/>THE ABYSS</h2>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
 
       <div class="review-card reveal reveal-delay-1">
         <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--surface);border:1px solid var(--border);">
-          <span style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--gold-dim);">LOG #0882</span>
+          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">LOG #0882</span>
         </div>
         <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star">grade</span>
         </div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ivory-dim);line-height:1.75;margin-bottom:28px;">
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
           "The flavor profile of the Abyssal Sablefish is unlike anything surfaced before. The mineral content from those depths adds a technical precision to the palate."
         </p>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
           <div>
-            <p style="font-family:'Jost',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:var(--ivory);">E. Vanderbilt</p>
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--ivory-muted);">Citizen Veteran</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">E. Vanderbilt</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Citizen Veteran</p>
           </div>
           <div style="text-align:right;">
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--gold-dim);">Purity Index</p>
-            <p style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);">99.8%</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Purity Index</p>
+            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">99.8%</p>
           </div>
         </div>
       </div>
 
-      <div class="review-card reveal reveal-delay-2" style="border-color:rgba(201,168,76,0.3);box-shadow:0 0 40px rgba(201,168,76,0.05);">
-        <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--gold);border:1px solid var(--gold);">
-          <span style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:#1A0F00;">LOG #1041</span>
+      <div class="review-card reveal reveal-delay-2" style="border-color:rgba(192,57,43,0.35);box-shadow:0 0 40px rgba(192,57,43,0.06);">
+        <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--crimson);border:1px solid var(--crimson);">
+          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:#FFF5F0;">LOG #1041</span>
         </div>
         <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star">grade</span>
         </div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ivory);line-height:1.75;margin-bottom:28px;">
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream);line-height:1.75;margin-bottom:28px;">
           "The Scarlet Prawn arrived in a pressurized cold-cell that looked like it came off a spacecraft. The experience of the unboxing is as elite as the specimen itself."
         </p>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
           <div>
-            <p style="font-family:'Jost',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:var(--ivory);">M. Chen</p>
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--ivory-muted);">Executive Chef</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">M. Chen</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Executive Chef</p>
           </div>
           <div style="text-align:right;">
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--gold-dim);">Density Rating</p>
-            <p style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);">A+</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Density Rating</p>
+            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">A+</p>
           </div>
         </div>
       </div>
 
       <div class="review-card reveal reveal-delay-3">
         <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--surface);border:1px solid var(--border);">
-          <span style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--gold-dim);">LOG #0923</span>
+          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">LOG #0923</span>
         </div>
         <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
           <span class="material-symbols-outlined star-dim">grade</span>
         </div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ivory-dim);line-height:1.75;margin-bottom:28px;">
+        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
           "Expensive, yes. But where else can you source actinopterygii caught at 2000m with full DNA traceability? A necessity for the modern luxury vault."
         </p>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
           <div>
-            <p style="font-family:'Jost',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:var(--ivory);">L. Sterling</p>
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--ivory-muted);">Artifact Collector</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">L. Sterling</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Artifact Collector</p>
           </div>
           <div style="text-align:right;">
-            <p style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--gold-dim);">Scarcity Val.</p>
-            <p style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);">OMEGA</p>
+            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Scarcity Val.</p>
+            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">OMEGA</p>
           </div>
         </div>
       </div>
@@ -1078,39 +1048,38 @@ label.field-label {
     </div>
   </section>
 
-  <!-- ─────────────────────────────────────────────
-       ABOUT
-       ───────────────────────────────────────────── -->
+  <!-- ── ABOUT ── -->
   <section id="about" style="padding:0 40px;margin-bottom:80px;max-width:1200px;margin-left:auto;margin-right:auto;">
 
-    <div class="gold-divider reveal">
+    <div class="fire-divider reveal">
       <span>ABOUT — MR. FITZ</span>
     </div>
 
     <div class="luxury-card reveal" style="padding:80px;text-align:center;position:relative;">
+      <div class="stripe-accent"></div>
       <div class="corner-tl"></div><div class="corner-tr"></div>
       <div class="corner-bl"></div><div class="corner-br"></div>
 
-      <p class="section-eyebrow" style="margin-bottom:16px;">Established at Depth</p>
+      <!-- Red glow top -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--crimson),transparent);"></div>
 
-      <!-- Ornamental diamond -->
-      <div style="margin:0 auto 24px;font-family:'Cinzel',serif;font-size:18px;color:var(--gold-dim);">✦ ✦ ✦</div>
+      <p class="section-eyebrow" style="margin-bottom:16px;position:relative;">Established at Depth</p>
 
-      <h2 style="font-family:'Cinzel',serif;font-size:clamp(32px,5vw,60px);font-weight:400;color:var(--ivory);letter-spacing:0.08em;line-height:1.2;margin-bottom:28px;">THE MR. FITZ<br/>PHILOSOPHY</h2>
+      <div style="margin:0 auto 24px;font-family:'Playfair Display',serif;font-size:18px;color:var(--crimson-dim);position:relative;">✦ ✦ ✦</div>
 
-      <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--ivory-dim);max-width:680px;margin:0 auto;line-height:1.8;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,68px);font-weight:400;color:var(--cream);letter-spacing:0.1em;line-height:1.15;margin-bottom:28px;position:relative;">THE MR. FITZ<br/>PHILOSOPHY</h2>
+
+      <p style="font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:var(--cream-dim);max-width:680px;margin:0 auto;line-height:1.8;position:relative;">
         At Mr. Fitz, we believe that extraordinary dining begins where the light ends. Our team of deep-sea culinary scientists work at the frontier of ocean gastronomy — sourcing specimens no other restaurant can access, preparing them with molecular precision, and serving them in an atmosphere that mirrors the alien beauty of the ocean floor.
       </p>
 
-      <div style="margin-top:40px;width:80px;height:1px;background:linear-gradient(to right,transparent,var(--gold-dim),transparent);margin-left:auto;margin-right:auto;"></div>
+      <div style="margin-top:40px;width:80px;height:1px;background:linear-gradient(to right,transparent,var(--crimson-dim),transparent);margin-left:auto;margin-right:auto;position:relative;"></div>
     </div>
   </section>
 
 </main>
 
-<!-- ═══════════════════════════════════════════════════
-     BOTTOM NAVIGATION
-     ═══════════════════════════════════════════════════ -->
+<!-- ── Bottom Nav ── -->
 <nav id="bottom-nav">
   <a class="bnav-item active" href="#home">
     <span class="material-symbols-outlined">explore</span>
@@ -1136,18 +1105,16 @@ label.field-label {
 
 <!-- FAB -->
 <button onclick="window.location.href='#reservations'"
-  style="position:fixed;bottom:96px;right:28px;z-index:70;width:56px;height:56px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));border:none;display:flex;align-items:center;justify-content:center;cursor:none;box-shadow:0 8px 30px rgba(201,168,76,0.2);transition:all 0.3s;animation:gold-pulse 4s ease-in-out infinite;"
-  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 40px rgba(201,168,76,0.35)'"
-  onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.2)'"
+  style="position:fixed;bottom:96px;right:28px;z-index:70;width:56px;height:56px;background:linear-gradient(135deg,var(--crimson-dim),var(--crimson));border:none;display:flex;align-items:center;justify-content:center;cursor:none;box-shadow:0 8px 30px rgba(192,57,43,0.25);transition:all 0.3s;animation:fire-pulse 4s ease-in-out infinite;"
+  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 40px rgba(192,57,43,0.45)'"
+  onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(192,57,43,0.25)'"
   title="Reserve a table">
-  <span class="material-symbols-outlined" style="color:#1A0F00;font-size:24px;">anchor</span>
+  <span class="material-symbols-outlined" style="color:#FFF5F0;font-size:24px;">local_pizza</span>
 </button>
 
-<!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT
-     ═══════════════════════════════════════════════════ -->
+<!-- ── JavaScript ── -->
 <script>
-/* ── Cursor ── */
+/* Cursor */
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
@@ -1159,100 +1126,87 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
   requestAnimationFrame(animateCursor);
 })();
 
-/* ── Scroll progress + navbar ── */
+/* Scroll progress + navbar */
 const progressBar = document.getElementById('scroll-progress');
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll',()=>{
-  const pct = (window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
-  progressBar.style.width = pct+'%';
+  const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
+  progressBar.style.width=pct+'%';
   if(window.scrollY>60) navbar.classList.add('scrolled');
   else navbar.classList.remove('scrolled');
 },{passive:true});
 
-/* ── Scroll Reveal ── */
+/* Scroll Reveal */
 const revealEls = document.querySelectorAll('.reveal');
-new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('revealed'); });
-},{threshold:0.08}).observe || revealEls.forEach(el=>{
-  new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting) el.classList.add('revealed'); });
-  },{threshold:0.08}).observe(el);
-});
 revealEls.forEach(el=>{
   new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting) el.classList.add('revealed'); });
   },{threshold:0.08}).observe(el);
 });
 
-/* ── Menu Modal ── */
+/* Menu Modal */
 document.getElementById('menu-toggle').addEventListener('click',()=>{
   document.getElementById('menu-modal').classList.add('open');
 });
 document.getElementById('close-menu').addEventListener('click',closeMenu);
 function closeMenu(){ document.getElementById('menu-modal').classList.remove('open'); }
 
-/* ── Category Toggle ── */
-const catLabels = {seafood:'SEAFOOD',drinks:'DRINKS',desserts:'DESSERTS'};
-function switchCategory(btn, cat){
+/* Category Toggle */
+const catLabels={seafood:'PIZZAS',drinks:'DRINKS',desserts:'DESSERTS'};
+function switchCategory(btn,cat){
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('cat-label').textContent = catLabels[cat];
+  document.getElementById('cat-label').textContent=catLabels[cat];
   document.querySelectorAll('#food-grid [data-cat]').forEach(card=>{
     if(card.dataset.cat===cat){
       card.style.display='block';
       card.style.animation='fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both';
-    } else {
-      card.style.display='none';
-    }
+    } else { card.style.display='none'; }
   });
-  // re-apply grid columns
-  const grid = document.getElementById('food-grid');
-  grid.style.gridTemplateColumns = 'repeat(2,1fr)';
 }
 
-/* ── Cart ── */
-function addToCart(name, price){
-  const c = document.getElementById('cart-confirm');
-  c.style.display = 'block';
-  c.textContent = `✦ ${name.toUpperCase()} ADDED TO VAULT`;
-  setTimeout(()=>{ c.style.display='none'; }, 3500);
+/* Cart */
+function addToCart(name,price){
+  const c=document.getElementById('cart-confirm');
+  c.style.display='block';
+  c.textContent=`✦ ${name.toUpperCase()} ADDED TO VAULT`;
+  setTimeout(()=>{c.style.display='none';},3500);
 }
 
-/* ── Reservation ── */
+/* Reservation */
 function submitReservation(btn){
-  const original = btn.textContent;
-  btn.textContent = '✦ RESERVATION CONFIRMED — STAND BY';
-  btn.style.background = 'rgba(201,168,76,0.2)';
-  btn.style.color = 'var(--gold)';
-  btn.disabled = true;
+  const original=btn.textContent;
+  btn.textContent='✦ RESERVATION CONFIRMED — STAND BY';
+  btn.style.background='rgba(192,57,43,0.18)';
+  btn.style.color='var(--cream)';
+  btn.disabled=true;
   setTimeout(()=>{
-    btn.textContent = original;
-    btn.style.background = ''; btn.style.color = ''; btn.disabled = false;
-  }, 4000);
+    btn.textContent=original; btn.style.background=''; btn.style.color=''; btn.disabled=false;
+  },4000);
 }
 
-/* ── Hero Parallax ── */
+/* Hero Parallax */
 window.addEventListener('scroll',()=>{
-  const heroBg = document.getElementById('hero-bg');
-  if(heroBg) heroBg.style.transform = `scale(1.06) translateY(${window.scrollY*0.2}px)`;
+  const heroBg=document.getElementById('hero-bg');
+  if(heroBg) heroBg.style.transform=`scale(1.06) translateY(${window.scrollY*0.2}px)`;
 },{passive:true});
 
-/* ── Bottom Nav Active State ── */
+/* Bottom Nav Active */
 const sections=['home','menu-section','special','reservations','about'];
-const bnavItems = document.querySelectorAll('.bnav-item');
+const bnavItems=document.querySelectorAll('.bnav-item');
 window.addEventListener('scroll',()=>{
   let current='home';
   sections.forEach(id=>{
     const el=document.getElementById(id);
-    if(el && window.scrollY >= el.offsetTop-220) current=id;
+    if(el && window.scrollY>=el.offsetTop-220) current=id;
   });
   bnavItems.forEach(item=>{
-    const href = item.getAttribute('href').replace('#','');
-    item.classList.toggle('active', href===current);
+    const href=item.getAttribute('href').replace('#','');
+    item.classList.toggle('active',href===current);
   });
 },{passive:true});
 
-/* ── Food Card 3D Tilt ── */
+/* Food Card 3D Tilt */
 document.querySelectorAll('.food-card').forEach(card=>{
   card.addEventListener('mousemove',e=>{
     const r=card.getBoundingClientRect();
@@ -1261,10 +1215,10 @@ document.querySelectorAll('.food-card').forEach(card=>{
     const rY=((e.clientX-cx)/r.width)*10;
     card.style.transform=`perspective(600px) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-6px)`;
   });
-  card.addEventListener('mouseleave',()=>{ card.style.transform=''; });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
 });
 
-/* ── Magnetic Buttons ── */
+/* Magnetic Buttons */
 document.querySelectorAll('.magnetic').forEach(btn=>{
   btn.addEventListener('mousemove',e=>{
     const r=btn.getBoundingClientRect();
@@ -1272,69 +1226,69 @@ document.querySelectorAll('.magnetic').forEach(btn=>{
     const dy=(e.clientY-r.top-r.height/2)*0.3;
     btn.style.transform=`translate(${dx}px,${dy}px)`;
   });
-  btn.addEventListener('mouseleave',()=>{ btn.style.transform=''; });
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
 });
 
-/* ═══════════════════════════════════════════════════
-   THREE.JS — GLB MODEL LOADER
-   ★ REPLACE THIS PATH WITH YOUR OWN .glb FILE ★
-   ═══════════════════════════════════════════════════ */
-(function initThreeScene() {
-  const canvas   = document.getElementById('three-canvas');
-  const fallback = document.getElementById('model-fallback');
-  const statusEl = document.getElementById('model-status');
-  const barFill  = document.getElementById('glb-progress-fill');
-  const barWrap  = document.getElementById('glb-loading-bar');
-  if(!canvas || !window.THREE) return;
+/* THREE.JS scene — warm red/ember toned */
+(function initThreeScene(){
+  const canvas=document.getElementById('three-canvas');
+  const fallback=document.getElementById('model-fallback');
+  const statusEl=document.getElementById('model-status');
+  const barFill=document.getElementById('glb-progress-fill');
+  const barWrap=document.getElementById('glb-loading-bar');
+  if(!canvas||!window.THREE) return;
 
-  /* ★ CHANGE THIS LINE to swap your .glb model ★ */
-  const MODEL_PATH = "pizza.glb";   // ← change only this line
+  const MODEL_PATH="pizza.glb";
 
-  const container = document.getElementById('model-container');
-  const size = container.offsetWidth || 500;
+  const container=document.getElementById('model-container');
+  const size=container.offsetWidth||500;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.setSize(size,size);
   renderer.setClearColor(0x000000,0);
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.6;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.5;
 
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45,1,0.01,100);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,0.01,100);
   camera.position.set(0,0.5,3.5);
 
-  /* Warm gold lighting rig */
-  scene.add(new THREE.AmbientLight(0xffeedd, 0.5));
-  const keyLight = new THREE.DirectionalLight(0xffd080, 2.2);
+  /* Warm fire lighting — reds and ambers */
+  scene.add(new THREE.AmbientLight(0x3a1010,0.6));
+  const keyLight=new THREE.DirectionalLight(0xff5533,2.5);
   keyLight.position.set(3,5,4);
   scene.add(keyLight);
-  const fillLight = new THREE.PointLight(0xffe8a0, 0.8, 12);
+  const fillLight=new THREE.PointLight(0xff3300,1.0,12);
   fillLight.position.set(-4,-2,2);
   scene.add(fillLight);
-  const rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  const rimLight=new THREE.DirectionalLight(0xffc080,0.6);
   rimLight.position.set(-2,3,-3);
   scene.add(rimLight);
+  /* Top warm fill */
+  const topLight=new THREE.PointLight(0xff8844,0.5,10);
+  topLight.position.set(0,4,0);
+  scene.add(topLight);
 
-  /* Particle cloud — gold tinted */
-  const pGeo = new THREE.BufferGeometry();
-  const pPos = new Float32Array(250*3);
-  for(let i=0;i<250*3;i++) pPos[i]=(Math.random()-0.5)*6;
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
-  const particles = new THREE.Points(pGeo,
-    new THREE.PointsMaterial({color:0xC9A84C, size:0.022, transparent:true, opacity:0.4}));
+  /* Ember particle cloud */
+  const pGeo=new THREE.BufferGeometry();
+  const pPos=new Float32Array(280*3);
+  for(let i=0;i<280*3;i++) pPos[i]=(Math.random()-0.5)*6;
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  const particles=new THREE.Points(pGeo,
+    new THREE.PointsMaterial({color:0xC0392B,size:0.025,transparent:true,opacity:0.45}));
   scene.add(particles);
 
-  /* Floating ring — gold */
-  const ring3d = new THREE.Mesh(
-    new THREE.TorusGeometry(1.6,0.01,8,80),
-    new THREE.MeshBasicMaterial({color:0xC9A84C, transparent:true, opacity:0.25})
+  /* Ring — red toned */
+  const ring3d=new THREE.Mesh(
+    new THREE.TorusGeometry(1.6,0.012,8,80),
+    new THREE.MeshBasicMaterial({color:0xC0392B,transparent:true,opacity:0.22})
   );
-  ring3d.rotation.x = Math.PI*0.25;
+  ring3d.rotation.x=Math.PI*0.25;
   scene.add(ring3d);
 
-  let mouseX=0, mouseY=0;
+  let mouseX=0,mouseY=0;
   document.addEventListener('mousemove',e=>{
     mouseX=(e.clientX/window.innerWidth-0.5)*2;
     mouseY=(e.clientY/window.innerHeight-0.5)*2;
@@ -1346,9 +1300,7 @@ document.querySelectorAll('.magnetic').forEach(btn=>{
   });
 
   let model=null;
-  if(typeof THREE.GLTFLoader==='undefined'){
-    statusEl.textContent='GLTFLOADER NOT FOUND'; return;
-  }
+  if(typeof THREE.GLTFLoader==='undefined'){statusEl.textContent='GLTFLOADER NOT FOUND';return;}
 
   new THREE.GLTFLoader().load(
     MODEL_PATH,
@@ -1376,15 +1328,14 @@ document.querySelectorAll('.magnetic').forEach(btn=>{
       console.warn('GLB load error:',err);
       statusEl.textContent='MODEL NOT FOUND — HOLOGRAM ACTIVE';
       barWrap.style.opacity='0';
-      /* Fallback shape */
       const geo=new THREE.IcosahedronGeometry(1.2,3);
-      model=new THREE.Mesh(geo, new THREE.MeshPhongMaterial({
-        color:0x1A1200, emissive:0x0D0800, specular:0xC9A84C,
-        shininess:100, transparent:true, opacity:0.88
+      model=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({
+        color:0x200808,emissive:0x3a0000,specular:0xC0392B,
+        shininess:80,transparent:true,opacity:0.9
       }));
       scene.add(model);
       scene.add(new THREE.Mesh(geo,
-        new THREE.MeshBasicMaterial({color:0xC9A84C, wireframe:true, transparent:true, opacity:0.1})));
+        new THREE.MeshBasicMaterial({color:0xC0392B,wireframe:true,transparent:true,opacity:0.12})));
     }
   );
 
@@ -1406,7 +1357,6 @@ document.querySelectorAll('.magnetic').forEach(btn=>{
 </script>
 
 <style>
-/* Responsive: stack special section on mobile */
 @media(min-width:900px){
   .lg-row { flex-direction:row !important; }
   .lg-row > div:last-child { border-top:none !important; border-left:1px solid var(--border) !important; }
