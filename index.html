@@ -1,1376 +1,1546 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MR. FITZ — Artisan Pizza Experience</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=Nunito+Sans:wght@200;300;400;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-
-<script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        crimson:     "#C0392B",
-        "crimson-light":"#E74C3C",
-        "crimson-dim":"#8B1A1A",
-        "crimson-deep":"#5C0A0A",
-        char:        "#0A0808",
-        "deep":      "#100C0C",
-        "surface":   "#160E0E",
-        "surface-2": "#1E1212",
-        "surface-3": "#261616",
-        "cream":     "#F5ECD7",
-        "cream-dim": "#C4B49A",
-        "cream-muted":"#7A6E62",
-        "ember":     "#D4522A",
-        "border-fire": "rgba(192,57,43,0.2)",
-      }
-    }
-  }
-}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr.Fitz — Artisan Pizzeria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cormorant+Garamond:wght@300;400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
 </script>
-
 <style>
 :root {
-  --crimson:      #C0392B;
-  --crimson-light:#E74C3C;
-  --crimson-dim:  #8B1A1A;
-  --crimson-glow: rgba(192,57,43,0.28);
-  --ember:        #D4522A;
-  --char:         #0A0808;
-  --deep:         #100C0C;
-  --surface:      #160E0E;
-  --cream:        #F5ECD7;
-  --cream-dim:    #C4B49A;
-  --border:       rgba(192,57,43,0.2);
-  --gold-acc:     #D4A853;
+  --black: #0a0703;
+  --dark: #110e08;
+  --gold: #c9922a;
+  --gold-light: #e8b84b;
+  --cream: #f5efe6;
+  --cream-dark: #e8dece;
+  --red: #c0392b;
+  --white: #fdfaf5;
+  --text-muted: #8a7a60;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--char);
-  color: var(--cream-dim);
-  font-family: 'Nunito Sans', sans-serif;
-  font-weight: 300;
-  min-height: 100dvh;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
-  cursor: none;
 }
 
-::selection { background: rgba(192,57,43,0.3); color: var(--cream); }
-
-/* ── Custom Cursor ── */
-#cursor-dot {
-  width: 7px; height: 7px;
-  background: var(--crimson);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%,-50%);
-  box-shadow: 0 0 14px var(--crimson-glow);
-}
-#cursor-ring {
-  width: 34px; height: 34px;
-  border: 1px solid rgba(192,57,43,0.45);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9998;
-  transform: translate(-50%,-50%);
-  transition: width 0.3s, height 0.3s, border-color 0.3s;
-}
-body:has(a:hover) #cursor-ring,
-body:has(button:hover) #cursor-ring {
-  width: 54px; height: 54px;
-  border-color: var(--crimson);
-}
-@media (pointer: coarse) {
-  body { cursor: auto; }
-  #cursor-dot, #cursor-ring { display: none; }
-}
-
-/* ── Scroll Progress ── */
-#scroll-progress {
-  position: fixed; top: 0; left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--crimson-dim), var(--crimson-light), var(--ember));
-  z-index: 300;
-  transition: width 0.1s;
-  box-shadow: 0 0 8px var(--crimson-glow);
-}
-
-/* ── Grain + Vignette ── */
-.grain-overlay {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 2; opacity: 0.055;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
-}
-.vignette {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.75) 100%);
-}
-
-/* ── Brick texture overlay ── */
-.brick-texture {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
-  background-image: repeating-linear-gradient(
-    0deg, transparent, transparent 28px,
-    rgba(192,57,43,0.15) 28px, rgba(192,57,43,0.15) 30px
-  ),
-  repeating-linear-gradient(
-    90deg, transparent, transparent 60px,
-    rgba(192,57,43,0.08) 60px, rgba(192,57,43,0.08) 62px
-  );
-}
-
-/* ── Navbar ── */
-#navbar {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
-  height: 82px;
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 48px;
-  transition: all 0.4s;
-  border-bottom: 1px solid transparent;
-}
-#navbar.scrolled {
-  background: rgba(10,8,8,0.97);
-  border-bottom-color: var(--border);
+  padding: 0 60px;
+  height: 80px;
+  background: rgba(10,7,3,0.92);
   backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,146,42,0.15);
 }
 
-.nav-brand {
+.logo {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 26px;
-  letter-spacing: 0.18em;
-  color: var(--crimson-light);
-  text-shadow: 0 0 28px rgba(192,57,43,0.4);
+  font-size: 2rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-decoration: none;
+}
+.logo span { color: var(--white); }
+
+.nav-links {
+  display: flex; gap: 40px; list-style: none;
+}
+.nav-links a {
+  color: var(--cream-dark);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+.nav-right { display: flex; align-items: center; gap: 24px; }
+
+.nav-phone {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
 }
 
-.nav-link {
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.22em;
+.btn-book {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  padding: 12px 28px;
+  font-size: 0.7rem;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.3s, transform 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-book:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ─── HERO ─── */
+#hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--black);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+#canvas-container {
+  position: absolute;
+  right: 0; top: 0;
+  width: 60%; height: 100%;
+  z-index: 1;
+}
+#pizza-canvas { width: 100% !important; height: 100% !important; }
+
+.hero-content {
+  position: relative; z-index: 10;
+  padding-left: 80px;
+  max-width: 620px;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(201,146,42,0.4);
+  padding: 8px 20px;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 28px;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.hero-price-tag {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  font-style: italic;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-price-tag::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+.hero-title .accent { color: var(--gold); display: block; font-style: italic; }
+
+.hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin: 28px 0 48px;
+  max-width: 400px;
+  font-weight: 300;
+}
+
+.hero-ctas { display: flex; gap: 16px; align-items: center; }
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  padding: 16px 36px;
+  font-size: 0.72rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+.btn-primary::after { content: '→'; font-size: 1rem; }
+
+.btn-secondary {
+  color: var(--cream-dark);
+  text-decoration: none;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: color 0.3s;
+}
+.btn-secondary:hover { color: var(--gold); }
+.btn-secondary::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: currentColor;
+  transition: width 0.3s;
+}
+.btn-secondary:hover::before { width: 50px; }
+
+/* price badge floating */
+.price-badge {
+  position: absolute;
+  bottom: 18%; right: 38%;
+  background: var(--red);
+  color: var(--white);
+  padding: 18px 24px;
+  text-align: center;
+  z-index: 15;
+  clip-path: polygon(8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%);
+  animation: floatBadge 3s ease-in-out infinite;
+}
+.price-badge .only { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+.price-badge .amount { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: var(--white); }
+@keyframes floatBadge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+/* scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px; left: 80px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.scroll-line {
+  width: 48px; height: 1px;
+  background: var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: var(--white);
+  animation: scanLine 2s ease-in-out infinite;
+}
+@keyframes scanLine { 0%{left:-100%} 100%{left:100%} }
+
+/* dark overlay for hero left */
+.hero-vignette {
+  position: absolute;
+  top: 0; left: 0;
+  width: 55%; height: 100%;
+  background: linear-gradient(90deg, var(--black) 40%, transparent);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ─── TICKER ─── */
+.ticker-wrap {
+  background: var(--gold);
+  padding: 14px 0;
+  overflow: hidden;
   position: relative;
 }
-.nav-link::after {
-  content: '';
-  position: absolute; bottom: -2px; left: 0; right: 0;
-  height: 1px; background: var(--crimson);
-  transform: scaleX(0);
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+.ticker {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 25s linear infinite;
+  width: max-content;
 }
-.nav-link:hover { color: var(--cream); }
-.nav-link:hover::after { transform: scaleX(1); }
-
-/* ── Fullscreen Menu ── */
-#menu-modal {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(5,3,3,0.98);
-  backdrop-filter: blur(40px);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.5s;
-}
-#menu-modal.open { opacity: 1; pointer-events: all; }
-
-.menu-link {
+.ticker span {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(36px, 5vw, 68px);
-  letter-spacing: 0.12em;
-  color: rgba(245,236,215,0.15);
-  transition: all 0.4s;
-  display: block;
-  line-height: 1.4;
+  font-size: 1rem;
+  letter-spacing: 4px;
+  color: var(--black);
+  padding: 0 40px;
 }
-.menu-link:hover {
-  color: var(--crimson-light);
-  text-shadow: 0 0 50px rgba(192,57,43,0.5);
-  letter-spacing: 0.16em;
+.ticker span.dot { color: rgba(0,0,0,0.4); padding: 0 0; }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ─── SPECIAL DEAL BANNER ─── */
+#special-deal {
+  background: var(--dark);
+  padding: 100px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  position: relative;
+  overflow: hidden;
+}
+#special-deal::before {
+  content: 'DEAL';
+  position: absolute;
+  left: -20px; top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18rem;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
 }
 
-/* ── Divider ── */
-.fire-divider {
-  display: flex; align-items: center; gap: 16px;
+.deal-text { flex: 1; }
+.deal-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.deal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.deal-price-line {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.deal-price-line strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+.deal-desc {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 380px;
+}
+
+.deal-image-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.deal-image-wrapper img {
+  width: 100%;
+  max-width: 520px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.deal-stamp {
+  position: absolute;
+  bottom: -10px; right: 20px;
+  background: var(--gold);
+  color: var(--black);
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  animation: floatBadge 3s ease-in-out infinite;
+}
+.deal-stamp .only { font-size: 0.7rem; letter-spacing: 1px; }
+.deal-stamp .price { font-size: 2rem; line-height: 1; }
+
+/* ─── ABOUT / CATEGORIES ─── */
+#about-categories {
+  background: var(--white);
+  padding: 80px 0 0;
+  color: var(--black);
+}
+
+.about-section {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  padding: 0 80px 80px;
+}
+
+.about-image-ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 280px; height: 280px;
+}
+.about-image-ring img {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--gold);
+}
+.ring-decoration {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  border: 1px dashed var(--gold);
+  animation: spin 20s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.quality-badge {
+  position: absolute;
+  bottom: -10px; right: -10px;
+  background: var(--red);
+  color: var(--white);
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.about-text { flex: 1; }
+.section-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  color: var(--black);
+}
+.about-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: #5a4e3a;
+  line-height: 1.8;
   margin-bottom: 32px;
 }
-.fire-divider::before, .fire-divider::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--crimson-dim));
-}
-.fire-divider::after {
-  background: linear-gradient(90deg, var(--crimson-dim), transparent);
-}
-.fire-divider span {
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 9px; font-weight: 400;
-  letter-spacing: 0.38em;
+.about-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-outline-dark {
+  border: 2px solid var(--black);
+  color: var(--black);
+  padding: 12px 28px;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--crimson-dim);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.btn-outline-dark:hover { background: var(--black); color: var(--white); }
+.btn-outline-gold {
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 12px 28px;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.btn-outline-gold:hover { background: var(--gold); color: var(--black); }
+
+.about-features { display: flex; gap: 40px; margin-top: 32px; }
+.feature-item { }
+.feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
+.feature-title {
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+.feature-desc {
+  font-size: 0.8rem;
+  color: #7a6a52;
+  line-height: 1.5;
+}
+
+/* Category strip */
+.categories-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.category-card {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  cursor: pointer;
+}
+.category-card:nth-child(odd) { background: #c0392b; }
+.category-card:nth-child(even) { background: #d4a017; }
+
+.category-bg-text {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  color: rgba(0,0,0,0.25);
+  text-align: center;
+  letter-spacing: 4px;
+  line-height: 1;
+  padding-bottom: 60px;
+  white-space: nowrap;
+}
+.category-bg-text .line2 { display: block; }
+
+.category-logo {
+  position: absolute;
+  top: 20px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
   white-space: nowrap;
 }
 
-/* ── Luxury Card ── */
-.luxury-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
-  overflow: hidden;
-}
-.luxury-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(192,57,43,0.05) 0%, transparent 60%);
-  opacity: 0; transition: opacity 0.4s;
-}
-.luxury-card:hover {
-  border-color: rgba(192,57,43,0.4);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(192,57,43,0.1);
-  transform: translateY(-4px);
-}
-.luxury-card:hover::before { opacity: 1; }
-
-/* ── Food Card ── */
-.food-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease, border-color 0.4s;
-  transform-style: preserve-3d;
-  will-change: transform;
-  cursor: pointer;
-}
-.food-card:hover {
-  transform: translateY(-6px) rotateX(3deg) scale(1.01);
-  border-color: rgba(192,57,43,0.55);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 30px rgba(192,57,43,0.12);
-}
-
-/* ── Primary Button ── */
-.btn-fire {
-  background: linear-gradient(135deg, #8B1A1A 0%, #C0392B 40%, #E74C3C 60%, #C0392B 80%, #8B1A1A 100%);
-  background-size: 200% auto;
-  color: #FFF5F0;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
+.cat-badge {
+  position: absolute;
+  top: 50px; right: 16px;
+  background: rgba(255,255,255,0.9);
+  color: var(--red);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 8px;
   text-transform: uppercase;
-  border: none;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s;
-  cursor: none;
 }
-.btn-fire:hover {
-  background-position: right center;
-  box-shadow: 0 8px 32px rgba(192,57,43,0.4);
-  transform: translateY(-2px);
-}
-.btn-fire:active { transform: scale(0.97); }
 
-/* Ghost */
-.btn-ghost {
-  background: transparent;
-  color: var(--crimson-light);
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.28em;
+.category-image {
+  position: absolute;
+  bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  width: 140px; height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+}
+.category-card:hover .category-image { transform: translateX(-50%) scale(1.1) translateY(-8px); }
+
+.category-name {
+  position: absolute;
+  bottom: 28px; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: var(--white);
+}
+.category-link {
+  position: absolute;
+  bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  border: 1px solid rgba(192,57,43,0.45);
-  transition: all 0.3s;
-  cursor: none;
-}
-.btn-ghost:hover {
-  background: rgba(192,57,43,0.08);
-  border-color: var(--crimson-light);
-  color: var(--cream);
+  color: rgba(255,255,255,0.7);
+  white-space: nowrap;
 }
 
-/* ── 3D Container ── */
-#model-container {
-  position: relative;
-  width: 100%; max-width: 600px;
-  aspect-ratio: 1/1;
-  margin: 0 auto;
-  display: flex; align-items: center; justify-content: center;
-}
-#model-container canvas { border-radius: 50%; }
-#model-container::after {
-  content: '';
-  position: absolute; inset: -4px;
-  background: radial-gradient(ellipse at center, transparent 35%, var(--char) 72%);
-  pointer-events: none; z-index: 5;
+/* ─── MENU ─── */
+#menu {
+  background: var(--white);
+  padding: 100px 80px;
+  color: var(--black);
 }
 
-/* ── Scanning Line ── */
-.scan-line {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(192,57,43,0.7), transparent);
-  width: 100%; position: absolute; z-index: 10;
-  animation: scan 5s linear infinite;
-  box-shadow: 0 0 10px rgba(192,57,43,0.4);
+.section-header { text-align: center; margin-bottom: 70px; }
+.section-header .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 16px;
 }
-@keyframes scan {
-  0%   { top: 0%;   opacity: 0; }
-  8%   { opacity: 1; }
-  92%  { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
-
-/* ── Category Toggle ── */
-.cat-btn {
-  flex: 1; padding: 14px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 10px; font-weight: 400;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  transition: all 0.3s;
-  color: var(--cream-muted);
-  border: 1px solid transparent;
-  background: transparent;
-  cursor: none;
-}
-.cat-btn.active {
-  background: rgba(192,57,43,0.12);
-  color: var(--cream);
-  border-color: rgba(192,57,43,0.4);
-}
-.cat-btn:hover:not(.active) { color: var(--crimson-light); }
-
-/* ── Animations ── */
-@keyframes fire-pulse {
-  0%,100% { filter: brightness(1) drop-shadow(0 0 5px rgba(192,57,43,0.2)); }
-  50%      { filter: brightness(1.18) drop-shadow(0 0 14px rgba(192,57,43,0.55)); }
-}
-.fire-pulse { animation: fire-pulse 3.5s ease-in-out infinite; }
-
-@keyframes float-gentle {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
-}
-.float-gentle { animation: float-gentle 7s ease-in-out infinite; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(36px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes drift {
-  0%   { transform: translateY(0)   translateX(0)  scale(1);   opacity: 0.06; }
-  50%  { transform: translateY(-60px) translateX(20px) scale(1.08); opacity: 0.18; }
-  100% { transform: translateY(-120px) translateX(0) scale(1);  opacity: 0.06; }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.spin-slow { animation: spin-slow 20s linear infinite; }
-
-@keyframes glow-border {
-  0%,100% { box-shadow: 0 0 20px rgba(192,57,43,0.07); }
-  50%      { box-shadow: 0 0 60px rgba(192,57,43,0.22), 0 0 100px rgba(192,57,43,0.08); }
-}
-
-@keyframes ember-float {
-  0%   { transform: translateY(0) scale(1);   opacity: 0.7; }
-  100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
-}
-
-/* ── Scroll Reveal ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal.revealed { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.12s; }
-.reveal-delay-2 { transition-delay: 0.24s; }
-.reveal-delay-3 { transition-delay: 0.36s; }
-.reveal-delay-4 { transition-delay: 0.48s; }
-
-/* ── Bottom Nav ── */
-#bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  z-index: 80;
-  background: rgba(10,8,8,0.97);
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(30px);
-  display: flex; justify-content: space-around; align-items: center;
-  padding: 14px 16px 20px;
-}
-.bnav-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 4px; color: var(--cream-muted);
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 9px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
-  transition: all 0.3s;
-}
-.bnav-item:hover, .bnav-item.active { color: var(--crimson-light); }
-.bnav-item .material-symbols-outlined { font-size: 20px; }
-
-/* ── GLB loading bar ── */
-#glb-loading-bar {
-  position: absolute; bottom: 16%; left: 22%; right: 22%;
-  height: 1px; background: rgba(192,57,43,0.12); z-index: 8; overflow: hidden;
-}
-#glb-loading-bar span {
-  display: block; height: 100%;
-  background: linear-gradient(90deg, var(--crimson-dim), var(--crimson-light));
-  box-shadow: 0 0 6px rgba(192,57,43,0.8);
-  width: 0%; transition: width 0.3s ease;
-}
-
-/* ── Inputs ── */
-.luxury-input {
-  background: var(--deep);
-  border: 1px solid rgba(192,57,43,0.15);
-  color: var(--cream);
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 12px; font-weight: 300;
-  letter-spacing: 0.14em;
-  padding: 14px 18px;
-  outline: none;
-  transition: border-color 0.3s;
-  width: 100%;
-}
-.luxury-input:focus { border-color: rgba(192,57,43,0.5); }
-.luxury-input::placeholder { color: var(--cream-muted); }
-.luxury-input option { background: var(--deep); }
-
-label.field-label {
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--crimson-dim);
-  display: block; margin-bottom: 8px;
-}
-
-/* ── Corner Marks ── */
-.corner-tl { position: absolute; top: 16px; left: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(192,57,43,0.45); border-left: 1px solid rgba(192,57,43,0.45); }
-.corner-tr { position: absolute; top: 16px; right: 16px; width: 18px; height: 18px; border-top: 1px solid rgba(192,57,43,0.45); border-right: 1px solid rgba(192,57,43,0.45); }
-.corner-bl { position: absolute; bottom: 16px; left: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(192,57,43,0.45); border-left: 1px solid rgba(192,57,43,0.45); }
-.corner-br { position: absolute; bottom: 16px; right: 16px; width: 18px; height: 18px; border-bottom: 1px solid rgba(192,57,43,0.45); border-right: 1px solid rgba(192,57,43,0.45); }
-
-.section-eyebrow {
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.42em; text-transform: uppercase;
-  color: var(--crimson-dim);
-}
-
-/* ── Orbs ── */
-.ambient-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(90px); pointer-events: none;
-  animation: fire-pulse 8s ease-in-out infinite;
-}
-
-/* Ember sparks */
-.ember-spark {
-  position: fixed; border-radius: 50%;
-  pointer-events: none; z-index: 1;
-  background: rgba(192,57,43,0.65);
-}
-
-.magnetic { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
-
-/* ── Review Card ── */
-.review-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 36px;
-  position: relative;
-  transition: all 0.4s;
-}
-.review-card::before {
-  content: '"';
-  position: absolute; top: -10px; left: 24px;
+.section-header h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 90px; font-weight: 700; line-height: 1;
-  color: var(--crimson-dim);
-  opacity: 0.45;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.menu-column {
+  border: 1px solid #e8dece;
+  padding: 0;
+}
+
+.menu-item {
+  padding: 22px 28px;
+  border-bottom: 1px dashed #d4c9b3;
+  transition: background 0.2s;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:hover { background: #fdf8f2; }
+
+.menu-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.menu-item-name {
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--black);
+}
+.menu-item-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  color: var(--red);
+  letter-spacing: 1px;
+}
+.menu-item-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: #7a6a52;
+  line-height: 1.5;
+}
+
+/* ─── REVIEWS ─── */
+#reviews {
+  background: var(--dark);
+  padding: 100px 80px;
+  position: relative;
+  overflow: hidden;
+}
+#reviews::before {
+  content: '"';
+  position: absolute;
+  top: -40px; left: 40px;
+  font-family: 'Playfair Display', serif;
+  font-size: 30rem;
+  color: rgba(201,146,42,0.05);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.reviews-header { text-align: center; margin-bottom: 70px; }
+.reviews-header .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.reviews-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: var(--white);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.review-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,146,42,0.15);
+  padding: 40px 36px;
+  position: relative;
+  transition: border-color 0.3s, transform 0.3s;
 }
 .review-card:hover {
-  border-color: rgba(192,57,43,0.38);
-  box-shadow: 0 16px 50px rgba(0,0,0,0.6), 0 0 30px rgba(192,57,43,0.07);
+  border-color: rgba(201,146,42,0.4);
+  transform: translateY(-4px);
 }
 
-.star { color: var(--crimson-light); font-size: 14px; }
-.star-dim { color: rgba(192,57,43,0.25); font-size: 14px; }
-
-/* ── Diagonal stripe accent ── */
-.stripe-accent {
-  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent 0px, transparent 18px,
-    rgba(192,57,43,0.03) 18px, rgba(192,57,43,0.03) 20px
-  );
+.review-stars {
+  color: var(--gold);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
 }
 
-/* ── Pizza badge ── */
-.pizza-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px;
-  border: 1px solid rgba(192,57,43,0.3);
-  background: rgba(192,57,43,0.06);
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.4em; text-transform: uppercase;
-  color: var(--crimson-dim);
-}
-.pizza-badge-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--crimson-light);
-  animation: fire-pulse 2.5s ease-in-out infinite;
+.review-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--cream-dark);
+  margin-bottom: 28px;
+  font-style: italic;
 }
 
-/* ── Decorative flame icons using CSS ── */
-.flame-icon {
-  display: inline-block;
-  font-size: 18px;
-  filter: sepia(1) saturate(5) hue-rotate(-30deg);
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
+.review-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(201,146,42,0.2);
+  border: 1px solid rgba(201,146,42,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.review-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.review-role {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* ─── GALLERY ─── */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 280px);
+  gap: 4px;
+  background: var(--black);
+}
+
+.gallery-item {
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.gallery-item:first-child { grid-column: span 2; }
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  filter: brightness(0.85);
+}
+.gallery-item:hover img { transform: scale(1.05); filter: brightness(1); }
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 3px;
+  color: var(--white);
+}
+
+/* ─── STATS ─── */
+#stats {
+  background: var(--gold);
+  padding: 60px 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.stat-item {
+  text-align: center;
+  padding: 20px;
+  border-right: 1px solid rgba(0,0,0,0.15);
+}
+.stat-item:last-child { border-right: none; }
+.stat-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.6);
+  font-weight: 600;
+}
+
+/* ─── CONTACT / FOOTER ─── */
+footer {
+  background: var(--black);
+  padding: 80px;
+  border-top: 1px solid rgba(201,146,42,0.2);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-brand .logo { font-size: 2.2rem; display: block; margin-bottom: 16px; }
+.footer-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.footer-socials { display: flex; gap: 12px; }
+.social-btn {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(201,146,42,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+.social-btn:hover { background: var(--gold); color: var(--black); }
+
+.footer-col h4 {
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+  font-family: 'Cormorant Garamond', serif;
+}
+.footer-col ul a:hover { color: var(--gold); }
+
+.footer-contact-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 16px;
+}
+.contact-icon { color: var(--gold); font-size: 1rem; margin-top: 2px; }
+.contact-text {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(201,146,42,0.1);
+  padding-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-bottom p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* ─── LOADER ─── */
+#loader {
+  position: fixed; inset: 0;
+  background: var(--black);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  transition: opacity 0.8s ease;
+}
+.loader-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 8px;
+  color: var(--gold);
+}
+.loader-bar-wrap {
+  width: 200px;
+  height: 2px;
+  background: rgba(201,146,42,0.2);
+}
+.loader-bar {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  animation: loadBar 1.5s ease forwards;
+}
+@keyframes loadBar { to{width:100%} }
+
+/* ─── REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-<div id="scroll-progress"></div>
-<div class="grain-overlay"></div>
-<div class="vignette"></div>
-<div class="brick-texture"></div>
-
-<!-- Ambient Orbs — warm fire tones -->
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-  <div class="ambient-orb" style="width:550px;height:550px;background:rgba(192,57,43,0.06);top:5%;left:-18%;animation-delay:-2s;"></div>
-  <div class="ambient-orb" style="width:420px;height:420px;background:rgba(212,82,42,0.05);bottom:15%;right:-12%;animation-delay:-5s;"></div>
-  <div class="ambient-orb" style="width:280px;height:280px;background:rgba(139,26,26,0.04);top:55%;left:38%;animation-delay:-9s;"></div>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">MrFitz</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
 
-<!-- Ember Sparks -->
-<div class="fixed inset-0 pointer-events-none z-0">
-  <div class="ember-spark w-1 h-1 top-[20%] left-[10%]"   style="animation:drift 16s infinite;"></div>
-  <div class="ember-spark w-1.5 h-1.5 top-[45%] left-[80%]" style="animation:drift 22s infinite -4s;"></div>
-  <div class="ember-spark w-0.5 h-0.5 top-[70%] left-[22%]" style="animation:drift 20s infinite -8s;"></div>
-  <div class="ember-spark w-1 h-1 top-[12%] left-[60%]"  style="animation:drift 18s infinite -12s;"></div>
-  <div class="ember-spark w-0.5 h-0.5 top-[85%] left-[50%]" style="animation:drift 25s infinite -6s;"></div>
-</div>
-
-<!-- ── Fullscreen Menu ── -->
-<div id="menu-modal">
-  <button id="close-menu" class="absolute top-8 right-8 material-symbols-outlined hover:scale-110 transition-transform"
-    style="color:var(--crimson-light);font-size:28px;background:none;border:none;cursor:none;">close</button>
-
-  <div style="position:absolute;left:48px;top:10%;bottom:10%;width:1px;background:linear-gradient(to bottom,transparent,var(--crimson-dim),transparent);opacity:0.45;"></div>
-
-  <nav class="flex flex-col gap-1 text-center px-8" style="padding-left:88px;">
-    <a class="menu-link" href="#home"         onclick="closeMenu()">HOME</a>
-    <a class="menu-link" href="#menu-section" onclick="closeMenu()">MENU</a>
-    <a class="menu-link" href="#special"      onclick="closeMenu()">TONIGHT'S SPECIAL</a>
-    <a class="menu-link" href="#voices"       onclick="closeMenu()">REVIEWS</a>
-    <a class="menu-link" href="#reservations" onclick="closeMenu()">RESERVATIONS</a>
-    <a class="menu-link" href="#about"        onclick="closeMenu()">ABOUT</a>
-  </nav>
-
-  <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);">
-    <p class="section-eyebrow" style="color:rgba(192,57,43,0.3);">MR. FITZ — ARTISAN PIZZA EXPERIENCE</p>
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">PIZZA<span>RO</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about-categories">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-phone">📞 CALL: +880 123 456 88</div>
+    <a href="#menu" class="btn-book">Book Now →</a>
   </div>
-</div>
-
-<!-- ── Navbar ── -->
-<header id="navbar">
-  <div style="display:flex;align-items:center;gap:20px;">
-    <button id="menu-toggle" class="material-symbols-outlined magnetic"
-      style="color:var(--crimson-light);background:none;border:none;cursor:none;font-size:22px;transition:color 0.3s;">menu</button>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <img src="logo.jpeg" alt="Mr. Fitz"
-        style="height:36px;width:auto;object-fit:contain;filter:sepia(60%) saturate(200%) hue-rotate(-15deg) brightness(0.9);"
-        onerror="this.style.display='none'"/>
-      <span class="nav-brand">MR. FITZ</span>
-    </div>
-  </div>
-
-  <nav style="display:flex;align-items:center;gap:40px;">
-    <a class="nav-link" href="#menu-section">Menu</a>
-    <a class="nav-link" href="#special">Specials</a>
-    <a class="nav-link" href="#reservations">Reserve</a>
-    <button class="material-symbols-outlined magnetic"
-      style="color:var(--crimson-dim);background:none;border:none;cursor:none;font-size:20px;transition:color 0.3s;"
-      onmouseover="this.style.color='var(--crimson-light)'" onmouseout="this.style.color='var(--crimson-dim)'">notifications</button>
-  </nav>
-</header>
-
-<!-- ══════════════════════════
-     MAIN
-     ══════════════════════════ -->
-<main id="home" style="padding-top:80px;padding-bottom:120px;position:relative;z-index:10;">
-
-  <!-- ── HERO ── -->
-  <section style="position:relative;min-height:820px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;margin-bottom:80px;">
-
-    <!-- Hero BG with red-tinted dark overlay -->
-    <div style="position:absolute;inset:0;z-index:0;">
-      <img id="hero-bg" src="hero.jpg" alt="Pizza"
-        style="width:100%;height:100%;object-fit:cover;opacity:0.14;transform:scale(1.06);filter:saturate(1.3) hue-rotate(-10deg);"/>
-      <div style="position:absolute;inset:0;background:linear-gradient(to top, var(--char) 0%, rgba(10,8,8,0.55) 50%, rgba(10,8,8,0.22) 100%);"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(10,8,8,0.85) 0%, transparent 50%, rgba(10,8,8,0.85) 100%);"></div>
-      <!-- Red hotspot at bottom to simulate oven glow -->
-      <div style="position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top, rgba(192,57,43,0.06), transparent);"></div>
-    </div>
-
-    <div style="position:relative;z-index:10;width:100%;max-width:1100px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;align-items:center;padding-top:40px;">
-
-      <!-- Status badge -->
-      <div class="pizza-badge reveal" style="margin-bottom:36px;">
-        <div class="pizza-badge-dot"></div>
-        <span>WOOD-FIRED · EST. 1994 · NAPLES TRADITION</span>
-      </div>
-
-      <!-- Headline -->
-      <h1 class="reveal reveal-delay-1" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,120px);line-height:0.92;letter-spacing:0.06em;font-weight:400;text-align:center;margin-bottom:14px;">
-        <span style="color:var(--crimson-light);text-shadow:0 0 50px rgba(192,57,43,0.35);">MR.</span>
-        <span style="color:var(--cream);"> FITZ</span>
-      </h1>
-
-      <!-- Sub-headline italic serif -->
-      <p class="reveal reveal-delay-2" style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.4vw,22px);font-style:italic;font-weight:400;color:var(--cream-dim);text-align:center;max-width:520px;line-height:1.7;margin-bottom:52px;letter-spacing:0.02em;">
-        Artisan pizza &amp; curated Italian dining. Stone-fired perfection from the hearth of Naples. Where craft meets desire.
-      </p>
-
-      <!-- Ornamental rule -->
-      <div class="reveal reveal-delay-2" style="display:flex;align-items:center;gap:16px;width:100%;max-width:360px;margin-bottom:60px;">
-        <span style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--crimson-dim));"></span>
-        <span style="font-family:'Playfair Display',serif;font-size:12px;color:var(--crimson-dim);">✦</span>
-        <span style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--crimson-dim));"></span>
-      </div>
-
-      <!-- 3D Viewport -->
-      <div id="model-container" class="reveal reveal-delay-2">
-        <canvas id="three-canvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;"></canvas>
-
-        <div id="model-fallback" class="float-gentle" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;pointer-events:none;transition:opacity 0.8s;">
-          <span class="material-symbols-outlined" style="font-size:90px;color:rgba(192,57,43,0.15);">local_pizza</span>
-          <div style="margin-top:16px;display:flex;align-items:center;gap:8px;">
-            <span class="material-symbols-outlined spin-slow" style="color:var(--crimson);font-size:16px;">rotate_right</span>
-            <span id="model-status" style="font-family:'Nunito Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;text-transform:uppercase;color:rgba(192,57,43,0.5);">LOADING MODEL…</span>
-          </div>
-        </div>
-
-        <div id="glb-loading-bar"><span id="glb-progress-fill"></span></div>
-        <div class="scan-line" style="z-index:6;"></div>
-
-        <!-- Corner ornaments -->
-        <div style="position:absolute;top:14%;left:14%;width:18px;height:18px;border-top:1px solid rgba(192,57,43,0.4);border-left:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
-        <div style="position:absolute;top:14%;right:14%;width:18px;height:18px;border-top:1px solid rgba(192,57,43,0.4);border-right:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
-        <div style="position:absolute;bottom:14%;left:14%;width:18px;height:18px;border-bottom:1px solid rgba(192,57,43,0.4);border-left:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
-        <div style="position:absolute;bottom:14%;right:14%;width:18px;height:18px;border-bottom:1px solid rgba(192,57,43,0.4);border-right:1px solid rgba(192,57,43,0.4);z-index:7;"></div>
-      </div>
-
-      <!-- Category Toggle -->
-      <div id="menu-section" class="reveal reveal-delay-3" style="width:100%;max-width:520px;margin-bottom:48px;margin-top:16px;">
-        <div style="display:flex;border:1px solid var(--border);background:var(--surface);">
-          <button class="cat-btn active" onclick="switchCategory(this,'seafood')">Pizzas</button>
-          <button class="cat-btn"        onclick="switchCategory(this,'drinks')">Drinks</button>
-          <button class="cat-btn"        onclick="switchCategory(this,'desserts')">Desserts</button>
-        </div>
-        <div style="margin-top:10px;display:flex;justify-content:space-between;padding:0 4px;">
-          <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(192,57,43,0.35);">MODULE: <span id="cat-label">PIZZAS</span></span>
-          <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(192,57,43,0.35);">LOADED: 100%</span>
-        </div>
-      </div>
-
-      <!-- Food Cards -->
-      <div id="food-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;margin-bottom:80px;" class="reveal reveal-delay-4">
-
-        <!-- SEAFOOD / PIZZA -->
-        <div class="food-card" data-cat="seafood" style="padding:12px;">
-          <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food1.jpeg" alt="Margherita Royale" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55),transparent);opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:10px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
-              <span style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.3em;color:var(--crimson-light);">VIEW DETAILS →</span>
-            </div>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">CLASSICO</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">King Crab</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$145</span>
-          </div>
-        </div>
-
-        <div class="food-card" data-cat="seafood" style="padding:12px;">
-          <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food2.jpeg" alt="Diavola" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">PICCANTE</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Bluefin</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$92</span>
-          </div>
-        </div>
-
-        <div class="food-card" data-cat="seafood" style="padding:12px;">
-          <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food3.jpeg" alt="Quattro Formaggi" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">FORMAGGI</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Giant Squid</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$210</span>
-          </div>
-        </div>
-
-        <div class="food-card" data-cat="seafood" style="padding:12px;">
-          <div style="aspect-ratio:1;overflow:hidden;position:relative;margin-bottom:12px;background:var(--deep);">
-            <img src="food4.jpeg" alt="Truffle Bianca" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%) saturate(1.15)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">BIANCA</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Crystal Scallop</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:300;color:rgba(192,57,43,0.75);">$58</span>
-          </div>
-        </div>
-
-        <!-- DRINKS (hidden) -->
-        <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="side1.jpeg" alt="Abyss Negroni" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">SIGNATURE</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Abyss Negroni</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$32</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="side2.jpeg" alt="Hydro Martini" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">MOLECULAR</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Hydro Martini</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$28</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="side3.jpeg" alt="Glow Gin" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">BIOLUMINESCENT</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Glow Gin</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$38</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="drinks" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="drink4.jpg" alt="Deep Sea Soda" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">VIRGIN</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Deep Sea Soda</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$14</span>
-          </div>
-        </div>
-
-        <!-- DESSERTS (hidden) -->
-        <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="dessert1.jpg" alt="Midnight Tart" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">CONFECTION</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Midnight Tart</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$24</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="dessert2.jpg" alt="Glow Panna Cotta" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">MOLECULAR</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Glow Panna Cotta</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$29</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="dessert3.jpg" alt="Abyss Truffle" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">ARTISAN</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Abyss Truffle</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$19</span>
-          </div>
-        </div>
-        <div class="food-card" data-cat="desserts" style="padding:12px;display:none;">
-          <div style="aspect-ratio:1;overflow:hidden;margin-bottom:12px;background:var(--deep);">
-            <img src="dessert4.jpg" alt="Cryo Sorbet" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:all 0.8s;" onmouseover="this.style.filter='grayscale(0%)'" onmouseout="this.style.filter='grayscale(100%)'"/>
-          </div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:4px;">NITROGEN</p>
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-            <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--cream);">Cryo Sorbet</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:13px;color:rgba(192,57,43,0.75);">$22</span>
-          </div>
-        </div>
-
-      </div><!-- /food-grid -->
-    </div>
-  </section>
-
-  <!-- ── TONIGHT'S SPECIAL ── -->
-  <section id="special" style="padding:0 40px;margin-bottom:120px;max-width:1200px;margin-left:auto;margin-right:auto;">
-
-    <div class="fire-divider reveal">
-      <span>SPECIAL_TODAY — UNIT 01</span>
-    </div>
-
-    <div class="luxury-card reveal" style="overflow:hidden;display:flex;flex-direction:column;animation:glow-border 6s ease-in-out infinite;">
-      <div style="display:flex;flex-direction:column;" class="lg-row">
-        <!-- Image -->
-        <div style="position:relative;height:460px;overflow:hidden;flex:1 1 60%;">
-          <img src="food6.jpeg" alt="Neon Scarlet Prawn"
-            style="width:100%;height:100%;object-fit:cover;transition:transform 3s ease;filter:saturate(1.2) hue-rotate(-5deg);"
-            onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"/>
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,8,0.9) 0%,transparent 55%);"></div>
-          <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent,rgba(10,8,8,0.3));"></div>
-          <!-- Red oven glow at bottom -->
-          <div style="position:absolute;bottom:0;left:0;right:0;height:150px;background:linear-gradient(to top, rgba(192,57,43,0.12), transparent);"></div>
-
-          <div style="position:absolute;bottom:28px;left:28px;display:flex;align-items:center;gap:14px;">
-            <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(192,57,43,0.5);display:flex;align-items:center;justify-content:center;animation:spin-slow 20s linear infinite;">
-              <span class="material-symbols-outlined" style="color:var(--crimson-light);font-size:24px;">local_fire_department</span>
-            </div>
-            <div>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.4em;color:var(--crimson-dim);text-transform:uppercase;">Oven Status</p>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;letter-spacing:0.25em;color:var(--cream);text-transform:uppercase;">Stone-Fired 485°C</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Details -->
-        <div style="flex:1 1 40%;padding:44px 40px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid var(--border);position:relative;">
-          <div class="stripe-accent"></div>
-          <p style="font-family:'Nunito Sans',sans-serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--crimson-dim);margin-bottom:16px;position:relative;">[ EXTREME RARITY ]</p>
-
-          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:400;color:var(--cream);line-height:1.1;margin-bottom:20px;letter-spacing:0.06em;position:relative;">NEON SCARLET<br/>PRAWN</h2>
-
-          <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:36px;position:relative;">
-            Harvested from the hydrothermal vents of the Mid-Atlantic Ridge. Its bioluminescent properties remain active for 12 hours post-ascent. A Mr. Fitz exclusive.
-          </p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 24px;margin-bottom:36px;padding:28px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;">
-            <div>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Recovery Depth</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">3,800M</p>
-            </div>
-            <div>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Specimen Weight</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">450G</p>
-            </div>
-            <div>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Trace ID</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">#AX-209</p>
-            </div>
-            <div>
-              <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--cream-muted);margin-bottom:6px;">Origin</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--crimson-light);">ATLANTIC</p>
-            </div>
-          </div>
-
-          <button class="btn-fire" style="width:100%;padding:18px 24px;" onclick="addToCart('Neon Scarlet Prawn', 420)">
-            Commence Acquisition — $420.00
-          </button>
-          <div id="cart-confirm" style="display:none;margin-top:12px;font-family:'Nunito Sans',sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--crimson-light);text-align:center;">
-            ✦ Added to Vault — Acquisition Logged
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── RESERVATIONS ── -->
-  <section id="reservations" style="padding:0 40px;margin-bottom:120px;max-width:1200px;margin-left:auto;margin-right:auto;">
-
-    <div class="fire-divider reveal">
-      <span>RESERVE — MR. FITZ</span>
-    </div>
-
-    <div class="luxury-card reveal" style="padding:60px;position:relative;">
-      <div class="stripe-accent"></div>
-      <div class="corner-tl"></div><div class="corner-tr"></div>
-      <div class="corner-bl"></div><div class="corner-br"></div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;position:relative;">
-        <div>
-          <p class="section-eyebrow" style="margin-bottom:12px;">Reserve Your Table</p>
-          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,48px);color:var(--cream);letter-spacing:0.08em;line-height:1.15;margin-bottom:20px;">SECURE YOUR<br/>VOYAGE</h2>
-          <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
-            Reservations at Mr. Fitz are limited to 24 covers per evening. Each table receives a personalized specimen menu curated from that night's deep-sea harvest.
-          </p>
-          <div style="width:60px;height:1px;background:var(--crimson-dim);margin-bottom:24px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;color:var(--crimson-dim);">
-            <span class="material-symbols-outlined" style="font-size:16px;">schedule</span>
-            <span style="font-family:'Nunito Sans',sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;">Tue–Sat: 18:00–23:00 &nbsp;|&nbsp; Sun: 17:00–21:00</span>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:18px;">
-          <div>
-            <label class="field-label">Full Name</label>
-            <input type="text" placeholder="YOUR NAME" class="luxury-input"/>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div>
-              <label class="field-label">Date</label>
-              <input type="date" class="luxury-input"/>
-            </div>
-            <div>
-              <label class="field-label">Guests</label>
-              <select class="luxury-input">
-                <option>2 GUESTS</option><option>3 GUESTS</option><option>4 GUESTS</option>
-                <option>5 GUESTS</option><option>6 GUESTS</option><option>PRIVATE DINING</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Special Requests</label>
-            <textarea rows="3" placeholder="DIETARY REQUIREMENTS, OCCASIONS…" class="luxury-input" style="resize:none;"></textarea>
-          </div>
-          <button class="btn-fire" style="padding:18px 24px;margin-top:4px;" onclick="submitReservation(this)">
-            Initiate Reservation Protocol
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── REVIEWS ── -->
-  <section id="voices" style="padding:0 40px;margin-bottom:100px;max-width:1200px;margin-left:auto;margin-right:auto;">
-
-    <div class="reveal" style="margin-bottom:48px;">
-      <p class="section-eyebrow" style="margin-bottom:10px;">Comms Log — Surfaced Feedback</p>
-      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:400;color:var(--cream);letter-spacing:0.08em;">VOICES FROM<br/>THE ABYSS</h2>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
-
-      <div class="review-card reveal reveal-delay-1">
-        <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--surface);border:1px solid var(--border);">
-          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">LOG #0882</span>
-        </div>
-        <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star">grade</span>
-        </div>
-        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
-          "The flavor profile of the Abyssal Sablefish is unlike anything surfaced before. The mineral content from those depths adds a technical precision to the palate."
-        </p>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
-          <div>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">E. Vanderbilt</p>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Citizen Veteran</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Purity Index</p>
-            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">99.8%</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="review-card reveal reveal-delay-2" style="border-color:rgba(192,57,43,0.35);box-shadow:0 0 40px rgba(192,57,43,0.06);">
-        <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--crimson);border:1px solid var(--crimson);">
-          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:#FFF5F0;">LOG #1041</span>
-        </div>
-        <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star">grade</span>
-        </div>
-        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream);line-height:1.75;margin-bottom:28px;">
-          "The Scarlet Prawn arrived in a pressurized cold-cell that looked like it came off a spacecraft. The experience of the unboxing is as elite as the specimen itself."
-        </p>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
-          <div>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">M. Chen</p>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Executive Chef</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Density Rating</p>
-            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">A+</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="review-card reveal reveal-delay-3">
-        <div style="position:absolute;top:-10px;left:24px;padding:4px 12px;background:var(--surface);border:1px solid var(--border);">
-          <span style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">LOG #0923</span>
-        </div>
-        <div style="display:flex;gap:3px;margin-bottom:20px;margin-top:8px;">
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star">grade</span><span class="material-symbols-outlined star">grade</span>
-          <span class="material-symbols-outlined star-dim">grade</span>
-        </div>
-        <p style="font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;">
-          "Expensive, yes. But where else can you source actinopterygii caught at 2000m with full DNA traceability? A necessity for the modern luxury vault."
-        </p>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--border);">
-          <div>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream);">L. Sterling</p>
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cream-muted);">Artifact Collector</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="font-family:'Nunito Sans',sans-serif;font-size:8px;letter-spacing:0.3em;color:var(--crimson-dim);">Scarcity Val.</p>
-            <p style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--crimson-light);">OMEGA</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── ABOUT ── -->
-  <section id="about" style="padding:0 40px;margin-bottom:80px;max-width:1200px;margin-left:auto;margin-right:auto;">
-
-    <div class="fire-divider reveal">
-      <span>ABOUT — MR. FITZ</span>
-    </div>
-
-    <div class="luxury-card reveal" style="padding:80px;text-align:center;position:relative;">
-      <div class="stripe-accent"></div>
-      <div class="corner-tl"></div><div class="corner-tr"></div>
-      <div class="corner-bl"></div><div class="corner-br"></div>
-
-      <!-- Red glow top -->
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--crimson),transparent);"></div>
-
-      <p class="section-eyebrow" style="margin-bottom:16px;position:relative;">Established at Depth</p>
-
-      <div style="margin:0 auto 24px;font-family:'Playfair Display',serif;font-size:18px;color:var(--crimson-dim);position:relative;">✦ ✦ ✦</div>
-
-      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,68px);font-weight:400;color:var(--cream);letter-spacing:0.1em;line-height:1.15;margin-bottom:28px;position:relative;">THE MR. FITZ<br/>PHILOSOPHY</h2>
-
-      <p style="font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:var(--cream-dim);max-width:680px;margin:0 auto;line-height:1.8;position:relative;">
-        At Mr. Fitz, we believe that extraordinary dining begins where the light ends. Our team of deep-sea culinary scientists work at the frontier of ocean gastronomy — sourcing specimens no other restaurant can access, preparing them with molecular precision, and serving them in an atmosphere that mirrors the alien beauty of the ocean floor.
-      </p>
-
-      <div style="margin-top:40px;width:80px;height:1px;background:linear-gradient(to right,transparent,var(--crimson-dim),transparent);margin-left:auto;margin-right:auto;position:relative;"></div>
-    </div>
-  </section>
-
-</main>
-
-<!-- ── Bottom Nav ── -->
-<nav id="bottom-nav">
-  <a class="bnav-item active" href="#home">
-    <span class="material-symbols-outlined">explore</span>
-    <span>Home</span>
-  </a>
-  <a class="bnav-item" href="#menu-section">
-    <span class="material-symbols-outlined">restaurant_menu</span>
-    <span>Menu</span>
-  </a>
-  <a class="bnav-item" href="#special">
-    <span class="material-symbols-outlined">stars</span>
-    <span>Specials</span>
-  </a>
-  <a class="bnav-item" href="#reservations">
-    <span class="material-symbols-outlined">event_seat</span>
-    <span>Reserve</span>
-  </a>
-  <a class="bnav-item" href="#about">
-    <span class="material-symbols-outlined">person</span>
-    <span>About</span>
-  </a>
 </nav>
 
-<!-- FAB -->
-<button onclick="window.location.href='#reservations'"
-  style="position:fixed;bottom:96px;right:28px;z-index:70;width:56px;height:56px;background:linear-gradient(135deg,var(--crimson-dim),var(--crimson));border:none;display:flex;align-items:center;justify-content:center;cursor:none;box-shadow:0 8px 30px rgba(192,57,43,0.25);transition:all 0.3s;animation:fire-pulse 4s ease-in-out infinite;"
-  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 40px rgba(192,57,43,0.45)'"
-  onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(192,57,43,0.25)'"
-  title="Reserve a table">
-  <span class="material-symbols-outlined" style="color:#FFF5F0;font-size:24px;">local_pizza</span>
-</button>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-vignette"></div>
+  <div id="canvas-container">
+    <canvas id="pizza-canvas"></canvas>
+  </div>
 
-<!-- ── JavaScript ── -->
-<script>
-/* Cursor */
-const dot = document.getElementById('cursor-dot');
-const ring = document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function animateCursor(){
-  rx+=(mx-rx)*.15; ry+=(my-ry)*.15;
-  dot.style.left=mx+'px'; dot.style.top=my+'px';
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(animateCursor);
-})();
+  <div class="hero-content">
+    <div class="hero-badge">🍕 Artisan Crafted Since 2005</div>
+    <div class="hero-price-tag">Start price Only $25</div>
+    <h1 class="hero-title">
+      Delicious<br>
+      <span class="accent">Pizza</span>
+      Near Your Town
+    </h1>
+    <p class="hero-subtitle">Welcome to our culinary sanctuary, where every dish tells a story and every bite is an adventure. We invite you to experience true Italian craft.</p>
+    <div class="hero-ctas">
+      <a href="#menu" class="btn-primary">View All Menu</a>
+      <a href="#about-categories" class="btn-secondary">Our Story</a>
+    </div>
+  </div>
 
-/* Scroll progress + navbar */
-const progressBar = document.getElementById('scroll-progress');
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
-  progressBar.style.width=pct+'%';
-  if(window.scrollY>60) navbar.classList.add('scrolled');
-  else navbar.classList.remove('scrolled');
-},{passive:true});
+  <div class="price-badge">
+    <div class="only">Only Now</div>
+    <div class="amount">$7.00</div>
+  </div>
 
-/* Scroll Reveal */
-const revealEls = document.querySelectorAll('.reveal');
-revealEls.forEach(el=>{
-  new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting) el.classList.add('revealed'); });
-  },{threshold:0.08}).observe(el);
-});
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
 
-/* Menu Modal */
-document.getElementById('menu-toggle').addEventListener('click',()=>{
-  document.getElementById('menu-modal').classList.add('open');
-});
-document.getElementById('close-menu').addEventListener('click',closeMenu);
-function closeMenu(){ document.getElementById('menu-modal').classList.remove('open'); }
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>ARTISAN PIZZA</span><span class="dot">✦</span>
+    <span>FRESH INGREDIENTS</span><span class="dot">✦</span>
+    <span>WOOD-FIRED OVEN</span><span class="dot">✦</span>
+    <span>ITALIAN TRADITION</span><span class="dot">✦</span>
+    <span>PREMIUM QUALITY</span><span class="dot">✦</span>
+    <span>FREE DELIVERY</span><span class="dot">✦</span>
+    <span>ARTISAN PIZZA</span><span class="dot">✦</span>
+    <span>FRESH INGREDIENTS</span><span class="dot">✦</span>
+    <span>WOOD-FIRED OVEN</span><span class="dot">✦</span>
+    <span>ITALIAN TRADITION</span><span class="dot">✦</span>
+    <span>PREMIUM QUALITY</span><span class="dot">✦</span>
+    <span>FREE DELIVERY</span><span class="dot">✦</span>
+  </div>
+</div>
 
-/* Category Toggle */
-const catLabels={seafood:'PIZZAS',drinks:'DRINKS',desserts:'DESSERTS'};
-function switchCategory(btn,cat){
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('cat-label').textContent=catLabels[cat];
-  document.querySelectorAll('#food-grid [data-cat]').forEach(card=>{
-    if(card.dataset.cat===cat){
-      card.style.display='block';
-      card.style.animation='fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both';
-    } else { card.style.display='none'; }
-  });
+<!-- SPECIAL DEAL -->
+<section id="special-deal">
+  <div class="deal-text reveal">
+    <div class="deal-eyebrow">Delicious</div>
+    <h2 class="deal-title">Special Deal Offer<br>For This Week</h2>
+    <div class="deal-price-line">MARGHERITA ROYALE ONLY <strong>$29</strong></div>
+    <p class="deal-desc">Restaurant, where culinary excellence meets warm hospitality in every dish we serve, nestled in the heart of the city.</p>
+    <a href="#menu" class="btn-primary">Order Now</a>
+  </div>
+  <div class="deal-image-wrapper reveal">
+    <img src="food2.jpeg" alt="Special Deal Pizza" style="border-radius:8px;">
+    <div class="deal-stamp">
+      <div class="only">ONLY</div>
+      <div class="price">$29</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT + CATEGORIES -->
+<section id="about-categories">
+  <div class="about-section reveal">
+    <div class="about-image-ring">
+      <img src="food3.jpeg" alt="Our Chef">
+      <div class="ring-decoration"></div>
+      <div class="quality-badge">Quality<br>Food<br>★★★</div>
+    </div>
+    <div class="about-text">
+      <div class="section-eyebrow">Learn About Mr.Fitz</div>
+      <h2 class="about-title">The Amazing & Quality Food<br>For Your Good Health</h2>
+      <p class="about-desc">Welcome to our restaurant, where culinary excellence meets warm hospitality in every dish we serve. Nestled in the heart of the city, our culinary journey begins here.</p>
+      <div class="about-btns">
+        <a href="#" class="btn-outline-dark">Learn More →</a>
+        <a href="#" class="btn-outline-gold">Listen to Our Chefs →</a>
+      </div>
+      <div class="about-features">
+        <div class="feature-item">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-title">Best Quality Food</div>
+          <div class="feature-desc">Our talented chefs craft exquisite, passionate sourcing.</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">👨‍🍳</div>
+          <div class="feature-title">Experience Our Chefs</div>
+          <div class="feature-desc">Our talented chefs craft exquisite, passionate sourcing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Strip -->
+  <div class="categories-strip">
+    <div class="category-card">
+      <div class="category-bg-text">BURGER<span class="line2">BURGER</span></div>
+      <div class="category-logo">✦ GoodFood ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food1.jpeg" alt="Burger" class="category-image">
+      <div class="category-name">BURGER</div>
+      <div class="category-link">→ CHECK MORE ITEMS</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">PIZZA<span class="line2">PIZZA</span></div>
+      <div class="category-logo">✦ GoodFood ✦</div>
+      <span class="cat-badge">-10%</span>
+      <img src="food2.jpeg" alt="Pizza" class="category-image">
+      <div class="category-name">PIZZA</div>
+      <div class="category-link">→ CHECK MORE ITEMS</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">HOTDOG<span class="line2">HOTDOG</span></div>
+      <div class="category-logo">✦ GoodFood ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food3.jpeg" alt="Hotdog" class="category-image">
+      <div class="category-name">HOTDOG</div>
+      <div class="category-link">→ CHECK MORE ITEMS</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">CHICKEN<span class="line2">CHICKEN</span></div>
+      <div class="category-logo">✦ GoodFood ✦</div>
+      <span class="cat-badge">-15%</span>
+      <img src="food4.jpeg" alt="Chickens" class="category-image">
+      <div class="category-name">CHICKENS</div>
+      <div class="category-link">→ CHECK MORE ITEMS</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">SEAFOOD<span class="line2">SEAFOOD</span></div>
+      <div class="category-logo">✦ GoodFood ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food5.jpeg" alt="Seafood" class="category-image">
+      <div class="category-name">SEAFOOD</div>
+      <div class="category-link">→ CHECK MORE ITEMS</div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="section-header reveal">
+    <div class="eyebrow">Popular Menu</div>
+    <h2>We Provide Exclusive Food Based On USA<br>Explore Our Popular Food</h2>
+  </div>
+  <div class="menu-grid reveal">
+    <!-- Column 1 -->
+    <div class="menu-column">
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Margherita Royale</div>
+          <div class="menu-item-price">$25</div>
+        </div>
+        <div class="menu-item-desc">Fresh mozzarella, San Marzano tomatoes, fresh basil, extra virgin olive oil.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Truffle Bianca</div>
+          <div class="menu-item-price">$38</div>
+        </div>
+        <div class="menu-item-desc">White truffle oil, ricotta, wild mushrooms, fresh thyme, aged parmesan.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Prosciutto Di Parma</div>
+          <div class="menu-item-price">$42</div>
+        </div>
+        <div class="menu-item-desc">24-month aged prosciutto, arugula, shaved parmesan, balsamic reduction.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Quattro Formaggi</div>
+          <div class="menu-item-price">$35</div>
+        </div>
+        <div class="menu-item-desc">Mozzarella, gorgonzola, fontina, aged pecorino, caramelized onion.</div>
+      </div>
+    </div>
+    <!-- Column 2 -->
+    <div class="menu-column">
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Diavola Speziale</div>
+          <div class="menu-item-price">$29</div>
+        </div>
+        <div class="menu-item-desc">Spicy Calabrian salami, nduja, fresh chili, smoked mozzarella, honey.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Seafood Lusso</div>
+          <div class="menu-item-price">$52</div>
+        </div>
+        <div class="menu-item-desc">King prawns, scallops, clams, calamari, lemon zest, white wine sauce.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Burrata Suprema</div>
+          <div class="menu-item-price">$40</div>
+        </div>
+        <div class="menu-item-desc">Creamy burrata, heirloom tomatoes, pesto, pine nuts, fresh basil.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Wagyu Beef Special</div>
+          <div class="menu-item-price">$65</div>
+        </div>
+        <div class="menu-item-desc">A5 wagyu, caramelized onions, roasted garlic, truffle mayo, gruyère.</div>
+      </div>
+    </div>
+    <!-- Column 3 -->
+    <div class="menu-column">
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Capricciosa Classic</div>
+          <div class="menu-item-price">$31</div>
+        </div>
+        <div class="menu-item-desc">Ham, artichokes, mushrooms, olives, mozzarella, tomato base.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Black Squid Ink</div>
+          <div class="menu-item-price">$48</div>
+        </div>
+        <div class="menu-item-desc">Squid ink dough, baby octopus, nduja, smoked ricotta, microgreens.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Porcini & Tartufo</div>
+          <div class="menu-item-price">$55</div>
+        </div>
+        <div class="menu-item-desc">Porcini mushrooms, black truffle shavings, taleggio, crispy sage.</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-header">
+          <div class="menu-item-name">Gold Leaf Prestige</div>
+          <div class="menu-item-price">$99</div>
+        </div>
+        <div class="menu-item-desc">24k gold leaf, lobster, black caviar, champagne cream, saffron.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-header reveal">
+    <div class="eyebrow">What Our Guests Say</div>
+    <h2>Praised by Food Lovers<br>Across the World</h2>
+  </div>
+  <div class="reviews-grid reveal">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Absolutely the finest pizza I've ever had. The truffle bianca was transcendent — a perfect balance of earthy richness and delicate cream. An unforgettable evening."</p>
+      <div class="review-author">
+        <div class="review-avatar">A</div>
+        <div>
+          <div class="review-name">Alexandra Monroe</div>
+          <div class="review-role">Food Critic, The Times</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"The ambiance is exquisite, the service impeccable, and the wagyu pizza defies all expectations. Mr.Fitz has redefined what luxury dining means. A must-visit."</p>
+      <div class="review-author">
+        <div class="review-avatar">J</div>
+        <div>
+          <div class="review-name">James Whitmore</div>
+          <div class="review-role">Michelin Guide Contributor</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"From the moment we walked in, we knew this was special. The gold leaf prestige pizza is an experience unto itself. Extraordinary in every dimension."</p>
+      <div class="review-author">
+        <div class="review-avatar">S</div>
+        <div>
+          <div class="review-name">Sophia Bellaforte</div>
+          <div class="review-role">Culinary Influencer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-item">
+    <img src="food1.jpeg" alt="Gallery 1">
+    <div class="gallery-overlay"><span>Signature Creations</span></div>
+  </div>
+  <div class="gallery-item">
+    <img src="food6.jpeg" alt="Gallery 2">
+    <div class="gallery-overlay"><span>Fresh Daily</span></div>
+  </div>
+  <div class="gallery-item">
+    <img src="food2.jpeg" alt="Gallery 3">
+    <div class="gallery-overlay"><span>Premium Ingredients</span></div>
+  </div>
+  <div class="gallery-item">
+    <img src="food4.jpeg" alt="Gallery 4">
+    <div class="gallery-overlay"><span>Artisan Craft</span></div>
+  </div>
+  <div class="gallery-item">
+    <img src="food5.jpeg" alt="Gallery 5">
+    <div class="gallery-overlay"><span>Wood-Fired Perfection</span></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-item reveal">
+    <div class="stat-number">250+</div>
+    <div class="stat-label">Menu Items</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number">18K+</div>
+    <div class="stat-label">Happy Customers</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number">15+</div>
+    <div class="stat-label">Years of Excellence</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number">4.9★</div>
+    <div class="stat-label">Average Rating</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">PIZZA<span>RO</span></a>
+      <p class="footer-desc">Where every pizza tells a story of passion, tradition, and the finest ingredients sourced from across Italy and beyond.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#about-categories">About Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Our Menu</h4>
+      <ul>
+        <li><a href="#">Signature Pizzas</a></li>
+        <li><a href="#">Seafood</a></li>
+        <li><a href="#">Burgers</a></li>
+        <li><a href="#">Desserts</a></li>
+        <li><a href="#">Beverages</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <div class="footer-contact-item">
+        <span class="contact-icon">📍</span>
+        <span class="contact-text">42 Artisan Lane, Gourmet District, New York, NY 10001</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="contact-icon">📞</span>
+        <span class="contact-text">+880 123 456 88</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="contact-icon">✉️</span>
+        <span class="contact-text">reserve@mrfitz.com</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="contact-icon">🕐</span>
+        <span class="contact-text">Mon–Sun: 11:00 AM – 11:00 PM</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Mr.Fitz. All rights reserved. Crafted with passion.</p>
+    <p>Privacy Policy · Terms of Service</p>
+  </div>
+</footer>
+
+<!-- THREE.JS 3D PIZZA -->
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const canvas = document.getElementById('pizza-canvas');
+const container = document.getElementById('canvas-container');
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+camera.position.set(0, 1.5, 4.5);
+
+// Lights
+const ambientLight = new THREE.AmbientLight(0xfff8e7, 0.6);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffe8c0, 2.5);
+keyLight.position.set(3, 5, 3);
+keyLight.castShadow = true;
+scene.add(keyLight);
+
+const fillLight = new THREE.PointLight(0xc9922a, 1.5, 15);
+fillLight.position.set(-3, 2, 1);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0xff6633, 0.8);
+rimLight.position.set(-2, 3, -3);
+scene.add(rimLight);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enableZoom = false;
+controls.enablePan = false;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.5;
+controls.minPolarAngle = Math.PI / 6;
+controls.maxPolarAngle = Math.PI / 2.2;
+
+// Floating particles
+const particlesGeo = new THREE.BufferGeometry();
+const count = 80;
+const positions = new Float32Array(count * 3);
+for (let i = 0; i < count; i++) {
+  positions[i*3]   = (Math.random()-0.5)*8;
+  positions[i*3+1] = (Math.random()-0.5)*6;
+  positions[i*3+2] = (Math.random()-0.5)*8;
 }
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particlesMat = new THREE.PointsMaterial({ color: 0xc9922a, size: 0.025, transparent: true, opacity: 0.6 });
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
 
-/* Cart */
-function addToCart(name,price){
-  const c=document.getElementById('cart-confirm');
-  c.style.display='block';
-  c.textContent=`✦ ${name.toUpperCase()} ADDED TO VAULT`;
-  setTimeout(()=>{c.style.display='none';},3500);
-}
-
-/* Reservation */
-function submitReservation(btn){
-  const original=btn.textContent;
-  btn.textContent='✦ RESERVATION CONFIRMED — STAND BY';
-  btn.style.background='rgba(192,57,43,0.18)';
-  btn.style.color='var(--cream)';
-  btn.disabled=true;
-  setTimeout(()=>{
-    btn.textContent=original; btn.style.background=''; btn.style.color=''; btn.disabled=false;
-  },4000);
-}
-
-/* Hero Parallax */
-window.addEventListener('scroll',()=>{
-  const heroBg=document.getElementById('hero-bg');
-  if(heroBg) heroBg.style.transform=`scale(1.06) translateY(${window.scrollY*0.2}px)`;
-},{passive:true});
-
-/* Bottom Nav Active */
-const sections=['home','menu-section','special','reservations','about'];
-const bnavItems=document.querySelectorAll('.bnav-item');
-window.addEventListener('scroll',()=>{
-  let current='home';
-  sections.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el && window.scrollY>=el.offsetTop-220) current=id;
-  });
-  bnavItems.forEach(item=>{
-    const href=item.getAttribute('href').replace('#','');
-    item.classList.toggle('active',href===current);
-  });
-},{passive:true});
-
-/* Food Card 3D Tilt */
-document.querySelectorAll('.food-card').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const r=card.getBoundingClientRect();
-    const cx=r.left+r.width/2, cy=r.top+r.height/2;
-    const rX=((e.clientY-cy)/r.height)*-10;
-    const rY=((e.clientX-cx)/r.width)*10;
-    card.style.transform=`perspective(600px) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-6px)`;
-  });
-  card.addEventListener('mouseleave',()=>{card.style.transform='';});
-});
-
-/* Magnetic Buttons */
-document.querySelectorAll('.magnetic').forEach(btn=>{
-  btn.addEventListener('mousemove',e=>{
-    const r=btn.getBoundingClientRect();
-    const dx=(e.clientX-r.left-r.width/2)*0.3;
-    const dy=(e.clientY-r.top-r.height/2)*0.3;
-    btn.style.transform=`translate(${dx}px,${dy}px)`;
-  });
-  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
-});
-
-/* THREE.JS scene — warm red/ember toned */
-(function initThreeScene(){
-  const canvas=document.getElementById('three-canvas');
-  const fallback=document.getElementById('model-fallback');
-  const statusEl=document.getElementById('model-status');
-  const barFill=document.getElementById('glb-progress-fill');
-  const barWrap=document.getElementById('glb-loading-bar');
-  if(!canvas||!window.THREE) return;
-
-  const MODEL_PATH="pizza.glb";
-
-  const container=document.getElementById('model-container');
-  const size=container.offsetWidth||500;
-
-  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setSize(size,size);
-  renderer.setClearColor(0x000000,0);
-  renderer.outputEncoding=THREE.sRGBEncoding;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.5;
-
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(45,1,0.01,100);
-  camera.position.set(0,0.5,3.5);
-
-  /* Warm fire lighting — reds and ambers */
-  scene.add(new THREE.AmbientLight(0x3a1010,0.6));
-  const keyLight=new THREE.DirectionalLight(0xff5533,2.5);
-  keyLight.position.set(3,5,4);
-  scene.add(keyLight);
-  const fillLight=new THREE.PointLight(0xff3300,1.0,12);
-  fillLight.position.set(-4,-2,2);
-  scene.add(fillLight);
-  const rimLight=new THREE.DirectionalLight(0xffc080,0.6);
-  rimLight.position.set(-2,3,-3);
-  scene.add(rimLight);
-  /* Top warm fill */
-  const topLight=new THREE.PointLight(0xff8844,0.5,10);
-  topLight.position.set(0,4,0);
-  scene.add(topLight);
-
-  /* Ember particle cloud */
-  const pGeo=new THREE.BufferGeometry();
-  const pPos=new Float32Array(280*3);
-  for(let i=0;i<280*3;i++) pPos[i]=(Math.random()-0.5)*6;
-  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
-  const particles=new THREE.Points(pGeo,
-    new THREE.PointsMaterial({color:0xC0392B,size:0.025,transparent:true,opacity:0.45}));
-  scene.add(particles);
-
-  /* Ring — red toned */
-  const ring3d=new THREE.Mesh(
-    new THREE.TorusGeometry(1.6,0.012,8,80),
-    new THREE.MeshBasicMaterial({color:0xC0392B,transparent:true,opacity:0.22})
-  );
-  ring3d.rotation.x=Math.PI*0.25;
-  scene.add(ring3d);
-
-  let mouseX=0,mouseY=0;
-  document.addEventListener('mousemove',e=>{
-    mouseX=(e.clientX/window.innerWidth-0.5)*2;
-    mouseY=(e.clientY/window.innerHeight-0.5)*2;
-  });
-
-  window.addEventListener('resize',()=>{
-    const s=container.offsetWidth;
-    renderer.setSize(s,s);
-  });
-
-  let model=null;
-  if(typeof THREE.GLTFLoader==='undefined'){statusEl.textContent='GLTFLOADER NOT FOUND';return;}
-
-  new THREE.GLTFLoader().load(
-    MODEL_PATH,
-    (gltf)=>{
-      model=gltf.scene;
-      const box=new THREE.Box3().setFromObject(model);
-      const centre=box.getCenter(new THREE.Vector3());
-      const size3=box.getSize(new THREE.Vector3());
-      const maxDim=Math.max(size3.x,size3.y,size3.z);
-      model.position.sub(centre);
-      model.scale.setScalar(2.2/maxDim);
-      scene.add(model);
-      barWrap.style.opacity='0';
-      fallback.style.opacity='0';
-      setTimeout(()=>{fallback.style.display='none';barWrap.style.display='none';},900);
-    },
-    (xhr)=>{
-      if(xhr.lengthComputable){
-        const pct=(xhr.loaded/xhr.total*100).toFixed(0);
-        barFill.style.width=pct+'%';
-        statusEl.textContent=`LOADING MODEL… ${pct}%`;
+// Load pizza.glb
+let pizzaModel = null;
+const loader = new GLTFLoader();
+loader.load(
+  'pizza.glb',
+  (gltf) => {
+    pizzaModel = gltf.scene;
+    // Center and scale
+    const box = new THREE.Box3().setFromObject(pizzaModel);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 2.4 / maxDim;
+    pizzaModel.scale.setScalar(scale);
+    pizzaModel.position.sub(center.multiplyScalar(scale));
+    pizzaModel.position.y -= 0.2;
+    pizzaModel.traverse(child => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
       }
-    },
-    (err)=>{
-      console.warn('GLB load error:',err);
-      statusEl.textContent='MODEL NOT FOUND — HOLOGRAM ACTIVE';
-      barWrap.style.opacity='0';
-      const geo=new THREE.IcosahedronGeometry(1.2,3);
-      model=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({
-        color:0x200808,emissive:0x3a0000,specular:0xC0392B,
-        shininess:80,transparent:true,opacity:0.9
-      }));
-      scene.add(model);
-      scene.add(new THREE.Mesh(geo,
-        new THREE.MeshBasicMaterial({color:0xC0392B,wireframe:true,transparent:true,opacity:0.12})));
-    }
-  );
+    });
+    scene.add(pizzaModel);
+  },
+  undefined,
+  (error) => {
+    // Fallback: procedural pizza
+    console.log('GLB not found, using fallback');
+    createFallbackPizza();
+  }
+);
 
-  const clock=new THREE.Clock();
-  (function animate(){
-    requestAnimationFrame(animate);
-    const t=clock.getElapsedTime();
-    if(model){
-      model.rotation.y=t*0.3+mouseX*0.45;
-      model.rotation.x=Math.sin(t*0.2)*0.1+mouseY*0.12;
-      model.position.y=Math.sin(t*0.6)*0.1;
-    }
-    ring3d.rotation.z=t*0.1;
-    ring3d.rotation.y=t*0.05;
-    particles.rotation.y=t*0.03;
-    renderer.render(scene,camera);
-  })();
-})();
+function createFallbackPizza() {
+  const group = new THREE.Group();
+
+  // Crust
+  const crustGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.22, 64);
+  const crustMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.8, metalness: 0.05 });
+  const crust = new THREE.Mesh(crustGeo, crustMat);
+  group.add(crust);
+
+  // Sauce
+  const sauceGeo = new THREE.CylinderGeometry(1.28, 1.28, 0.24, 64);
+  const sauceMat = new THREE.MeshStandardMaterial({ color: 0xb83222, roughness: 0.6 });
+  const sauce = new THREE.Mesh(sauceGeo, sauceMat);
+  sauce.position.y = 0.01;
+  group.add(sauce);
+
+  // Cheese
+  const cheeseGeo = new THREE.CylinderGeometry(1.18, 1.18, 0.26, 64);
+  const cheeseMat = new THREE.MeshStandardMaterial({ color: 0xf5c842, roughness: 0.5, metalness: 0.05 });
+  const cheese = new THREE.Mesh(cheeseGeo, cheeseMat);
+  cheese.position.y = 0.02;
+  group.add(cheese);
+
+  // Toppings
+  const toppingPositions = [
+    [0.3,0.4],[−0.5,0.6],[0.7,−0.3],[−0.7,0.2],[0,−0.6],[0.5,0.8],[−0.3,−0.8]
+  ];
+  toppingPositions.forEach(([x,z])=>{
+    const tGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const tMat = new THREE.MeshStandardMaterial({ color: 0x8B0000, roughness: 0.7 });
+    const t = new THREE.Mesh(tGeo, tMat);
+    t.position.set(x,0.17,z);
+    t.scale.y = 0.5;
+    group.add(t);
+  });
+
+  scene.add(group);
+  pizzaModel = group;
+}
+
+let clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsed = clock.getElapsedTime();
+  // Floating animation
+  if (pizzaModel) {
+    pizzaModel.position.y = Math.sin(elapsed * 0.8) * 0.12;
+  }
+  particles.rotation.y = elapsed * 0.05;
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  const w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+});
 </script>
 
-<style>
-@media(min-width:900px){
-  .lg-row { flex-direction:row !important; }
-  .lg-row > div:last-child { border-top:none !important; border-left:1px solid var(--border) !important; }
-}
-@media(max-width:900px){
-  #navbar { padding:0 20px; }
-  .review-card { padding:28px 20px; }
-  section[style*="padding:0 40px"] { padding:0 20px !important; }
-  div[style*="padding:60px"] { padding:32px 20px !important; }
-  div[style*="padding:80px"] { padding:40px 20px !important; }
-  div[style*="padding:44px"] { padding:28px 20px !important; }
-  div[style*="grid-template-columns:1fr 1fr;gap:60px"] { grid-template-columns:1fr !important; gap:32px !important; }
-  div[style*="grid-template-columns:1fr 1fr;gap:20px"] { grid-template-columns:1fr 1fr !important; }
-}
-</style>
+<script>
+// Loader
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 800);
+  }, 1600);
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
