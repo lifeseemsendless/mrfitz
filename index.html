@@ -1,918 +1,1392 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Mr. Fitz — Fine Dining, Marsaxlokk</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MR. FITZ — Abyssal Dining Experience</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Three.js for 3D model support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-fixed": "#ffdadc",
+          "surface-container-high": "#23293c",
+          "surface-container-lowest": "#070d1f",
+          "surface-variant": "#2e3447",
+          "on-primary": "#00363e",
+          "on-secondary-fixed": "#400010",
+          "inverse-primary": "#006877",
+          "on-tertiary-container": "#474e64",
+          "error": "#ffb4ab",
+          "on-primary-fixed-variant": "#004e5a",
+          "on-secondary-fixed-variant": "#891933",
+          "on-secondary": "#67001f",
+          "tertiary-fixed-dim": "#bec6e0",
+          "inverse-on-surface": "#2a3043",
+          "surface-container-low": "#151b2d",
+          "secondary-fixed-dim": "#ffb2b9",
+          "on-tertiary": "#283044",
+          "on-secondary-container": "#ff97a3",
+          "tertiary-fixed": "#dae2fd",
+          "inverse-surface": "#dce1fb",
+          "on-error": "#690005",
+          "surface-bright": "#33394c",
+          "surface-container": "#191f31",
+          "outline": "#859397",
+          "error-container": "#93000a",
+          "primary-container": "#22d3ee",
+          "on-surface-variant": "#bbc9cd",
+          "tertiary-container": "#b9c0da",
+          "primary-fixed": "#a2eeff",
+          "on-primary-container": "#005763",
+          "on-error-container": "#ffdad6",
+          "surface-dim": "#0c1324",
+          "primary-fixed-dim": "#2fd9f4",
+          "on-surface": "#dce1fb",
+          "surface-container-highest": "#2e3447",
+          "on-primary-fixed": "#001f25",
+          "on-tertiary-fixed": "#131b2e",
+          "on-tertiary-fixed-variant": "#3f465c",
+          "background": "#0c1324",
+          "primary": "#8aebff",
+          "secondary-container": "#891933",
+          "secondary": "#ffb2b9",
+          "surface-tint": "#2fd9f4",
+          "tertiary": "#d5dcf6",
+          "outline-variant": "#3c494c",
+          "on-background": "#dce1fb",
+          "surface": "#0c1324"
+        },
+        borderRadius: {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        fontFamily: {
+          "label-caps": ["JetBrains Mono"],
+          "technical-sm": ["JetBrains Mono"],
+          "body-md": ["Hanken Grotesk"],
+          "headline-lg": ["Space Grotesk"],
+          "display-lg": ["Space Grotesk"],
+          "headline-lg-mobile": ["Space Grotesk"],
+          "body-lg": ["Hanken Grotesk"],
+          "headline-md": ["Space Grotesk"]
+        },
+        fontSize: {
+          "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+          "technical-sm": ["13px", {"lineHeight": "1.5", "letterSpacing": "0.05em", "fontWeight": "400"}],
+          "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+          "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+          "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+          "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+          "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}]
+        }
+      }
+    }
+  }
+</script>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  /* =====================================================
+     CORE DESIGN SYSTEM
+     ===================================================== */
+  :root {
+    --cyan: #8aebff;
+    --cyan-glow: rgba(138,235,255,0.4);
+    --red: #ffb2b9;
+    --bg: #0c1324;
+    --surface: #191f31;
+  }
 
-:root{
-  --ink:#08090b;
-  --ink2:#0e1015;
-  --ink3:#141720;
-  --smoke:#1c2030;
-  --ash:#2b3045;
-  --slate:#3d4460;
-  --fog:#8892aa;
-  --mist:#b0bac8;
-  --cloud:#d0d8e8;
-  --snow:#eef1f7;
-  --gold:#c9a84c;
-  --gold2:#f0c96a;
-  --gold3:#8a6a20;
-  --ember:#e05020;
-  --ember2:#ff6535;
-  --rose:#7a1830;
-  --border-gold:rgba(201,168,76,0.18);
-  --border-smoke:rgba(60,70,100,0.25);
-}
+  * { box-sizing: border-box; }
 
-html{scroll-behavior:smooth;overflow-x:hidden;}
-body{font-family:'Montserrat',sans-serif;background:var(--ink);color:var(--snow);overflow-x:hidden;cursor:none;}
+  html { scroll-behavior: smooth; }
 
-/* ═══ CUSTOM CURSOR ═══ */
-#cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .1s,width .2s,height .2s,background .2s;mix-blend-mode:difference;}
-#cursor-ring{position:fixed;width:44px;height:44px;border:1px solid rgba(201,168,76,0.5);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform .08s ease-out,width .3s,height .3s,border-color .3s;mix-blend-mode:normal;}
-body:hover #cursor{opacity:1;}
-.cursor-hover #cursor{width:20px;height:20px;background:var(--ember2);}
-.cursor-hover #cursor-ring{width:60px;height:60px;border-color:rgba(224,80,32,0.4);}
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    cursor: none;
+    background: var(--bg);
+  }
 
-/* ═══ SCROLL PROGRESS ═══ */
-#scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--ember),var(--gold),var(--ember2));z-index:9999;width:0%;transition:width .1s linear;box-shadow:0 0 12px var(--gold);}
+  /* =====================================================
+     CUSTOM CURSOR
+     ===================================================== */
+  #cursor-dot {
+    width: 8px; height: 8px;
+    background: var(--cyan);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease, background 0.2s;
+    box-shadow: 0 0 10px var(--cyan-glow);
+  }
+  #cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(138,235,255,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: width 0.3s, height 0.3s, border-color 0.3s, transform 0.15s ease;
+  }
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring {
+    width: 56px; height: 56px;
+    border-color: var(--cyan);
+  }
 
-/* ═══ LOADER ═══ */
-#loader{position:fixed;inset:0;z-index:99999;background:#05060a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
-#loader.out{animation:loaderOut .9s cubic-bezier(.4,0,.2,1) forwards;}
-@keyframes loaderOut{to{opacity:0;visibility:hidden;pointer-events:none;}}
-.loader-word{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5rem);font-weight:300;color:var(--snow);letter-spacing:12px;animation:fadeUp .8s ease both;}
-.loader-word em{color:var(--gold2);font-style:italic;}
-.loader-sub{font-size:.6rem;letter-spacing:6px;text-transform:uppercase;color:var(--fog);animation:fadeUp .8s .2s ease both;}
-.loader-line{width:200px;height:1px;background:var(--ash);position:relative;overflow:hidden;animation:fadeUp .8s .3s ease both;}
-.loader-line-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--ember),var(--gold));width:0;transition:width .4s ease;}
-.loader-dots{display:flex;gap:8px;animation:fadeUp .8s .4s ease both;}
-.loader-dots span{width:3px;height:3px;border-radius:50%;background:var(--gold);animation:dotPop 1.4s ease-in-out infinite;}
-.loader-dots span:nth-child(2){animation-delay:.2s;}
-.loader-dots span:nth-child(3){animation-delay:.4s;}
-@keyframes dotPop{0%,100%{transform:scale(.7);opacity:.3;}50%{transform:scale(1.4);opacity:1;}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  /* =====================================================
+     GLASS CARD
+     ===================================================== */
+  .glass-card {
+    background: rgba(2, 6, 23, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(138, 235, 255, 0.15);
+    box-shadow: inset 0 0 20px rgba(138, 235, 255, 0.05);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-card:hover {
+    border-color: rgba(138, 235, 255, 0.45);
+    box-shadow: 0 0 30px rgba(138, 235, 255, 0.12), inset 0 0 20px rgba(138, 235, 255, 0.07);
+    transform: translateY(-3px);
+  }
+  .glass-card:active { transform: scale(0.97); }
 
-/* ═══ NAV ═══ */
-nav{position:fixed;top:0;left:0;right:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:28px 64px;transition:all .5s cubic-bezier(.4,0,.2,1);}
-nav::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,11,.95) 0%,transparent 100%);pointer-events:none;opacity:0;transition:opacity .4s;}
-nav.scrolled{padding:16px 64px;}
-nav.scrolled::before{opacity:1;}
-nav.scrolled{backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border-gold);}
-.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
-.nav-logo img{width:40px;height:40px;object-fit:contain;border-radius:0;}
-.nav-brand{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--snow);letter-spacing:2px;}
-.nav-brand em{color:var(--gold2);font-style:italic;}
-nav ul{list-style:none;display:flex;gap:40px;}
-nav ul a{font-size:.65rem;letter-spacing:3.5px;text-transform:uppercase;font-weight:600;color:var(--fog);text-decoration:none;position:relative;transition:color .25s;padding-bottom:4px;}
-nav ul a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--gold);transition:width .35s ease;}
-nav ul a:hover{color:var(--gold2);}
-nav ul a:hover::after{width:100%;}
-.nav-cart-btn{background:transparent;border:1px solid var(--border-gold);color:var(--cloud);padding:10px 22px;font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;cursor:none;transition:all .3s;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;}
-.nav-cart-btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .3s ease;z-index:0;}
-.nav-cart-btn:hover{color:var(--ink);border-color:var(--gold);}
-.nav-cart-btn:hover::before{transform:translateX(0);}
-.nav-cart-btn span{position:relative;z-index:1;}
-.cart-badge{background:var(--ember);color:#fff;border-radius:50%;width:18px;height:18px;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+  /* =====================================================
+     SCANNING LINE
+     ===================================================== */
+  .scanning-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(138,235,255,0.8), transparent);
+    width: 100%;
+    position: absolute;
+    z-index: 10;
+    animation: scan 4s linear infinite;
+    box-shadow: 0 0 15px rgba(138,235,255,0.4);
+  }
+  @keyframes scan {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
 
-/* ═══ HERO ═══ */
-#hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;}
-#hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+  /* =====================================================
+     ANIMATIONS
+     ===================================================== */
+  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .animate-spin-slow { animation: spin-slow 12s linear infinite; }
 
-/* Dramatic vignette layers */
-.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;}
-.hero-vignette::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 30% 50%,transparent 0%,rgba(5,6,10,.85) 100%);}
-.hero-vignette::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,11,.7) 0%,transparent 30%,transparent 65%,rgba(8,9,11,1) 100%);}
+  @keyframes bio-pulse {
+    0%,100% { filter: brightness(1) drop-shadow(0 0 5px rgba(138,235,255,0.3)); }
+    50% { filter: brightness(1.3) drop-shadow(0 0 15px rgba(138,235,255,0.6)); }
+  }
+  .animate-bio-pulse { animation: bio-pulse 4s ease-in-out infinite; }
 
-/* Model — NO borders, full bleed float */
-.hero-model{
-  position:absolute;
-  right:-2%;top:50%;
-  transform:translateY(-50%);
-  z-index:2;
-  width:52%;
-  max-width:680px;
-  aspect-ratio:1;
-  pointer-events:auto;
-}
-.model-aura{
-  position:absolute;
-  inset:-30%;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,.14) 0%,rgba(224,80,32,.08) 40%,transparent 72%);
-  animation:auraPulse 4s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes auraPulse{0%,100%{transform:scale(.9);opacity:.5;}50%{transform:scale(1.1);opacity:1;}}
-.model-iframe-wrap{width:100%;height:100%;overflow:hidden;position:relative;}
-.model-iframe-wrap iframe{
-  width:145%;height:165%;
-  border:none;
-  position:absolute;
-  top:-23%;left:-22%;
-  background:transparent;
-  pointer-events:auto;
-}
+  @keyframes hud-flicker {
+    0% { opacity: 1; } 3% { opacity: 0.8; } 6% { opacity: 1; }
+    7% { opacity: 0.9; } 8% { opacity: 1; } 100% { opacity: 1; }
+  }
+  .animate-hud-flicker { animation: hud-flicker 5s infinite; }
 
-.hero-content{position:relative;z-index:3;padding:0 64px;max-width:660px;}
-.hero-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:24px;opacity:0;animation:fadeUp .9s .4s ease forwards;}
-.eyebrow-line{height:1px;width:50px;background:linear-gradient(90deg,var(--gold),transparent);}
-.eyebrow-tag{font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold2);font-weight:500;}
-.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,7.5vw,7.5rem);font-weight:300;line-height:.95;margin-bottom:16px;opacity:0;animation:fadeUp .9s .55s ease forwards;}
-.hero-h1 strong{font-weight:700;display:block;}
-.hero-h1 em{color:var(--gold2);font-style:italic;display:block;font-weight:300;}
-.hero-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1.15rem;color:rgba(208,216,232,.6);margin-bottom:20px;opacity:0;animation:fadeUp .9s .7s ease forwards;}
-.hero-body{font-size:.82rem;line-height:1.9;color:rgba(176,186,200,.55);max-width:400px;margin-bottom:44px;font-weight:300;opacity:0;animation:fadeUp .9s .85s ease forwards;}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fadeUp .9s 1s ease forwards;}
-.btn-fire{background:linear-gradient(135deg,var(--ember) 0%,var(--gold) 100%);color:#fff;padding:16px 42px;font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;border:none;cursor:none;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-block;position:relative;overflow:hidden;}
-.btn-fire::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold) 0%,var(--ember2) 100%);opacity:0;transition:opacity .3s;}
-.btn-fire:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(224,80,32,.35);}
-.btn-fire:hover::after{opacity:1;}
-.btn-fire span{position:relative;z-index:1;}
-.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.35);color:var(--cloud);padding:16px 42px;font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;cursor:none;transition:all .3s;text-decoration:none;display:inline-block;}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold2);background:rgba(201,168,76,.05);}
+  @keyframes drift {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.1; }
+    50% { transform: translateY(-50px) translateX(20px) scale(1.1); opacity: 0.3; }
+    100% { transform: translateY(-100px) translateX(0) scale(1); opacity: 0.1; }
+  }
 
-/* Hero stats — bottom left */
-.hero-stats{position:absolute;bottom:52px;left:64px;z-index:3;display:flex;gap:48px;opacity:0;animation:fadeUp .9s 1.2s ease forwards;}
-.stat-block{}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:700;color:var(--gold2);line-height:1;}
-.stat-lbl{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--fog);margin-top:5px;}
-.stat-sep{width:1px;height:52px;background:rgba(80,90,120,.3);align-self:center;}
+  @keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+  .animate-float { animation: float 6s ease-in-out infinite; }
 
-/* Scroll cue */
-.scroll-cue{position:absolute;bottom:52px;right:64px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.4;}
-.scroll-cue-line{width:1px;height:60px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollCue 2s ease-in-out infinite;}
-@keyframes scrollCue{0%,100%{transform:scaleY(1) translateY(0);opacity:.5;}50%{transform:scaleY(.5) translateY(10px);opacity:1;}}
-.scroll-cue-text{font-size:.55rem;letter-spacing:4px;text-transform:uppercase;color:var(--fog);writing-mode:vertical-rl;}
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
 
-/* ═══ MARQUEE ═══ */
-.marquee-band{background:var(--ember);padding:14px 0;overflow:hidden;border-top:1px solid rgba(255,101,53,.2);border-bottom:1px solid rgba(255,101,53,.2);}
-.marquee-track{display:flex;animation:marquee 18s linear infinite;white-space:nowrap;}
-.marquee-track span{font-size:.65rem;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.9);padding:0 28px;}
-.marquee-sep{color:rgba(255,255,255,.4)!important;padding:0 4px!important;}
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in-up { animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) both; }
 
-/* ═══ FEATURE STRIP ═══ */
-.feature-strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--ink2);}
-.feat{padding:52px 44px;border-right:1px solid var(--border-smoke);display:flex;gap:22px;align-items:flex-start;position:relative;overflow:hidden;transition:background .4s;}
-.feat::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(180deg,var(--ember),var(--gold));transition:height .4s ease;}
-.feat:hover::before{height:100%;}
-.feat:hover{background:rgba(201,168,76,.04);}
-.feat:last-child{border-right:none;}
-.feat-icon{font-size:1.6rem;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(201,168,76,.4));}
-.feat-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--snow);margin-bottom:8px;}
-.feat-desc{font-size:.75rem;line-height:1.8;color:var(--fog);font-weight:300;}
+  @keyframes revealLeft {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0% 0 0); }
+  }
 
-/* ═══ SECTION BASE ═══ */
-section{padding:110px 64px;position:relative;}
-.s-label{font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.s-label::after{content:'';display:block;width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
-.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4vw,3.6rem);font-weight:700;line-height:1.05;margin-bottom:56px;max-width:480px;}
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 0 20px rgba(138,235,255,0.2); }
+    50% { box-shadow: 0 0 50px rgba(138,235,255,0.5), 0 0 100px rgba(138,235,255,0.2); }
+  }
 
-/* ═══ MENU ═══ */
-#menu{background:var(--ink2);}
-#menu .s-title{color:var(--snow);}
-.menu-tabs{display:flex;gap:0;margin-bottom:52px;border-bottom:1px solid var(--border-smoke);flex-wrap:wrap;}
-.tab{padding:10px 30px 16px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:none;font-family:'Montserrat',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--slate);transition:all .25s;margin-bottom:-1px;}
-.tab.active,.tab:hover{color:var(--gold2);border-bottom-color:var(--gold);}
-.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px;}
-.menu-card{background:var(--ink3);border:1px solid var(--border-smoke);overflow:hidden;position:relative;transition:transform .5s cubic-bezier(.2,1,.3,1),box-shadow .5s,border-color .3s;}
-.menu-card:hover{transform:translateY(-10px) scale(1.01);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.15);border-color:rgba(201,168,76,.2);}
-.card-img{width:100%;height:220px;overflow:hidden;position:relative;background:var(--smoke);}
-.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,1,.3,1);filter:brightness(.85) saturate(1.1);}
-.menu-card:hover .card-img img{transform:scale(1.1);}
-/* shimmer overlay on card */
-.card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(201,168,76,.06) 50%,transparent 60%);transform:translateX(-100%);transition:transform .6s ease;}
-.menu-card:hover .card-img::after{transform:translateX(100%);}
-.card-body{padding:24px 26px;}
-.card-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--snow);margin-bottom:8px;}
-.card-desc{font-size:.74rem;line-height:1.7;color:var(--fog);font-weight:300;margin-bottom:20px;}
-.card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border-smoke);padding-top:16px;}
-.card-price{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--ember2);}
-.add-btn{background:transparent;border:1px solid rgba(201,168,76,.3);color:var(--gold2);padding:9px 20px;font-family:'Montserrat',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .25s;position:relative;overflow:hidden;}
-.add-btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .3s ease;z-index:0;}
-.add-btn:hover{color:var(--ink);border-color:var(--gold);}
-.add-btn:hover::before{transform:translateX(0);}
-.add-btn span{position:relative;z-index:1;}
+  /* =====================================================
+     SCROLL REVEAL
+     ===================================================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
 
-/* ═══ DIVIDER ═══ */
-.ornament-divider{display:flex;align-items:center;gap:24px;padding:0 64px;background:var(--smoke);}
-.ornament-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border-gold),transparent);}
-.ornament-icon{color:var(--gold);opacity:.6;font-size:1rem;}
+  /* =====================================================
+     FOOD CARD HOVER PHYSICS
+     ===================================================== */
+  .food-card {
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .food-card:hover {
+    transform: translateY(-8px) rotateX(4deg) scale(1.02);
+    box-shadow: 0 20px 60px rgba(138,235,255,0.15), 0 0 0 1px rgba(138,235,255,0.3);
+  }
 
-/* ═══ SPECIALS ═══ */
-#specials{background:var(--ink);position:relative;overflow:hidden;}
-/* Large atmospheric bg text */
-#specials::before{content:'SPECIALS';position:absolute;top:-10%;left:-5%;font-family:'Cormorant Garamond',serif;font-size:clamp(8rem,18vw,18rem);font-weight:700;color:rgba(201,168,76,.025);line-height:1;pointer-events:none;user-select:none;letter-spacing:-4px;}
-#specials .s-title{color:var(--snow);}
-.specials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.special-card{border:1px solid rgba(201,168,76,.12);padding:36px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.2,1,.3,1);background:rgba(255,255,255,.02);}
-.special-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ember),var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s ease;}
-.special-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(201,168,76,.05) 0%,transparent 60%);opacity:0;transition:opacity .4s;}
-.special-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,.3);box-shadow:0 20px 60px rgba(0,0,0,.5);}
-.special-card:hover::before{transform:scaleX(1);}
-.special-card:hover::after{opacity:1;}
-.sp-badge{display:inline-block;border:1px solid rgba(201,168,76,.35);color:var(--gold);font-size:.58rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:4px 14px;margin-bottom:20px;}
-.sp-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--cloud);margin-bottom:10px;}
-.sp-desc{font-size:.76rem;line-height:1.8;color:rgba(176,186,200,.5);margin-bottom:26px;font-weight:300;}
-.sp-price{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--gold2);}
-.sp-price s{font-size:.9rem;color:rgba(140,150,170,.25);font-family:'Montserrat',sans-serif;font-weight:400;margin-left:12px;}
+  /* =====================================================
+     NAV + SCROLLBAR
+     ===================================================== */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ═══ ABOUT STRIP ═══ */
-#about{background:var(--ink2);display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;}
-.about-text{padding:110px 64px;display:flex;flex-direction:column;justify-content:center;}
-.about-text .s-title{color:var(--snow);margin-bottom:28px;}
-.about-body{font-size:.83rem;line-height:2;color:var(--fog);font-weight:300;margin-bottom:36px;max-width:420px;}
-.about-img{background:linear-gradient(135deg,var(--smoke) 0%,var(--ash) 100%);min-height:520px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.about-img-inner{font-size:6rem;opacity:.12;filter:blur(2px);}
-/* Flame animated decoration */
-.flame-deco{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:2px;height:80px;background:linear-gradient(180deg,var(--ember2),transparent);animation:flicker 2s ease-in-out infinite;}
-@keyframes flicker{0%,100%{transform:translateX(-50%) scaleY(1) skewX(0deg);}25%{transform:translateX(-48%) scaleY(1.1) skewX(2deg);}75%{transform:translateX(-52%) scaleY(.9) skewX(-2deg);}}
+  .navbar-scrolled {
+    background: rgba(12,19,36,0.95) !important;
+    box-shadow: 0 4px 30px rgba(138,235,255,0.1);
+  }
 
-/* ═══ CONTACT ═══ */
-#contact{background:var(--ink3);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-#contact .s-title{color:var(--snow);}
-.contact-sub{font-size:.84rem;line-height:1.9;color:var(--fog);font-weight:300;margin-bottom:40px;max-width:360px;}
-.c-item{display:flex;gap:18px;align-items:flex-start;margin-bottom:24px;transition:transform .3s;}
-.c-item:hover{transform:translateX(8px);}
-.c-icon{width:42px;height:42px;border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;transition:background .3s,border-color .3s;}
-.c-item:hover .c-icon{background:var(--gold);border-color:var(--gold);}
-.c-detail h5{font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--cloud);margin-bottom:4px;}
-.c-detail p{font-size:.82rem;color:var(--fog);}
-.map-box{background:var(--smoke);border:1px solid var(--border-smoke);height:380px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--fog);font-size:.8rem;position:relative;overflow:hidden;}
-.map-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(201,168,76,.04) 0%,transparent 70%);}
-.map-box span{font-size:2.8rem;filter:drop-shadow(0 0 20px rgba(201,168,76,.3));}
+  /* =====================================================
+     BIOLUMINESCENT TEXT
+     ===================================================== */
+  .bioluminescent-glow { text-shadow: 0 0 15px rgba(138,235,255,0.6); }
+  .outer-glow-cyan { box-shadow: 0 0 30px rgba(138,235,255,0.15); }
 
-/* ═══ FOOTER ═══ */
-footer{background:var(--ink);border-top:1px solid var(--border-gold);padding:72px 64px 40px;}
-.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px;margin-bottom:56px;}
-.footer-brand{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--snow);margin-bottom:12px;}
-.footer-brand em{color:var(--gold2);font-style:italic;}
-.footer-tag{font-size:.76rem;line-height:1.8;color:var(--fog);font-weight:300;max-width:200px;}
-.footer-col h5{font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(100,116,139,.7);font-weight:700;margin-bottom:18px;}
-.footer-col ul{list-style:none;}
-.footer-col li{margin-bottom:10px;}
-.footer-col a{font-size:.78rem;color:rgba(112,128,150,.45);text-decoration:none;font-weight:300;transition:color .2s;}
-.footer-col a:hover{color:var(--gold2);}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.04);padding-top:24px;font-size:.68rem;color:rgba(100,116,139,.35);display:flex;justify-content:space-between;align-items:center;}
-.footer-gold{color:var(--gold);opacity:.5;}
+  /* =====================================================
+     SHIMMER BUTTON
+     ===================================================== */
+  .btn-primary {
+    background: var(--cyan);
+    color: #00363e;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    animation: bio-pulse 4s ease-in-out infinite;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    background-size: 200% auto;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover::before {
+    opacity: 1;
+    animation: shimmer 1.2s linear infinite;
+  }
+  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+  .btn-primary:active { transform: scale(0.96); }
 
-/* ═══ CART SIDEBAR ═══ */
-.cart-overlay{position:fixed;inset:0;background:rgba(5,6,10,.7);z-index:600;opacity:0;pointer-events:none;transition:opacity .35s;backdrop-filter:blur(4px);}
-.cart-overlay.open{opacity:1;pointer-events:all;}
-.cart-sidebar{position:fixed;top:0;right:0;width:390px;height:100%;background:var(--ink2);z-index:601;transform:translateX(100%);transition:transform .42s cubic-bezier(.2,1,.3,1);display:flex;flex-direction:column;border-left:1px solid var(--border-gold);}
-.cart-sidebar.open{transform:translateX(0);}
-.cart-header{padding:28px 32px;border-bottom:1px solid var(--border-smoke);display:flex;align-items:center;justify-content:space-between;}
-.cart-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--snow);}
-.close-cart{background:none;border:1px solid var(--border-smoke);color:var(--fog);cursor:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.close-cart:hover{border-color:var(--gold);color:var(--gold);}
-.cart-items{flex:1;overflow-y:auto;padding:24px 32px;}
-.cart-empty{text-align:center;padding:60px 0;color:var(--fog);font-size:.85rem;line-height:2;}
-.cart-item{display:flex;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--border-smoke);}
-.ci-info{flex:1;}
-.ci-name{font-weight:600;font-size:.88rem;color:var(--snow);}
-.ci-price{color:var(--ember2);font-size:.76rem;font-weight:600;margin-top:3px;}
-.ci-qty{display:flex;align-items:center;gap:10px;margin-top:8px;}
-.qty-btn{background:var(--smoke);border:none;width:26px;height:26px;font-size:.9rem;cursor:none;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--snow);transition:all .2s;}
-.qty-btn:hover{background:var(--gold);color:var(--ink);}
-.qty-num{font-size:.85rem;font-weight:600;color:var(--cloud);}
-.cart-footer{padding:24px 32px;border-top:1px solid var(--border-smoke);}
-.cart-total{display:flex;justify-content:space-between;font-size:.92rem;font-weight:600;margin-bottom:16px;color:var(--snow);}
-.checkout-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--ember) 0%,var(--gold) 100%);color:#fff;border:none;font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:none;transition:opacity .2s;}
-.checkout-btn:hover{opacity:.9;}
+  /* =====================================================
+     PARTICLE
+     ===================================================== */
+  .particle {
+    position: fixed;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-/* ═══ MODAL ═══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,6,10,.8);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;padding:20px;}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{background:var(--ink2);border:1px solid var(--border-gold);padding:48px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;transform:scale(.95) translateY(20px);transition:transform .4s cubic-bezier(.2,1,.3,1);}
-.modal-overlay.open .modal{transform:scale(1) translateY(0);}
-.modal h3{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--snow);margin-bottom:30px;}
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--fog);margin-bottom:8px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:13px 16px;background:var(--ink3);border:1px solid var(--border-smoke);font-family:'Montserrat',sans-serif;font-size:.85rem;color:var(--snow);outline:none;transition:border-color .25s;box-sizing:border-box;}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);}
-.form-group select option{background:var(--ink3);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.order-summary{background:var(--ink3);border:1px solid var(--border-smoke);padding:22px;margin:24px 0;}
-.order-summary h4{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--fog);font-weight:700;margin-bottom:16px;}
-.sum-item{display:flex;justify-content:space-between;font-size:.84rem;margin-bottom:8px;color:var(--cloud);}
-.sum-total{display:flex;justify-content:space-between;font-weight:700;padding-top:14px;border-top:1px solid var(--border-smoke);margin-top:8px;color:var(--snow);}
-.modal-btns{display:flex;gap:12px;margin-top:8px;}
-.modal-back{flex:1;padding:14px;background:transparent;border:1px solid var(--border-smoke);cursor:none;font-family:'Montserrat',sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;color:var(--fog);transition:all .2s;}
-.modal-back:hover{border-color:var(--fog);color:var(--snow);}
-.modal-pay{flex:2;padding:14px;background:linear-gradient(135deg,var(--ember) 0%,var(--gold) 100%);color:#fff;border:none;cursor:none;font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;transition:opacity .2s;}
-.modal-pay:hover{opacity:.9;}
+  /* =====================================================
+     3D VIEWPORT - SEAMLESS
+     ===================================================== */
+  #model-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #model-container canvas {
+    border-radius: 50%;
+  }
+  /* Radial fade to blend with background */
+  #model-container::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(ellipse at center, transparent 40%, var(--bg) 75%);
+    pointer-events: none;
+    z-index: 5;
+  }
 
-/* ═══ TOAST ═══ */
-#toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink2);border:1px solid var(--border-gold);color:var(--snow);padding:16px 32px;font-size:.72rem;font-weight:600;letter-spacing:2px;z-index:9000;transition:transform .45s cubic-bezier(.2,1,.3,1),opacity .45s;opacity:0;white-space:nowrap;pointer-events:none;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast-gold{color:var(--gold2);}
+  /* =====================================================
+     CATEGORY TOGGLE
+     ===================================================== */
+  .cat-btn {
+    flex: 1;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    transition: all 0.3s;
+    color: #859397;
+  }
+  .cat-btn.active {
+    background: rgba(138,235,255,0.15);
+    color: #8aebff;
+    border: 1px solid rgba(138,235,255,0.4);
+    animation: bio-pulse 4s ease-in-out infinite;
+  }
+  .cat-btn:hover:not(.active) { color: #8aebff; }
 
-/* ═══ SUCCESS ═══ */
-.success-screen{text-align:center;padding:20px 0;}
-.success-screen .check{font-size:3rem;margin-bottom:18px;color:var(--gold);}
-.success-screen h3{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px;color:var(--snow);}
-.success-screen p{color:var(--fog);font-size:.88rem;line-height:1.8;}
+  /* =====================================================
+     NOISE OVERLAY
+     ===================================================== */
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
 
-/* ═══ SCROLL ANIMATIONS ═══ */
-.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s cubic-bezier(.2,1,.3,1),transform .8s cubic-bezier(.2,1,.3,1);}
-.reveal.in{opacity:1;transform:translateY(0);}
-.reveal-l{opacity:0;transform:translateX(-44px);transition:opacity .8s cubic-bezier(.2,1,.3,1),transform .8s cubic-bezier(.2,1,.3,1);}
-.reveal-l.in{opacity:1;transform:translateX(0);}
-.reveal-r{opacity:0;transform:translateX(44px);transition:opacity .8s cubic-bezier(.2,1,.3,1),transform .8s cubic-bezier(.2,1,.3,1);}
-.reveal-r.in{opacity:1;transform:translateX(0);}
-.d1{transition-delay:.08s;}.d2{transition-delay:.18s;}.d3{transition-delay:.3s;}.d4{transition-delay:.42s;}.d5{transition-delay:.56s;}
+  /* =====================================================
+     GRID OVERLAY
+     ===================================================== */
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image:
+      linear-gradient(to right, #22d3ee 1px, transparent 1px),
+      linear-gradient(to bottom, #22d3ee 1px, transparent 1px);
+    background-size: 80px 80px;
+    z-index: 1;
+  }
 
-/* ═══ PARALLAX HELPERS ═══ */
-.parallax-element{will-change:transform;}
+  /* =====================================================
+     SCROLL PROGRESS
+     ===================================================== */
+  #scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #8aebff, #ffb2b9);
+    z-index: 200;
+    transition: width 0.1s;
+    box-shadow: 0 0 8px rgba(138,235,255,0.7);
+  }
 
-/* ═══ MOBILE ═══ */
-@media(max-width:900px){
-  nav{padding:14px 20px;}
-  nav.scrolled{padding:12px 20px;}
-  nav ul{display:none;}
-  .hero-model{width:100%;max-width:100%;position:relative;right:auto;top:auto;transform:none;margin-top:32px;aspect-ratio:1;}
-  #hero{flex-direction:column;justify-content:flex-start;padding-bottom:80px;}
-  .hero-content{padding:100px 20px 0;max-width:100%;}
-  .hero-h1{font-size:clamp(3rem,10vw,5rem);}
-  .hero-stats{left:20px;bottom:24px;gap:24px;}
-  .stat-num{font-size:2rem;}
-  .scroll-cue{display:none;}
-  .feature-strip{grid-template-columns:1fr;}
-  .feat{border-right:none;border-bottom:1px solid var(--border-smoke);padding:36px 24px;}
-  section{padding:72px 20px;}
-  .s-title{font-size:2.2rem;}
-  .specials-grid,.footer-grid{grid-template-columns:1fr;}
-  #about,#contact{grid-template-columns:1fr;gap:0;}
-  .about-img{min-height:280px;}
-  .about-text{padding:64px 20px;}
-  footer{padding:52px 20px 32px;}
-  .ornament-divider{padding:0 20px;}
-  .cart-sidebar{width:100%;max-width:100vw;}
-  .modal{padding:28px 20px;width:95%;}
-  .form-row{grid-template-columns:1fr;}
-  body{cursor:auto;}
-  #cursor,#cursor-ring{display:none;}
-}
-@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  /* =====================================================
+     MENU MODAL
+     ===================================================== */
+  #menu-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(7,13,31,0.96);
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  #menu-modal.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .menu-link {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 700;
+    color: rgba(220,225,251,0.3);
+    letter-spacing: -0.02em;
+    transition: all 0.3s;
+    display: block;
+    line-height: 1.2;
+  }
+  .menu-link:hover {
+    color: #8aebff;
+    text-shadow: 0 0 30px rgba(138,235,255,0.5);
+    transform: translateX(10px);
+  }
+
+  /* =====================================================
+     MOBILE NAV + OVERFLOW
+     ===================================================== */
+  body { min-height: max(884px, 100dvh); }
+
+  /* =====================================================
+     STEAM / GLOW EFFECTS
+     ===================================================== */
+  @keyframes steam {
+    0% { transform: translateY(0) scaleX(1); opacity: 0.6; }
+    100% { transform: translateY(-60px) scaleX(1.4); opacity: 0; }
+  }
+  .steam-particle {
+    position: absolute;
+    width: 3px;
+    border-radius: 50%;
+    background: rgba(138,235,255,0.4);
+    animation: steam 2s ease-out infinite;
+  }
+
+  /* =====================================================
+     AMBIENT LIGHT ORB
+     ===================================================== */
+  .ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: bio-pulse 6s ease-in-out infinite;
+  }
+
+  /* =====================================================
+     MOBILE CURSOR OVERRIDE
+     ===================================================== */
+  @media (pointer: coarse) {
+    body { cursor: auto; }
+    #cursor-dot, #cursor-ring { display: none; }
+  }
+
+  /* =====================================================
+     SECTION TRANSITION
+     ===================================================== */
+  section { position: relative; }
+
+  /* =====================================================
+     MAGNETIC BUTTON EFFECT
+     ===================================================== */
+  .magnetic { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 </style>
 </head>
-<body>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
 
-<!-- CURSOR -->
-<div id="cursor"></div>
+<!-- Custom Cursor -->
+<div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
-<div id="scroll-progress"></div>
-<div id="toast"></div>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-word">Mr. <em>Fitz</em></div>
-  <div class="loader-sub">Est. 1994 &middot; Marsaxlokk, Malta</div>
-  <div class="loader-line"><div class="loader-line-fill" id="loader-fill"></div></div>
-  <div class="loader-dots"><span></span><span></span><span></span></div>
+<!-- Scroll Progress Bar -->
+<div id="scroll-progress"></div>
+
+<!-- Fixed Background Effects -->
+<div class="noise-overlay"></div>
+<div class="grid-overlay"></div>
+
+<!-- Ambient Orbs -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+  <div class="ambient-orb w-96 h-96 bg-cyan-500/10 top-1/4 -left-32" style="animation-delay:-2s"></div>
+  <div class="ambient-orb w-80 h-80 bg-red-400/8 bottom-1/3 right-0" style="animation-delay:-4s"></div>
+  <div class="ambient-orb w-64 h-64 bg-cyan-400/5 top-3/4 left-1/2" style="animation-delay:-1s"></div>
 </div>
 
-<!-- NAV -->
-<nav id="main-nav">
-  <a class="nav-logo" href="#hero">
-    <img src="logo.jpeg" alt="Mr. Fitz">
-    <div class="nav-brand">Mr. <em>Fitz</em></div>
+<!-- Particle Background -->
+<div class="fixed inset-0 pointer-events-none z-0">
+  <div class="particle w-1 h-1 top-[20%] left-[10%]" style="animation: drift 15s infinite"></div>
+  <div class="particle w-2 h-2 top-[50%] left-[80%]" style="animation: drift 25s infinite -2s"></div>
+  <div class="particle w-1 h-1 top-[70%] left-[30%]" style="animation: drift 20s infinite -5s"></div>
+  <div class="particle w-1.5 h-1.5 top-[10%] left-[60%]" style="animation: drift 18s infinite -8s"></div>
+  <div class="particle w-1 h-1 top-[85%] left-[50%]" style="animation: drift 22s infinite -12s"></div>
+</div>
+
+<!-- =====================================================
+     FULLSCREEN MENU MODAL
+     ===================================================== -->
+<div id="menu-modal">
+  <button id="close-menu" class="absolute top-8 right-8 text-primary text-4xl material-symbols-outlined hover:scale-110 transition-transform">close</button>
+  <nav class="flex flex-col gap-2 text-center md:text-left px-8">
+    <a class="menu-link" href="#home" onclick="closeMenu()">HOME</a>
+    <a class="menu-link" href="#menu" onclick="closeMenu()">MENU</a>
+    <a class="menu-link" href="#special" onclick="closeMenu()">TONIGHT'S SPECIAL</a>
+    <a class="menu-link" href="#voices" onclick="closeMenu()">REVIEWS</a>
+    <a class="menu-link" href="#reservations" onclick="closeMenu()">RESERVATIONS</a>
+    <a class="menu-link" href="#about" onclick="closeMenu()">ABOUT</a>
+  </nav>
+  <div class="absolute bottom-12 left-1/2 -translate-x-1/2 font-technical-sm text-primary/30 tracking-widest text-[10px] animate-hud-flicker">
+    MR.FITZ — ABYSSAL DINING EXPERIENCE
+  </div>
+</div>
+
+<!-- =====================================================
+     TOP NAVIGATION
+     ===================================================== -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-surface/60 backdrop-blur-lg border-b border-outline-variant/30 h-20 flex justify-between items-center px-5 md:px-20 transition-all duration-300">
+  <div class="flex items-center gap-4">
+    <button id="menu-toggle" class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform animate-hud-flicker magnetic text-2xl">menu</button>
+
+    <!-- ══════════════════════════════════════════
+         LOGO — place logo.jpg in the same folder
+         as this HTML file, then it shows here.
+         ══════════════════════════════════════════ -->
+    <div class="flex items-center gap-3">
+      <img src="logo.jpg" alt="Mr. Fitz Logo"
+           class="h-10 w-auto object-contain animate-bio-pulse"
+           style="max-width:120px;"
+           onerror="this.style.display='none'"/>
+      <span class="font-headline-md font-bold text-primary tracking-widest bioluminescent-glow animate-bio-pulse" style="font-size:22px">MR. FITZ</span>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-6">
+    <nav class="hidden md:flex items-center gap-8">
+      <a class="font-label-caps text-label-caps text-primary font-bold hover:animate-hud-flicker" href="#menu">MENU</a>
+      <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-container transition-colors" href="#special">SPECIALS</a>
+      <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-container transition-colors" href="#reservations">RESERVE</a>
+    </nav>
+    <button class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform animate-hud-flicker magnetic">notifications</button>
+  </div>
+</header>
+
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+<main id="home" class="pt-20 pb-32 relative z-10">
+
+  <!-- ===================================================
+       HERO SECTION
+       =================================================== -->
+  <section class="relative min-h-[700px] w-full flex flex-col items-center justify-center overflow-hidden mb-16">
+
+    <!-- REPLACE HERO BACKGROUND IMAGE HERE -->
+    <div class="absolute inset-0 z-0">
+      <!-- ══ HERO BACKGROUND IMAGE ══ filename: hero.jpg ══ -->
+      <img alt="Abyssal Ocean Depth"
+        class="w-full h-full object-cover opacity-30 scale-105"
+        id="hero-bg"
+        src="hero.jpg"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60"></div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-6xl mx-auto px-5 md:px-20 flex flex-col items-center pt-8">
+
+      <!-- Depth Status -->
+      <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 border border-primary/30 bg-primary/5 backdrop-blur-sm animate-bio-pulse reveal">
+        <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+        <span class="font-technical-sm text-technical-sm text-primary uppercase tracking-[0.2em] animate-hud-flicker">[ SYSTEM ONLINE — DEPTH 2400M ]</span>
+      </div>
+
+      <!-- Brand Title -->
+      <h1 class="font-display-lg text-center mb-4 reveal reveal-delay-1" style="font-size: clamp(48px, 10vw, 96px); line-height:1.05; letter-spacing:-0.04em; font-weight:700">
+        <span class="text-primary bioluminescent-glow">MR.</span>
+        <span class="text-on-surface"> FITZ</span>
+      </h1>
+      <p class="font-body-lg text-on-surface-variant text-center max-w-lg mb-12 reveal reveal-delay-2">
+        Premium seafood & curated dining from the ocean's deepest frontiers. Where luxury meets the abyss.
+      </p>
+
+      <!-- ================================================
+           3D MODEL VIEWPORT — SEAMLESS
+           ================================================ -->
+      <!-- 3D Model Area. Replace the fallback placeholder with Three.js model loader -->
+      <!-- REPLACE YOUR 3D MODEL HERE: const modelPath = "assets/models/model.glb"; -->
+      <div id="model-container" class="reveal reveal-delay-2">
+        <!-- Three.js canvas renders here -->
+        <canvas id="three-canvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;"></canvas>
+
+        <!-- Fallback / overlay UI — visible until 3D loads -->
+        <div id="model-fallback" class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+          <span class="material-symbols-outlined text-[100px] text-primary/20 animate-float">view_in_ar</span>
+          <div class="mt-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[18px] animate-spin-slow">rotate_right</span>
+            <span class="font-technical-sm text-technical-sm text-primary/60 uppercase tracking-widest animate-hud-flicker">INTERACTIVE HOLOGRAM</span>
+          </div>
+        </div>
+
+        <!-- Scanning Line over model -->
+        <div class="scanning-line" style="z-index:6"></div>
+
+        <!-- HUD corners — seamlessly placed without hard border -->
+        <div class="absolute top-[15%] left-[15%] w-5 h-5 border-t-2 border-l-2 border-primary animate-bio-pulse" style="z-index:7"></div>
+        <div class="absolute top-[15%] right-[15%] w-5 h-5 border-t-2 border-r-2 border-primary animate-bio-pulse" style="z-index:7"></div>
+        <div class="absolute bottom-[15%] left-[15%] w-5 h-5 border-b-2 border-l-2 border-primary animate-bio-pulse" style="z-index:7"></div>
+        <div class="absolute bottom-[15%] right-[15%] w-5 h-5 border-b-2 border-r-2 border-primary animate-bio-pulse" style="z-index:7"></div>
+
+        <!-- Steam particles -->
+        <div class="steam-particle" style="left:48%;bottom:30%;height:20px;animation-delay:0s"></div>
+        <div class="steam-particle" style="left:52%;bottom:28%;height:15px;animation-delay:0.7s"></div>
+        <div class="steam-particle" style="left:45%;bottom:32%;height:25px;animation-delay:1.4s"></div>
+      </div>
+
+      <!-- Category Toggle -->
+      <div id="menu" class="w-full max-w-lg mb-12 reveal reveal-delay-3">
+        <div class="flex p-1 bg-surface-container border border-outline-variant/30">
+          <button class="cat-btn active" onclick="switchCategory(this,'seafood')">SEAFOOD</button>
+          <button class="cat-btn" onclick="switchCategory(this,'drinks')">DRINKS</button>
+          <button class="cat-btn" onclick="switchCategory(this,'desserts')">DESSERTS</button>
+        </div>
+        <div class="mt-3 flex justify-between px-2">
+          <span class="font-technical-sm text-[10px] text-primary/40 tracking-widest animate-hud-flicker">[ MODULE: <span id="cat-label">01_SEAFOOD</span> ]</span>
+          <span class="font-technical-sm text-[10px] text-primary/40 tracking-widest animate-hud-flicker">LOADED: 100%</span>
+        </div>
+      </div>
+
+      <!-- Food Card Grid -->
+      <div id="food-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-20 reveal reveal-delay-4">
+
+        <!-- SEAFOOD CARDS (visible by default) -->
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ SEAFOOD CARD 1 ══ filename: food1.jpg ══ -->
+            <img alt="King Crab" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
+              src="food1.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">CRUSTACEA</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">King Crab</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$145</span>
+          </div>
+        </div>
+
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ SEAFOOD CARD 2 ══ filename: food2.jpg ══ -->
+            <img alt="Bluefin Tuna" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
+              src="food2.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">ACTINOPTERYGII</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Bluefin</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$92</span>
+          </div>
+        </div>
+
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ SEAFOOD CARD 3 ══ filename: food3.jpg ══ -->
+            <img alt="Giant Squid" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
+              src="food3.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">CEPHALOPODA</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Giant Squid</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$210</span>
+          </div>
+        </div>
+
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer" data-cat="seafood">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ SEAFOOD CARD 4 ══ filename: food4.jpg ══ -->
+            <img alt="Crystal Scallop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110"
+              src="food4.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">BIVALVIA</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Crystal Scallop</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$58</span>
+          </div>
+        </div>
+
+        <!-- DRINKS CARDS (hidden by default) -->
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DRINKS CARD 1 ══ filename: drink1.jpg ══ -->
+            <img alt="Abyss Negroni" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="drink1.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">SIGNATURE</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Abyss Negroni</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$32</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DRINKS CARD 2 ══ filename: drink2.jpg ══ -->
+            <img alt="Hydro Martini" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="drink2.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">MOLECULAR</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Hydro Martini</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$28</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DRINKS CARD 3 ══ filename: drink3.jpg ══ -->
+            <img alt="Glow Gin" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="drink3.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">BIOLUMINESCENT</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Glow Gin</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$38</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="drinks">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DRINKS CARD 4 ══ filename: drink4.jpg ══ -->
+            <img alt="Deep Sea Soda" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="drink4.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-primary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-primary mb-1 animate-hud-flicker">VIRGIN</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Deep Sea Soda</span>
+            <span class="font-technical-sm text-primary/60 text-[12px] animate-hud-flicker">$14</span>
+          </div>
+        </div>
+
+        <!-- DESSERTS CARDS (hidden by default) -->
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DESSERTS CARD 1 ══ filename: dessert1.jpg ══ -->
+            <img alt="Midnight Tart" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert1.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">CONFECTION</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Midnight Tart</span>
+            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$24</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DESSERTS CARD 2 ══ filename: dessert2.jpg ══ -->
+            <img alt="Glow Panna Cotta" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert2.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">MOLECULAR</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Glow Panna Cotta</span>
+            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$29</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DESSERTS CARD 3 ══ filename: dessert3.jpg ══ -->
+            <img alt="Abyss Truffle" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert3.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">ARTISAN</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Abyss Truffle</span>
+            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$19</span>
+          </div>
+        </div>
+        <div class="glass-card food-card p-3 border-primary/10 cursor-pointer hidden" data-cat="desserts">
+          <div class="aspect-square bg-surface-container-highest mb-3 overflow-hidden relative">
+            <!-- ══ DESSERTS CARD 4 ══ filename: dessert4.jpg ══ -->
+            <img alt="Cryo Sorbet" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-110" src="dessert4.jpg"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-2">
+              <span class="font-technical-sm text-[10px] text-secondary">VIEW DETAILS →</span>
+            </div>
+          </div>
+          <h3 class="font-label-caps text-[11px] text-secondary mb-1 animate-hud-flicker">NITROGEN</h3>
+          <div class="flex justify-between items-end">
+            <span class="font-body-md text-on-surface font-bold">Cryo Sorbet</span>
+            <span class="font-technical-sm text-secondary/60 text-[12px] animate-hud-flicker">$22</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background grid -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.04] z-0" style="background-image: linear-gradient(to right, #22d3ee 1px, transparent 1px), linear-gradient(to bottom, #22d3ee 1px, transparent 1px); background-size: 80px 80px;"></div>
+  </section>
+
+  <!-- ===================================================
+       TONIGHT'S SPECIAL
+       =================================================== -->
+  <section id="special" class="px-5 md:px-20 mb-32">
+    <div class="flex items-center gap-4 mb-8 reveal">
+      <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
+      <span class="font-technical-sm text-primary tracking-[0.3em] uppercase whitespace-nowrap animate-hud-flicker">// SPECIAL_TODAY: UNIT_01</span>
+      <span class="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></span>
+    </div>
+
+    <div class="glass-card overflow-hidden border-primary/30 flex flex-col lg:flex-row reveal" style="animation: glowPulse 4s ease-in-out infinite;">
+
+      <!-- ══ TONIGHT'S SPECIAL IMAGE ══ filename: special.jpg ══ -->
+      <div class="lg:w-3/5 h-[400px] lg:h-[600px] relative overflow-hidden group">
+        <img alt="Neon Scarlet Prawn — Tonight's Special"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]"
+          src="special.jpg"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent to-background/20"></div>
+        <div class="absolute bottom-8 left-8">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full border border-primary/50 flex items-center justify-center animate-spin-slow animate-bio-pulse">
+              <span class="material-symbols-outlined text-primary text-[32px]">ac_unit</span>
+            </div>
+            <div>
+              <span class="font-technical-sm text-[11px] text-primary block animate-hud-flicker">STORAGE_STATUS</span>
+              <span class="font-label-caps text-on-surface">CRYOGENIC_LOCKED</span>
+            </div>
+          </div>
+        </div>
+        <!-- Parallax depth overlay -->
+        <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background/30 to-transparent pointer-events-none"></div>
+      </div>
+
+      <div class="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-primary/20">
+        <span class="font-technical-sm text-secondary mb-4 tracking-widest uppercase animate-hud-flicker">[ EXTREME_RARITY ]</span>
+        <h2 class="font-display-lg leading-tight mb-6 text-on-surface" style="font-size:clamp(40px,5vw,64px)">NEON SCARLET PRAWN</h2>
+        <p class="font-body-lg text-on-surface-variant mb-10 leading-relaxed">
+          Harvested from the hydrothermal vents of the Mid-Atlantic Ridge. Its bioluminescent properties remain active for 12 hours post-ascent. A Mr. Fitz exclusive.
+        </p>
+
+        <div class="grid grid-cols-2 gap-y-8 gap-x-12 mb-12 border-y border-outline-variant/20 py-8">
+          <div>
+            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">RECOVERY_DEPTH</span>
+            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">3,800M</span>
+          </div>
+          <div>
+            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">SPECIMEN_WEIGHT</span>
+            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">450G</span>
+          </div>
+          <div>
+            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">TRACE_ID</span>
+            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">#AX-209</span>
+          </div>
+          <div>
+            <span class="font-technical-sm text-[11px] text-outline tracking-widest block mb-1 animate-hud-flicker">ORIGIN</span>
+            <span class="font-headline-md text-[24px] text-primary animate-hud-flicker">ATLANTIC</span>
+          </div>
+        </div>
+
+        <button class="btn-primary w-full py-5" onclick="addToCart('Neon Scarlet Prawn', 420)">
+          COMMENCE ACQUISITION — $420.00
+        </button>
+        <div id="cart-confirm" class="hidden mt-3 font-technical-sm text-[11px] text-primary text-center animate-hud-flicker">
+          ✓ ADDED TO VAULT — ACQUISITION LOGGED
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       RESERVATIONS SECTION
+       =================================================== -->
+  <section id="reservations" class="px-5 md:px-20 mb-32">
+    <div class="flex items-center gap-4 mb-10 reveal">
+      <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
+      <span class="font-technical-sm text-primary tracking-[0.3em] uppercase whitespace-nowrap animate-hud-flicker">// RESERVE_TABLE: MR.FITZ</span>
+      <span class="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></span>
+    </div>
+
+    <div class="glass-card p-8 md:p-12 border-primary/20 reveal">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <span class="font-technical-sm text-primary uppercase tracking-widest block mb-3 animate-hud-flicker">DEPTH PROTOCOL</span>
+          <h2 class="font-headline-lg text-[clamp(28px,4vw,44px)] text-on-surface mb-6 leading-tight">SECURE YOUR VOYAGE</h2>
+          <p class="font-body-lg text-on-surface-variant leading-relaxed mb-8">
+            Reservations at Mr. Fitz are limited to 24 covers per evening. Each table receives a personalized specimen menu curated from that night's deep-sea harvest.
+          </p>
+          <div class="flex items-center gap-3 font-technical-sm text-[11px] text-primary animate-hud-flicker">
+            <span class="material-symbols-outlined text-[16px]">schedule</span>
+            TUE–SAT: 18:00 – 23:00 &nbsp;|&nbsp; SUN: 17:00 – 21:00
+          </div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="font-technical-sm text-[10px] text-primary tracking-widest animate-hud-flicker">NAME</label>
+            <input type="text" placeholder="FULL NAME" class="bg-surface-container border border-outline-variant/40 px-4 py-3 text-on-surface font-technical-sm text-technical-sm focus:border-primary/60 focus:outline-none transition-colors placeholder:text-outline/40"/>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="font-technical-sm text-[10px] text-primary tracking-widest animate-hud-flicker">DATE</label>
+              <input type="date" class="bg-surface-container border border-outline-variant/40 px-4 py-3 text-on-surface font-technical-sm text-technical-sm focus:border-primary/60 focus:outline-none transition-colors"/>
+            </div>
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="font-technical-sm text-[10px] text-primary tracking-widest animate-hud-flicker">GUESTS</label>
+              <select class="bg-surface-container border border-outline-variant/40 px-4 py-3 text-on-surface font-technical-sm text-technical-sm focus:border-primary/60 focus:outline-none transition-colors">
+                <option>2 GUESTS</option><option>3 GUESTS</option><option>4 GUESTS</option>
+                <option>5 GUESTS</option><option>6 GUESTS</option><option>PRIVATE DINING</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-technical-sm text-[10px] text-primary tracking-widest animate-hud-flicker">SPECIAL REQUESTS</label>
+            <textarea rows="3" placeholder="DIETARY REQUIREMENTS, OCCASIONS..." class="bg-surface-container border border-outline-variant/40 px-4 py-3 text-on-surface font-technical-sm text-technical-sm focus:border-primary/60 focus:outline-none transition-colors resize-none placeholder:text-outline/40"></textarea>
+          </div>
+          <button class="btn-primary py-4 mt-2" onclick="submitReservation(this)">
+            INITIATE RESERVATION PROTOCOL
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       REVIEWS — VOICES FROM THE ABYSS
+       =================================================== -->
+  <section id="voices" class="px-5 md:px-20 mb-20">
+    <div class="mb-12 reveal">
+      <span class="font-technical-sm text-primary uppercase mb-2 block tracking-widest animate-hud-flicker">// COMMS_LOG: SURFACED_FEEDBACK</span>
+      <h2 class="font-headline-lg text-[clamp(28px,5vw,48px)] text-on-surface">VOICES FROM THE ABYSS</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="glass-card p-8 relative group hover:border-primary/50 transition-all reveal reveal-delay-1">
+        <div class="absolute -top-3 left-8 px-3 py-1 bg-surface border border-primary/20 font-technical-sm text-[10px] text-primary animate-bio-pulse">LOG_ENTRY_#0882</div>
+        <div class="flex gap-1 mb-6 text-primary">
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker" style="--fill:1">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+        </div>
+        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">
+          "The flavor profile of the Abyssal Sablefish is unlike anything surfaced before. The mineral content from those depths adds a technical precision to the palate."
+        </p>
+        <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
+          <div>
+            <span class="font-label-caps text-on-surface block text-[13px]">E. VANDERBILT</span>
+            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">CITIZEN_VETERAN</span>
+          </div>
+          <div class="text-right">
+            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">PURITY_INDEX</span>
+            <span class="block font-label-caps text-primary animate-hud-flicker">99.8%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 relative group border-primary/40 shadow-[0_0_20px_rgba(138,235,255,0.05)] reveal reveal-delay-2">
+        <div class="absolute -top-3 left-8 px-3 py-1 bg-primary text-on-primary font-technical-sm text-[10px] animate-bio-pulse">LOG_ENTRY_#1041</div>
+        <div class="flex gap-1 mb-6 text-primary">
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+        </div>
+        <p class="font-body-md text-on-surface italic mb-8 leading-relaxed">
+          "The Scarlet Prawn arrived in a pressurized cold-cell that looked like it came off a spacecraft. The experience of the unboxing is as elite as the specimen itself."
+        </p>
+        <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
+          <div>
+            <span class="font-label-caps text-on-surface block text-[13px]">M. CHEN</span>
+            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">EXECUTIVE_CHEF</span>
+          </div>
+          <div class="text-right">
+            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">DENSITY_RATING</span>
+            <span class="block font-label-caps text-primary animate-hud-flicker">A+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-8 relative group hover:border-primary/50 transition-all reveal reveal-delay-3">
+        <div class="absolute -top-3 left-8 px-3 py-1 bg-surface border border-primary/20 font-technical-sm text-[10px] text-primary animate-bio-pulse">LOG_ENTRY_#0923</div>
+        <div class="flex gap-1 mb-6 text-primary">
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] animate-hud-flicker">grade</span>
+          <span class="material-symbols-outlined text-[16px] opacity-40">grade</span>
+        </div>
+        <p class="font-body-md text-on-surface-variant italic mb-8 leading-relaxed">
+          "Expensive, yes. But where else can you source actinopterygii caught at 2000m with full DNA traceability? A necessity for the modern luxury vault."
+        </p>
+        <div class="flex justify-between items-center pt-6 border-t border-outline-variant/20">
+          <div>
+            <span class="font-label-caps text-on-surface block text-[13px]">L. STERLING</span>
+            <span class="font-technical-sm text-[10px] text-outline uppercase tracking-widest animate-hud-flicker">ARTIFACT_COLLECTOR</span>
+          </div>
+          <div class="text-right">
+            <span class="font-technical-sm text-primary text-[10px] animate-hud-flicker">SCARCITY_VAL</span>
+            <span class="block font-label-caps text-primary animate-hud-flicker">OMEGA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================
+       ABOUT SECTION
+       =================================================== -->
+  <section id="about" class="px-5 md:px-20 mb-20">
+    <div class="flex items-center gap-4 mb-10 reveal">
+      <span class="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></span>
+      <span class="font-technical-sm text-primary tracking-[0.3em] uppercase whitespace-nowrap animate-hud-flicker">// ABOUT: MR.FITZ</span>
+      <span class="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></span>
+    </div>
+    <div class="glass-card p-8 md:p-16 border-primary/15 text-center reveal">
+      <span class="font-technical-sm text-primary tracking-widest block mb-4 animate-hud-flicker">ESTABLISHED AT DEPTH</span>
+      <h2 class="font-display-lg text-[clamp(36px,6vw,72px)] text-on-surface mb-6 leading-tight">THE MR. FITZ<br/>PHILOSOPHY</h2>
+      <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+        At Mr. Fitz, we believe that extraordinary dining begins where the light ends. Our team of deep-sea culinary scientists work at the frontier of ocean gastronomy — sourcing specimens no other restaurant can access, preparing them with molecular precision, and serving them in an atmosphere that mirrors the alien beauty of the ocean floor.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- =====================================================
+     BOTTOM NAVIGATION
+     ===================================================== -->
+<nav class="fixed bottom-0 left-0 w-full z-50 rounded-t-full bg-surface-container/80 backdrop-blur-2xl border-t border-primary/20 shadow-[0_-10px_40px_rgba(138,235,255,0.15)] flex justify-around items-center px-4 py-3 pb-6">
+  <a class="flex flex-col items-center justify-center text-primary drop-shadow-[0_0_10px_rgba(138,235,255,0.8)] scale-110 active:scale-90 transition-transform duration-300 animate-bio-pulse" href="#home">
+    <span class="material-symbols-outlined mb-1">explore</span>
+    <span class="font-label-caps text-label-caps">HOME</span>
   </a>
-  <ul>
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#menu">Menu</a></li>
-    <li><a href="#specials">Specials</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <button class="nav-cart-btn" id="cart-btn" onclick="toggleCart()">
-    <span>Cart</span><span class="cart-badge" id="cart-count">0</span>
-  </button>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#menu">
+    <span class="material-symbols-outlined mb-1">restaurant_menu</span>
+    <span class="font-label-caps text-label-caps">MENU</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#special">
+    <span class="material-symbols-outlined mb-1">stars</span>
+    <span class="font-label-caps text-label-caps">SPECIALS</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#reservations">
+    <span class="material-symbols-outlined mb-1">event_seat</span>
+    <span class="font-label-caps text-label-caps">RESERVE</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-outline opacity-60 hover:text-primary hover:opacity-100 transition-all active:scale-90 duration-300" href="#about">
+    <span class="material-symbols-outlined mb-1">person</span>
+    <span class="font-label-caps text-label-caps">ABOUT</span>
+  </a>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-vignette"></div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 md:right-12 z-40 w-16 h-16 bg-primary-container text-on-primary-container flex items-center justify-center outer-glow-cyan active:scale-90 transition-transform animate-bio-pulse" onclick="window.location.href='#reservations'" title="Reserve a table">
+  <span class="material-symbols-outlined text-[32px]">anchor</span>
+</button>
 
-  <!-- 3D MODEL — free, no clip, no border -->
-  <div class="hero-model" id="model-wrap">
-    <div class="model-aura"></div>
-    <div class="model-iframe-wrap">
-      <iframe
-        src="https://sketchfab.com/models/40d50989fec1460f8838b608d999ccd0/embed?autostart=1&transparent=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&ui_color=c9a84c&camera=0&autospin=0.5&preload=1"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-        title="3D Food Model"
-        loading="lazy">
-      </iframe>
-    </div>
-  </div>
-
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="eyebrow-line"></div>
-      <span class="eyebrow-tag">Est. 1994 &middot; Marsaxlokk, Malta</span>
-    </div>
-    <h1 class="hero-h1">The Art<br><strong>of Fine</strong><br><em>Dining.</em></h1>
-    <div class="hero-sub">Wood-fired. Stone-baked. Perfected.</div>
-    <p class="hero-body">Handcrafted from imported Italian flour, slow-fermented over 48 hours, and fired at 900°F in our heritage stone oven. Every plate — a portrait.</p>
-    <div class="hero-btns">
-      <a href="#menu" class="btn-fire"><span>Order Now</span></a>
-      <a href="#menu" class="btn-ghost">View Menu</a>
-    </div>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat-block"><div class="stat-num" id="stat1">0+</div><div class="stat-lbl">Menu Items</div></div>
-    <div class="stat-sep"></div>
-    <div class="stat-block"><div class="stat-num">900°</div><div class="stat-lbl">Stone Oven</div></div>
-    <div class="stat-sep"></div>
-    <div class="stat-block"><div class="stat-num" id="stat2">0★</div><div class="stat-lbl">Rating</div></div>
-  </div>
-
-  <div class="scroll-cue">
-    <div class="scroll-cue-line"></div>
-    <span class="scroll-cue-text">Scroll</span>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="marquee-band">
-  <div class="marquee-track">
-    <span>Wood Fired</span><span class="marquee-sep">✦</span>
-    <span>Neapolitan Style</span><span class="marquee-sep">✦</span>
-    <span>Fresh Daily</span><span class="marquee-sep">✦</span>
-    <span>48-Hour Fermented Dough</span><span class="marquee-sep">✦</span>
-    <span>Imported Italian Tomatoes</span><span class="marquee-sep">✦</span>
-    <span>Handcrafted With Love</span><span class="marquee-sep">✦</span>
-    <span>Malta's Finest</span><span class="marquee-sep">✦</span>
-    <span>Wood Fired</span><span class="marquee-sep">✦</span>
-    <span>Neapolitan Style</span><span class="marquee-sep">✦</span>
-    <span>Fresh Daily</span><span class="marquee-sep">✦</span>
-    <span>48-Hour Fermented Dough</span><span class="marquee-sep">✦</span>
-    <span>Imported Italian Tomatoes</span><span class="marquee-sep">✦</span>
-    <span>Handcrafted With Love</span><span class="marquee-sep">✦</span>
-    <span>Malta's Finest</span><span class="marquee-sep">✦</span>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<div class="feature-strip">
-  <div class="feat reveal">
-    <div class="feat-icon">🔥</div>
-    <div><div class="feat-title">Stone-Fire Oven</div><div class="feat-desc">Our 900°F wood-burning oven creates the perfect char and crisp you can't replicate anywhere else.</div></div>
-  </div>
-  <div class="feat reveal d2">
-    <div class="feat-icon">🌿</div>
-    <div><div class="feat-title">Farm Fresh</div><div class="feat-desc">Every ingredient sourced daily — local vegetables, fresh herbs, and imported Italian cheese.</div></div>
-  </div>
-  <div class="feat reveal d4">
-    <div class="feat-icon">🚴</div>
-    <div><div class="feat-title">30-Min Delivery</div><div class="feat-desc">Hot pizza delivered to your door. We guarantee freshness or your next order is on us.</div></div>
-  </div>
-</div>
-
-<!-- MENU -->
-<section id="menu">
-  <p class="s-label reveal">Our Menu</p>
-  <h2 class="s-title reveal d1">Choose Your Perfect Dish</h2>
-  <div class="menu-tabs reveal d2">
-    <button class="tab active" onclick="filterMenu('seafood',this)">Seafood</button>
-    <button class="tab" onclick="filterMenu('sides',this)">Sides</button>
-    <button class="tab" onclick="filterMenu('drinks',this)">Drinks</button>
-    <button class="tab" onclick="filterMenu('desserts',this)">Desserts</button>
-  </div>
-  <div class="menu-grid" id="menu-grid">
-    <div class="menu-card reveal" data-cat="seafood">
-      <div class="card-img"><img src="food1.jpeg" alt="Seafood Platter"></div>
-      <div class="card-body"><div class="card-name">Seafood Platter</div><div class="card-desc">San Marzano tomato, fresh mozzarella, basil, extra virgin olive oil</div><div class="card-footer"><span class="card-price">£299</span><button class="add-btn" onclick="addToCart(1,'Seafood Platter',299)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d1" data-cat="seafood">
-      <div class="card-img"><img src="food2.jpeg" alt="Fish & Chips"></div>
-      <div class="card-body"><div class="card-name">Fish &amp; Chips</div><div class="card-desc">Tomato sauce, mozzarella, premium pepperoni, oregano</div><div class="card-footer"><span class="card-price">£379</span><button class="add-btn" onclick="addToCart(2,'Fish & Chips',379)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d2" data-cat="seafood">
-      <div class="card-img"><img src="food3.jpeg" alt="Fish Soup"></div>
-      <div class="card-body"><div class="card-name">Fish Soup</div><div class="card-desc">Smoky BBQ sauce, grilled chicken, red onion, coriander</div><div class="card-footer"><span class="card-price">£399</span><button class="add-btn" onclick="addToCart(3,'Fish Soup',399)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal" data-cat="seafood">
-      <div class="card-img"><img src="food4.jpeg" alt="Makaron Z Owocami Morza"></div>
-      <div class="card-body"><div class="card-name">Makaron Z Owocami Morza</div><div class="card-desc">Bell peppers, mushrooms, olives, cherry tomatoes, mozzarella</div><div class="card-footer"><span class="card-price">£329</span><button class="add-btn" onclick="addToCart(4,'Makaron Z Owocami Morza',329)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d1" data-cat="seafood">
-      <div class="card-img"><img src="food5.jpeg" alt="Octopus in Garlic"></div>
-      <div class="card-body"><div class="card-name">Octopus in Garlic</div><div class="card-desc">Mozzarella, parmesan, cheddar, ricotta, fresh herbs</div><div class="card-footer"><span class="card-price">£419</span><button class="add-btn" onclick="addToCart(5,'Octopus in Garlic',419)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d2" data-cat="seafood">
-      <div class="card-img"><img src="food6.jpeg" alt="Fresh Fillet of Seabass"></div>
-      <div class="card-body"><div class="card-name">Fresh Fillet of Seabass</div><div class="card-desc">Peri peri sauce, chicken, jalapeños, onion, cheese blend</div><div class="card-footer"><span class="card-price">£409</span><button class="add-btn" onclick="addToCart(6,'Fresh Fillet of Seabass',409)"><span>+ Add</span></button></div></div>
-    </div>
-    <!-- Sides -->
-    <div class="menu-card reveal" data-cat="sides" style="display:none">
-      <div class="card-img"><img src="side3.jpeg" alt="Garlic Bread"></div>
-      <div class="card-body"><div class="card-name">Garlic Bread</div><div class="card-desc">Toasted sourdough, herb butter, sea salt</div><div class="card-footer"><span class="card-price">£129</span><button class="add-btn" onclick="addToCart(7,'Garlic Bread',129)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d1" data-cat="sides" style="display:none">
-      <div class="card-img"><img src="side1.jpeg" alt="Caesar Salad"></div>
-      <div class="card-body"><div class="card-name">Caesar Salad</div><div class="card-desc">Romaine, parmesan shavings, house dressing, croutons</div><div class="card-footer"><span class="card-price">£169</span><button class="add-btn" onclick="addToCart(8,'Caesar Salad',169)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d2" data-cat="sides" style="display:none">
-      <div class="card-img"><img src="side2.jpeg" alt="Loaded Fries"></div>
-      <div class="card-body"><div class="card-name">Loaded Fries</div><div class="card-desc">Crispy fries, cheese sauce, jalapeños, sour cream</div><div class="card-footer"><span class="card-price">£199</span><button class="add-btn" onclick="addToCart(9,'Loaded Fries',199)"><span>+ Add</span></button></div></div>
-    </div>
-    <!-- Drinks -->
-    <div class="menu-card reveal" data-cat="drinks" style="display:none">
-      <div class="card-img"><img src="drink1.jpeg" alt="Classic Cola"></div>
-      <div class="card-body"><div class="card-name">Classic Cola</div><div class="card-desc">Chilled Coca-Cola 330ml</div><div class="card-footer"><span class="card-price">£79</span><button class="add-btn" onclick="addToCart(10,'Classic Cola',79)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d1" data-cat="drinks" style="display:none">
-      <div class="card-img"></div>
-      <div class="card-body"><div class="card-name">Lemonade</div><div class="card-desc">Fresh-squeezed lemonade with mint</div><div class="card-footer"><span class="card-price">£99</span><button class="add-btn" onclick="addToCart(11,'Lemonade',99)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d2" data-cat="drinks" style="display:none">
-      <div class="card-img"></div>
-      <div class="card-body"><div class="card-name">Mango Lassi</div><div class="card-desc">Chilled mango yogurt drink</div><div class="card-footer"><span class="card-price">£119</span><button class="add-btn" onclick="addToCart(12,'Mango Lassi',119)"><span>+ Add</span></button></div></div>
-    </div>
-    <!-- Desserts -->
-    <div class="menu-card reveal" data-cat="desserts" style="display:none">
-      <div class="card-img"></div>
-      <div class="card-body"><div class="card-name">Nutella Calzone</div><div class="card-desc">Warm folded pizza dough with Nutella and crushed hazelnuts</div><div class="card-footer"><span class="card-price">£199</span><button class="add-btn" onclick="addToCart(13,'Nutella Calzone',199)"><span>+ Add</span></button></div></div>
-    </div>
-    <div class="menu-card reveal d1" data-cat="desserts" style="display:none">
-      <div class="card-img"></div>
-      <div class="card-body"><div class="card-name">Tiramisu</div><div class="card-desc">Classic Italian dessert, mascarpone, espresso, cocoa</div><div class="card-footer"><span class="card-price">£179</span><button class="add-btn" onclick="addToCart(14,'Tiramisu',179)"><span>+ Add</span></button></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ORNAMENT DIVIDER -->
-<div class="ornament-divider">
-  <div class="ornament-line"></div>
-  <div class="ornament-icon">✦</div>
-  <div class="ornament-line"></div>
-</div>
-
-<!-- SPECIALS -->
-<section id="specials">
-  <p class="s-label reveal">This Week</p>
-  <h2 class="s-title reveal d1">Chef's Specials</h2>
-  <div class="specials-grid">
-    <div class="special-card reveal">
-      <span class="sp-badge">Trending</span>
-      <div class="sp-name">Truffle Mushroom</div>
-      <div class="sp-desc">Black truffle oil, wild mushrooms, fontina cheese, fresh thyme. Limited batches per day.</div>
-      <div class="sp-price">£549 <s>£649</s></div>
-    </div>
-    <div class="special-card reveal d2">
-      <span class="sp-badge">Spicy Pick</span>
-      <div class="sp-name">Malta Masala</div>
-      <div class="sp-desc">Spiced tomato base, paneer tikka, caramelised onions, mint chutney drizzle.</div>
-      <div class="sp-price">£429 <s>£499</s></div>
-    </div>
-    <div class="special-card reveal d4">
-      <span class="sp-badge">New</span>
-      <div class="sp-name">Lemon Chicken</div>
-      <div class="sp-desc">Lemon cream base, herb-roasted chicken, capers, rocket leaves, shaved parmesan.</div>
-      <div class="sp-price">£469 <s>£529</s></div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" style="padding:0;">
-  <div class="about-text">
-    <p class="s-label reveal">Our Story</p>
-    <h2 class="s-title reveal d1">Crafted with<br>Passion Since 1994</h2>
-    <p class="about-body reveal d2">Born in the fishing village of Marsaxlokk, Mr. Fitz began as a humble harbour-side kitchen. Three decades later, the same fire still burns — hotter, prouder, more vibrant than ever. Every dish carries the spirit of the sea, the land, and the people who built this island.</p>
-    <a href="#menu" class="btn-fire reveal d3" style="align-self:flex-start;display:inline-block;"><span>Explore Menu</span></a>
-  </div>
-  <div class="about-img">
-    <div class="about-img-inner">🔥</div>
-    <div class="flame-deco"></div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="reveal-l">
-    <p class="s-label">Find Us</p>
-    <h2 class="s-title">Come Say<br>Hello</h2>
-    <p class="contact-sub">We're open every day. Walk in, dine in, or order to your door — we've got you covered.</p>
-    <div class="c-item">
-      <div class="c-icon">📍</div>
-      <div class="c-detail"><h5>Address</h5><p>12 121 Xatt is-Sajjieda, Marsaxlokk, Malta</p></div>
-    </div>
-    <div class="c-item">
-      <div class="c-icon">📞</div>
-      <div class="c-detail"><h5>Phone</h5><p>+356 2165 2123</p></div>
-    </div>
-    <div class="c-item">
-      <div class="c-icon">🕐</div>
-      <div class="c-detail"><h5>Hours</h5><p>Mon–Sun: 11:00 AM – 11:00 PM</p></div>
-    </div>
-  </div>
-  <div class="map-box reveal-r">
-    <span>🗺️</span>
-    <div>12 121 Xatt is-Sajjieda,<br>Marsaxlokk, Malta</div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div>
-      <div class="footer-brand">Mr. <em>Fitz</em></div>
-      <p class="footer-tag">Crafting wood-fired perfection in Malta since 1994.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Menu</h5>
-      <ul>
-        <li><a href="#menu">Seafood</a></li>
-        <li><a href="#menu">Sides</a></li>
-        <li><a href="#menu">Drinks</a></li>
-        <li><a href="#menu">Desserts</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Visit</h5>
-      <ul>
-        <li><a href="#contact">Location</a></li>
-        <li><a href="#contact">Hours</a></li>
-        <li><a href="#specials">Specials</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Legal</h5>
-      <ul>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2024 Mr. Fitz Restaurant. All rights reserved.</span>
-    <span class="footer-gold">✦</span>
-    <span>121 Xatt is-Sajjieda, Marsaxlokk, Malta</span>
-  </div>
-</footer>
-
-<!-- CART -->
-<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
-<div class="cart-sidebar" id="cart-sidebar">
-  <div class="cart-header">
-    <h3>Your Order</h3>
-    <button class="close-cart" onclick="toggleCart()">✕</button>
-  </div>
-  <div class="cart-items" id="cart-items">
-    <div class="cart-empty">Your cart is empty<br><small>Add items from the menu</small></div>
-  </div>
-  <div class="cart-footer">
-    <div class="cart-total"><span>Total</span><span id="cart-total">£0</span></div>
-    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
-  </div>
-</div>
-
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay" id="checkout-modal">
-  <div class="modal">
-    <h3>Complete Your Order</h3>
-    <div id="checkout-form-area">
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="Rahul"></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Nair"></div>
-      </div>
-      <div class="form-group"><label>Phone</label><input type="tel" placeholder="+356 2165 2123"></div>
-      <div class="form-group"><label>Delivery Address</label><textarea rows="2" placeholder="121 Xatt is-Sajjieda, Marsaxlokk"></textarea></div>
-      <div class="form-group"><label>Payment</label><select><option>Cash on Delivery</option><option>Credit / Debit Card</option><option>Bank Transfer</option></select></div>
-      <div class="order-summary">
-        <h4>Order Summary</h4>
-        <div id="modal-summary-items"></div>
-        <div class="sum-total"><span>Total</span><span id="modal-total">£0</span></div>
-      </div>
-      <div class="modal-btns">
-        <button class="modal-back" onclick="closeCheckout()">← Back</button>
-        <button class="modal-pay" onclick="placeOrder()">Place Order ✦</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 <script>
-/* ═══ CURSOR ═══ */
-(function(){
-  var cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
-  if(!cur)return;
-  var mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-  (function lp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lp);})();
-  document.querySelectorAll('a,button,.add-btn,.tab,.qty-btn').forEach(function(el){
-    el.addEventListener('mouseenter',function(){document.body.classList.add('cursor-hover');});
-    el.addEventListener('mouseleave',function(){document.body.classList.remove('cursor-hover');});
+/* =====================================================
+   CUSTOM CURSOR
+   ===================================================== */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+/* =====================================================
+   SCROLL PROGRESS
+   ===================================================== */
+const progressBar = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  progressBar.style.width = scrolled + '%';
+  // Navbar background on scroll
+  const navbar = document.getElementById('navbar');
+  if (window.scrollY > 60) navbar.classList.add('navbar-scrolled');
+  else navbar.classList.remove('navbar-scrolled');
+});
+
+/* =====================================================
+   SCROLL REVEAL (Intersection Observer)
+   ===================================================== */
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+    }
   });
-})();
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
 
-/* ═══ SCROLL PROGRESS ═══ */
-window.addEventListener('scroll',function(){
-  var prog=document.getElementById('scroll-progress');
-  var pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
-  prog.style.width=pct+'%';
-},{passive:true});
+/* =====================================================
+   MENU MODAL
+   ===================================================== */
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('menu-modal').classList.add('open');
+});
+document.getElementById('close-menu').addEventListener('click', closeMenu);
+function closeMenu() {
+  document.getElementById('menu-modal').classList.remove('open');
+}
 
-/* ═══ NAV ═══ */
-window.addEventListener('scroll',function(){
-  document.getElementById('main-nav').classList.toggle('scrolled',window.scrollY>60);
-},{passive:true});
-
-/* ═══ HERO CANVAS ═══ */
-(function(){
-  var canvas=document.getElementById('hero-canvas');
-  var ctx=canvas.getContext('2d');
-  var W,H,t=0;
-  var mouse={x:-999,y:-999};
-  function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
-  resize();window.addEventListener('resize',resize);
-  document.addEventListener('mousemove',function(e){var r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});
-
-  var pts=[];
-  for(var i=0;i<130;i++){
-    pts.push({x:Math.random()*1920,y:Math.random()*1080,
-      vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,
-      r:Math.random()*1.8+.3,a:Math.random()*.45+.08,
-      gold:Math.random()>.55,ph:Math.random()*Math.PI*2,sp:.3+Math.random()*.5});
-  }
-  var embers=[];
-  for(var j=0;j<22;j++){
-    embers.push({x:Math.random()*1920,y:Math.random()*1080,
-      vy:-(Math.random()*.7+.25),r:Math.random()*3+.8,
-      a:Math.random()*.6+.25,life:Math.random(),dec:.002+Math.random()*.003});
-  }
-
-  function draw(){
-    t+=.009;
-    ctx.clearRect(0,0,W,H);
-    // deep space bg
-    var bg=ctx.createLinearGradient(0,0,W,H);
-    bg.addColorStop(0,'#06070b');bg.addColorStop(.5,'#09090f');bg.addColorStop(1,'#0b0608');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-    // warm orb
-    var ox=W*.7+Math.sin(t*.45)*20,oy=H*.5+Math.cos(t*.3)*15;
-    var og=ctx.createRadialGradient(ox,oy,0,ox,oy,360+Math.sin(t)*40);
-    og.addColorStop(0,'rgba(180,60,10,.14)');og.addColorStop(.5,'rgba(140,40,5,.07)');og.addColorStop(1,'transparent');
-    ctx.fillStyle=og;ctx.fillRect(0,0,W,H);
-    // secondary gold orb
-    var ox2=W*.35+Math.cos(t*.5)*25,oy2=H*.6+Math.sin(t*.4)*20;
-    var og2=ctx.createRadialGradient(ox2,oy2,0,ox2,oy2,220);
-    og2.addColorStop(0,'rgba(201,168,76,.08)');og2.addColorStop(1,'transparent');
-    ctx.fillStyle=og2;ctx.fillRect(0,0,W,H);
-    // mouse glow
-    if(mouse.x>0){var mg=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,180);mg.addColorStop(0,'rgba(201,168,76,.09)');mg.addColorStop(1,'transparent');ctx.fillStyle=mg;ctx.fillRect(0,0,W,H);}
-    // particles
-    pts.forEach(function(p,i){
-      var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<220){p.vx+=dx*.00012;p.vy+=dy*.00012;}
-      p.vx+=Math.sin(t+p.ph)*.0025;p.vy+=Math.cos(t*.65+p.ph)*.0015;
-      p.vx*=.988;p.vy*=.988;p.x+=p.vx*p.sp;p.y+=p.vy*p.sp;
-      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-      var pa=p.a*(.65+.35*Math.sin(t*1.6+p.ph));
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=p.gold?'rgba(210,170,70,'+pa+')':'rgba(160,175,210,'+(pa*.35)+')';ctx.fill();
-      for(var j=i+1;j<pts.length;j++){
-        var p2=pts[j],cx=p.x-p2.x,cy=p.y-p2.y,cd=Math.sqrt(cx*cx+cy*cy);
-        if(cd<110){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);
-          var la=(1-cd/110)*.08*(p.gold||p2.gold?1:.35);
-          ctx.strokeStyle='rgba(201,168,76,'+la+')';ctx.lineWidth=.5;ctx.stroke();}
-      }
-    });
-    // embers
-    embers.forEach(function(e){
-      e.y+=e.vy;e.x+=Math.sin(t*1.3+e.a*8)*.5;e.life-=e.dec;
-      if(e.life<=0||e.y<-10){e.x=Math.random()*W;e.y=H+10;e.life=.8+Math.random()*.2;e.a=Math.random()*.5+.25;}
-      ctx.beginPath();ctx.arc(e.x,e.y,e.r*e.life,0,Math.PI*2);
-      ctx.fillStyle='rgba(230,120,30,'+(e.a*e.life)+')';ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ═══ MODEL PARALLAX TILT ═══ */
-(function(){
-  var m=document.getElementById('model-wrap');
-  if(!m||window.innerWidth<900)return;
-  var trx=0,try_=0,crx=0,cry=0;
-  document.addEventListener('mousemove',function(e){try_=(e.clientX/window.innerWidth-.5)*20;trx=(e.clientY/window.innerHeight-.5)*-14;});
-  document.addEventListener('mouseleave',function(){trx=0;try_=0;});
-  (function lp(){crx+=(trx-crx)*.07;cry+=(try_-cry)*.07;
-    var fl=Math.sin(Date.now()/1000*.75)*14;
-    m.style.transform='translateY(calc(-50% + '+fl+'px)) perspective(900px) rotateX('+crx+'deg) rotateY('+cry+'deg)';
-    requestAnimationFrame(lp);
-  })();
-  m.style.transition='none';
-})();
-
-/* ═══ SCROLL REVEAL ═══ */
-(function(){
-  var els=document.querySelectorAll('.reveal,.reveal-l,.reveal-r');
-  if(!window.IntersectionObserver){els.forEach(function(e){e.classList.add('in');});return;}
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
-  },{threshold:.1});
-  els.forEach(function(el){obs.observe(el);if(el.getBoundingClientRect().top<window.innerHeight)el.classList.add('in');});
-})();
-
-/* ═══ COUNT UP ═══ */
-(function(){
-  function cu(el,target,suffix,dur){var s=0,step=target/(dur/16);var ti=setInterval(function(){s+=step;if(s>=target){s=target;clearInterval(ti);}el.textContent=Math.floor(s)+suffix;},16);}
-  setTimeout(function(){
-    cu(document.getElementById('stat1'),30,'+',1100);
-    setTimeout(function(){var el=document.getElementById('stat2'),v=0;var ti=setInterval(function(){v+=.1;if(v>=4.9){v=4.9;clearInterval(ti);}el.textContent=v.toFixed(1)+'★';},28);},350);
-  },900);
-})();
-
-/* ═══ MENU FILTER ═══ */
-function filterMenu(cat,btn){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+/* =====================================================
+   CATEGORY TOGGLE
+   ===================================================== */
+const catLabels = { seafood: '01_SEAFOOD', drinks: '02_DRINKS', desserts: '03_DESSERTS' };
+function switchCategory(btn, cat) {
+  // Update button states
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.menu-card').forEach(function(c){
-    var show=c.dataset.cat===cat;c.style.display=show?'':'none';
-    if(show){c.classList.remove('in');void c.offsetWidth;setTimeout(function(){c.classList.add('in');},40);}
+  document.getElementById('cat-label').textContent = catLabels[cat];
+  // Show/hide cards
+  const cards = document.querySelectorAll('#food-grid [data-cat]');
+  cards.forEach(card => {
+    if (card.dataset.cat === cat) {
+      card.classList.remove('hidden');
+      card.style.animation = 'fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both';
+    } else {
+      card.classList.add('hidden');
+    }
   });
 }
 
-/* ═══ TOAST ═══ */
-function showToast(msg){
-  var t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');
-  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2800);
+/* =====================================================
+   ADD TO CART
+   ===================================================== */
+function addToCart(name, price) {
+  const confirm = document.getElementById('cart-confirm');
+  confirm.classList.remove('hidden');
+  confirm.textContent = `✓ ${name.toUpperCase()} ADDED TO VAULT`;
+  setTimeout(() => confirm.classList.add('hidden'), 3000);
 }
 
-/* ═══ CART ═══ */
-var cart=[];
-function addToCart(id,name,price){
-  var ex=cart.find(function(i){return i.id===id;});
-  if(ex)ex.qty++;else cart.push({id:id,name:name,price:price,qty:1});
-  updateCart();
-  var btn=document.getElementById('cart-btn');btn.style.transform='scale(1.12)';
-  setTimeout(function(){btn.style.transform='';},220);
-  showToast('<span class="toast-gold">✦</span> '+name+' added to order');
-}
-function updateCart(){
-  var count=cart.reduce(function(s,i){return s+i.qty;},0);
-  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
-  document.getElementById('cart-count').textContent=count;
-  document.getElementById('cart-total').textContent='£'+total;
-  var c=document.getElementById('cart-items');
-  if(!cart.length){c.innerHTML='<div class="cart-empty">Your cart is empty<br><small>Add items from the menu</small></div>';return;}
-  c.innerHTML=cart.map(function(item){
-    return '<div class="cart-item"><div class="ci-info"><div class="ci-name">'+item.name+'</div><div class="ci-price">£'+item.price+' each</div><div class="ci-qty"><button class="qty-btn" onclick="changeQty('+item.id+',-1)">−</button><span class="qty-num">'+item.qty+'</span><button class="qty-btn" onclick="changeQty('+item.id+',1)">+</button></div></div><div style="font-weight:700;color:var(--ember2)">£'+(item.price*item.qty)+'</div></div>';
-  }).join('');
-}
-function changeQty(id,d){var item=cart.find(function(i){return i.id===id;});if(!item)return;item.qty+=d;if(item.qty<=0)cart=cart.filter(function(i){return i.id!==id;});updateCart();}
-function toggleCart(){document.getElementById('cart-sidebar').classList.toggle('open');document.getElementById('cart-overlay').classList.toggle('open');}
-function openCheckout(){
-  if(!cart.length)return;
-  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
-  document.getElementById('modal-summary-items').innerHTML=cart.map(function(i){return '<div class="sum-item"><span>'+i.name+' x'+i.qty+'</span><span>£'+(i.price*i.qty)+'</span></div>';}).join('');
-  document.getElementById('modal-total').textContent='£'+total;
-  document.getElementById('checkout-modal').classList.add('open');toggleCart();
-}
-function closeCheckout(){document.getElementById('checkout-modal').classList.remove('open');}
-function placeOrder(){
-  document.getElementById('checkout-form-area').innerHTML='<div class="success-screen"><div class="check">✦</div><h3>Order Placed!</h3><p>Your order is on its way.<br>Estimated delivery: <strong>30–40 mins</strong></p></div>';
-  cart=[];updateCart();setTimeout(closeCheckout,3400);
+/* =====================================================
+   RESERVATION SUBMIT
+   ===================================================== */
+function submitReservation(btn) {
+  const original = btn.textContent;
+  btn.textContent = '✓ RESERVATION CONFIRMED — STAND BY';
+  btn.style.background = 'rgba(138,235,255,0.3)';
+  btn.style.color = '#8aebff';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = original;
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.disabled = false;
+  }, 4000);
 }
 
-/* ═══ LOADER ═══ */
-(function(){
-  var loader=document.getElementById('loader');
-  var fill=document.getElementById('loader-fill');
-  var iframe=document.querySelector('.model-iframe-wrap iframe');
-  var gone=false;
-  function setW(w){fill.style.width=w+'%';}
-  setTimeout(function(){setW(20);},300);
-  setTimeout(function(){setW(44);},900);
-  setTimeout(function(){setW(66);},1800);
-
-  function dismiss(){if(gone)return;gone=true;setW(100);setTimeout(function(){loader.classList.add('out');},500);}
-
-  var loaded=false;
-  function onLoad(){
-    if(loaded)return;loaded=true;
-    var buf=3000;setW(85);
-    var steps=Math.floor(buf/300),pct=85;
-    var iv=setInterval(function(){pct=Math.min(96,pct+(11/steps));fill.style.width=pct+'%';},300);
-    setTimeout(function(){clearInterval(iv);dismiss();},buf);
+/* =====================================================
+   HERO PARALLAX ON SCROLL
+   ===================================================== */
+window.addEventListener('scroll', () => {
+  const heroBg = document.getElementById('hero-bg');
+  if (heroBg) {
+    heroBg.style.transform = `scale(1.05) translateY(${window.scrollY * 0.25}px)`;
   }
+});
 
-  if(iframe){iframe.addEventListener('load',onLoad);setTimeout(onLoad,12000);}
-  else{setTimeout(dismiss,3000);}
+/* =====================================================
+   THREE.JS — 3D HOLOGRAPHIC ORBS (fallback 3D scene)
+   Replace modelPath below with your .glb file to load
+   your own 3D model using GLTFLoader.
+   ===================================================== */
+// REPLACE YOUR 3D MODEL HERE:
+// const modelPath = "assets/models/model.glb";
+// Use THREE.GLTFLoader to load it.
+
+(function initThreeScene() {
+  const canvas = document.getElementById('three-canvas');
+  if (!canvas || !window.THREE) return;
+
+  const container = document.getElementById('model-container');
+  const w = container.offsetWidth || 400;
+  const h = container.offsetHeight || 400;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(w, h);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+  camera.position.set(0, 0, 5);
+
+  // Ambient + directional light
+  scene.add(new THREE.AmbientLight(0x8aebff, 0.4));
+  const dirLight = new THREE.DirectionalLight(0x8aebff, 1.2);
+  dirLight.position.set(2, 4, 3);
+  scene.add(dirLight);
+  const redLight = new THREE.PointLight(0xffb2b9, 0.8, 8);
+  redLight.position.set(-3, -2, 2);
+  scene.add(redLight);
+
+  // Main orb - Icosahedron
+  const geo = new THREE.IcosahedronGeometry(1.2, 3);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x003040,
+    emissive: 0x001830,
+    specular: 0x8aebff,
+    shininess: 80,
+    transparent: true,
+    opacity: 0.85,
+    wireframe: false,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  // Wireframe overlay
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x8aebff, wireframe: true, transparent: true, opacity: 0.12 });
+  const wireMesh = new THREE.Mesh(geo, wireMat);
+  wireMesh.scale.setScalar(1.01);
+  scene.add(wireMesh);
+
+  // Floating ring
+  const ringGeo = new THREE.TorusGeometry(1.8, 0.015, 8, 80);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x8aebff, transparent: true, opacity: 0.35 });
+  const ring3d = new THREE.Mesh(ringGeo, ringMat);
+  ring3d.rotation.x = Math.PI * 0.3;
+  scene.add(ring3d);
+
+  // Particle field
+  const pCount = 200;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 6;
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0x8aebff, size: 0.03, transparent: true, opacity: 0.6 });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // Mouse interaction
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  // Resize
+  window.addEventListener('resize', () => {
+    const w2 = container.offsetWidth;
+    renderer.setSize(w2, w2);
+  });
+
+  // Animate
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    mesh.rotation.y = t * 0.25 + mouseX * 0.4;
+    mesh.rotation.x = Math.sin(t * 0.3) * 0.2 + mouseY * 0.2;
+    mesh.position.y = Math.sin(t * 0.8) * 0.15;
+    wireMesh.rotation.copy(mesh.rotation);
+    wireMesh.position.copy(mesh.position);
+    ring3d.rotation.z = t * 0.15;
+    ring3d.rotation.y = t * 0.08;
+    particles.rotation.y = t * 0.05;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Hide fallback once 3D is running
+  setTimeout(() => {
+    const fallback = document.getElementById('model-fallback');
+    if (fallback) fallback.style.opacity = '0';
+  }, 500);
 })();
 
-/* close modal on backdrop */
-document.getElementById('checkout-modal').addEventListener('click',function(e){if(e.target===this)closeCheckout();});
+/* =====================================================
+   FOOD CARD 3D TILT
+   ===================================================== */
+document.querySelectorAll('.food-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const rotX = ((e.clientY - cy) / rect.height) * -12;
+    const rotY = ((e.clientX - cx) / rect.width) * 12;
+    card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+/* =====================================================
+   MAGNETIC BUTTON EFFECT
+   ===================================================== */
+document.querySelectorAll('.magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) * 0.3;
+    const dy = (e.clientY - cy) * 0.3;
+    btn.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+/* =====================================================
+   BOTTOM NAV ACTIVE STATE ON SCROLL
+   ===================================================== */
+const sections = ['home','menu','special','reservations','about'];
+const navLinks = document.querySelectorAll('nav a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = 'home';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 200) current = id;
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('text-primary', link.getAttribute('href') === '#' + current);
+    link.classList.toggle('opacity-100', link.getAttribute('href') === '#' + current);
+    link.classList.toggle('text-outline', link.getAttribute('href') !== '#' + current);
+    link.classList.toggle('opacity-60', link.getAttribute('href') !== '#' + current);
+  });
+}, { passive: true });
 </script>
 </body>
 </html>
