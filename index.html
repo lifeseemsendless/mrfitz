@@ -258,6 +258,282 @@ footer { background: var(--black); padding: 80px; border-top: 1px solid rgba(201
 .footer-bottom { border-top: 1px solid rgba(201,146,42,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; }
 .footer-bottom p { font-size: 0.75rem; color: var(--text-muted); font-family: 'Cormorant Garamond', serif; }
 
+/* ─── HAMBURGER & MOBILE DRAWER (global, shown only on mobile) ─── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  transition: all 0.3s;
+}
+.mobile-drawer {
+  position: fixed;
+  top: 0; right: -100%;
+  width: min(320px, 85vw);
+  height: 100%;
+  background: var(--dark);
+  z-index: 2000;
+  padding: 80px 40px 40px;
+  border-left: 1px solid rgba(201,146,42,0.2);
+  transition: right 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.mobile-drawer.open { right: 0; }
+.mobile-drawer ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.mobile-drawer ul li { border-bottom: 1px solid rgba(201,146,42,0.1); }
+.mobile-drawer ul a {
+  display: block;
+  padding: 18px 0;
+  color: var(--cream-dark);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color 0.3s, padding-left 0.3s;
+}
+.mobile-drawer ul a:hover { color: var(--gold); padding-left: 8px; }
+.drawer-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: none;
+  border: 1px solid rgba(201,146,42,0.3);
+  color: var(--gold);
+  width: 40px; height: 40px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-phone {
+  margin-top: auto;
+  padding-top: 30px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE  ≤ 768px
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── NAVBAR ── */
+  nav {
+    padding: 0 20px;
+    height: 64px;
+  }
+  .nav-links, .nav-phone { display: none; }
+  .hamburger { display: flex; }
+  .btn-book { padding: 10px 18px; font-size: 0.65rem; letter-spacing: 1.5px; }
+  .logo { font-size: 1.5rem; letter-spacing: 2px; }
+  .logo img { width: 34px; height: 34px; }
+
+  /* ── HERO ── */
+  #hero {
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100svh;
+    min-height: 600px;
+  }
+  #canvas-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 55%;
+    z-index: 1;
+  }
+  .hero-vignette {
+    width: 100%;
+    background: linear-gradient(180deg, transparent 30%, var(--black) 80%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 24px 40px;
+    max-width: 100%;
+    width: 100%;
+  }
+  .hero-badge { font-size: 0.6rem; padding: 6px 14px; margin-bottom: 16px; }
+  .hero-price-tag { font-size: 0.95rem; margin-bottom: 10px; }
+  .hero-title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+  .hero-subtitle { font-size: 0.95rem; margin: 16px 0 28px; max-width: 100%; }
+  .hero-ctas { flex-wrap: wrap; gap: 12px; }
+  .btn-primary { padding: 14px 24px; font-size: 0.68rem; }
+  .price-badge { bottom: auto; top: 48%; right: 16px; padding: 12px 16px; }
+  .price-badge .amount { font-size: 1.5rem; }
+  .scroll-indicator { display: none; }
+
+  /* ── TICKER ── */
+  .ticker span { padding: 0 20px; font-size: 0.85rem; }
+
+  /* ── SPECIAL DEAL ── */
+  #special-deal {
+    flex-direction: column;
+    padding: 60px 24px;
+    gap: 40px;
+    text-align: center;
+  }
+  .deal-desc { max-width: 100%; }
+  .deal-image-wrapper img { border-radius: 6px; }
+  .deal-stamp { right: 50%; transform: translateX(50%); bottom: -20px; }
+
+  /* ── ABOUT ── */
+  #about-categories { padding: 60px 0 0; }
+  .about-section {
+    flex-direction: column;
+    padding: 0 24px 60px;
+    gap: 40px;
+    text-align: center;
+  }
+  .about-image-ring { width: 200px; height: 200px; margin: 0 auto; }
+  .about-btns { justify-content: center; }
+  .about-features { flex-direction: column; gap: 24px; align-items: center; }
+
+  /* ── CATEGORIES STRIP ── */
+  .categories-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .categories-strip .category-card:last-child {
+    grid-column: span 2;
+  }
+  .category-image { width: 100px; height: 100px; }
+  .category-bg-text { font-size: 2.5rem; }
+
+  /* ── MENU ── */
+  #menu { padding: 60px 20px; }
+  .section-header { margin-bottom: 40px; }
+  .menu-tabs-bar {
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .menu-tabs-bar::-webkit-scrollbar { display: none; }
+  .menu-tab-btn { padding: 12px 20px; font-size: 0.65rem; white-space: nowrap; }
+  .menu-panel.active { grid-template-columns: 1fr; }
+  .menu-item { padding: 16px 20px; }
+
+  /* ── REVIEWS ── */
+  #reviews { padding: 60px 20px; }
+  #reviews::before { font-size: 10rem; }
+  .review-card {
+    flex: 0 0 85vw;
+    margin-right: 16px;
+    padding: 28px 22px;
+  }
+  .reviews-track { padding-bottom: 8px; }
+
+  /* ── GALLERY ── */
+  #gallery-section { padding: 60px 20px; }
+  .gallery-masonry {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 4px;
+  }
+  .gallery-item:first-child { grid-column: span 2; }
+  .gallery-masonry { grid-template-rows: 180px 180px 180px; }
+
+  /* ── STATS ── */
+  #stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 40px 20px;
+  }
+  .stat-item { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.15); padding: 20px 10px; }
+  .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid rgba(0,0,0,0.15); }
+  .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+  .stat-item:nth-child(odd) { border-right: 1px solid rgba(0,0,0,0.15); }
+  .stat-number { font-size: 3rem; }
+
+  /* ── RESERVATION ── */
+  #reservation {
+    flex-direction: column;
+    padding: 60px 24px;
+    gap: 36px;
+    text-align: center;
+  }
+  .res-form { justify-content: center; }
+  .res-input { width: 100%; }
+  .res-submit { width: 100%; }
+
+  /* ── FOOTER ── */
+  footer { padding: 50px 24px 30px; }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lb-prev { left: 10px; width: 40px; height: 40px; }
+  .lb-next { right: 10px; width: 40px; height: 40px; }
+  .lb-close { top: 12px; right: 12px; }
+  #lightbox img { max-width: 95vw; max-height: 70vh; }
+}
+
+/* ═══════════════════════════════════════════════
+   TABLET  769px – 1024px
+═══════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  nav { padding: 0 32px; }
+  .nav-links { gap: 20px; }
+  .nav-phone { display: none; }
+
+  #hero { align-items: center; }
+  #canvas-container { width: 50%; }
+  .hero-content { padding-left: 40px; max-width: 480px; }
+
+  #special-deal { padding: 70px 40px; gap: 40px; }
+
+  .about-section { padding: 0 40px 60px; gap: 40px; }
+  .about-image-ring { width: 220px; height: 220px; }
+  .categories-strip { grid-template-columns: repeat(3, 1fr); }
+  .categories-strip .category-card:nth-child(4),
+  .categories-strip .category-card:nth-child(5) { grid-column: span 1; }
+
+  #menu { padding: 80px 40px; }
+  .menu-tab-btn { padding: 12px 22px; }
+
+  #reviews { padding: 80px 40px; }
+  .review-card { flex: 0 0 calc(50% - 12px); }
+
+  #gallery-section { padding: 80px 40px; }
+
+  #stats { padding: 60px 40px; }
+
+  #reservation { padding: 60px 40px; }
+  .res-input { width: 160px; }
+
+  footer { padding: 60px 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
 /* ─── LOADER ─── */
 #loader { position: fixed; inset: 0; background: var(--black); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; transition: opacity 0.8s ease; }
 .loader-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 8px; color: var(--gold); }
@@ -292,8 +568,26 @@ footer { background: var(--black); padding: 80px; border-top: 1px solid rgba(201
   <div class="nav-right">
     <div class="nav-phone">📞 CALL: +880 123 456 88</div>
     <a href="#menu" class="btn-book">Book Now →</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile Menu Drawer -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="drawer-close" id="drawerClose">✕</button>
+  <ul>
+    <li><a href="#hero"             onclick="closeDrawer()">Home</a></li>
+    <li><a href="#menu"             onclick="closeDrawer()">Menu</a></li>
+    <li><a href="#about-categories" onclick="closeDrawer()">About</a></li>
+    <li><a href="#reviews"          onclick="closeDrawer()">Reviews</a></li>
+    <li><a href="#gallery-section"  onclick="closeDrawer()">Gallery</a></li>
+    <li><a href="#contact"          onclick="closeDrawer()">Contact</a></li>
+  </ul>
+  <div class="drawer-phone">📞 +880 123 456 88</div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
 <!-- HERO -->
 <section id="hero">
@@ -689,6 +983,24 @@ window.addEventListener('load', () => {
     setTimeout(() => loader.style.display = 'none', 800);
   }, 1600);
 });
+
+/* MOBILE DRAWER */
+const hamburger    = document.getElementById('hamburger');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const drawerOverlay= document.getElementById('drawerOverlay');
+
+hamburger.addEventListener('click', () => {
+  mobileDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
 
 /* REVEAL ON SCROLL */
 const revealObserver = new IntersectionObserver((entries) => {
